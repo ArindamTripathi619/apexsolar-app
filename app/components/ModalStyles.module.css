@@ -1,0 +1,47 @@
+/* Responsive Modal Styles */
+.modalContainer {
+  position: relative;
+  top: 10px;
+  margin: 0 auto;
+  padding: 16px;
+  border: 1px solid #e5e7eb;
+  width: 95%;
+  max-width: 400px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  background-color: white;
+  max-height: 95vh;
+  overflow-y: auto;
+  /* Better mobile scrolling */
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Extra small screens */
+@media (max-width: 480px) {
+  .modalContainer {
+    top: 5px;
+    width: 98%;
+    padding: 12px;
+    max-height: 98vh;
+    border-radius: 6px;
+  }
+}
+
+/* Medium screens and up */
+@media (min-width: 640px) {
+  .modalContainer {
+    top: 60px;
+    padding: 20px;
+    width: 400px;
+    max-height: 85vh;
+  }
+}
+
+/* Large screens */
+@media (min-width: 1024px) {
+  .modalContainer {
+    top: 80px;
+    max-width: 480px;
+    max-height: 80vh;
+  }
+}

@@ -1,36 +1,169 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ApexSolar Employee Management System
 
-## Getting Started
+A secure, scalable, and responsive full-stack web application designed for ApexSolar. It provides a centralized system for managing employees, storing sensitive documents, tracking dues/payments, uploading invoices, maintaining attendance, and offering two different login dashboards (Admin & Accountant).
 
-First, run the development server:
+## 🌐 Domain Architecture (Future)
+
+- **`https://apexsolar.net`** → Public homepage (Business portfolio)
+- **`https://admin.apexsolar.net`** → Admin Portal
+- **`https://employee.apexsolar.net/{employee-id}`** → Public employee profiles  
+- **`https://attendance.apexsolar.net`** → PF/ESI accountant portal
+
+## ✨ Features
+
+### Admin Dashboard
+- Employee management (add, edit, delete profiles)
+- Document uploads (Aadhar, medical certificates, PF/ESI details)
+- Payment tracking (dues and advances)
+- Attendance management
+- Invoice management
+- PF/ESI challan viewer
+
+### Accountant Dashboard
+- Read-only attendance view
+- PF/ESI challan uploads
+- Monthly attendance reports
+
+### Public Employee Profiles
+- Secure access via unique slugs
+- Partially masked sensitive data
+- Document downloads
+- Attendance summaries
+
+## 🔧 Tech Stack
+
+- **Frontend**: Next.js 15, React 19, TailwindCSS, TypeScript
+- **Backend**: Next.js API Routes, Prisma ORM
+- **Database**: PostgreSQL
+- **Authentication**: JWT with HTTP-only cookies
+- **File Uploads**: Local storage (can be extended to AWS S3)
+- **Security**: BCrypt password hashing, role-based access control
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Node.js 18+ 
+- PostgreSQL database
+- npm or yarn
+
+### Installation
+
+1. **Clone the repository**:
+   ```bash
+   git clone <repository-url>
+   cd apexsolar-app
+   ```
+
+2. **Install dependencies**:
+   ```bash
+   npm install
+   ```
+
+3. **Set up environment variables**:
+   ```bash
+   cp .env.example .env
+   ```
+   Update the `.env` file with your database URL and other settings.
+
+4. **Set up the database**:
+   ```bash
+   npm run setup
+   ```
+   This will push the schema to your database and seed initial users.
+
+5. **Start the development server**:
+   ```bash
+   npm run dev
+   ```
+
+6. **Access the application**:
+   - Main site: http://localhost:3000
+   - Admin dashboard: http://localhost:3000/admin
+   - Accountant dashboard: http://localhost:3000/attendance
+   - Employee profile: http://localhost:3000/employee/demo
+
+## 👥 Default Users
+
+After running the seed script, you'll have:
+
+- **Admin**: `admin@apexsolar.net` / `admin123`
+- **Accountant**: `accountant@apexsolar.net` / `accountant123`
+
+## 📝 Available Scripts
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run start        # Start production server
+npm run db:generate  # Generate Prisma client
+npm run db:push      # Push schema to database
+npm run db:migrate   # Run database migrations
+npm run db:seed      # Seed database with initial data
+npm run db:studio    # Open Prisma Studio
+npm run db:reset     # Reset database
+npm run setup        # Quick setup (push + seed)
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🔐 Security Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Authentication**: JWT tokens with HTTP-only cookies
+- **Password Security**: BCrypt hashing with salt rounds
+- **Role-based Access**: Admin and Accountant roles
+- **File Upload Security**: MIME type validation, size limits
+- **Database Security**: Prepared statements via Prisma
+- **Input Validation**: Zod schema validation
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 📁 Project Structure
 
-## Learn More
+```
+apexsolar-app/
+├── app/
+│   ├── admin/           # Admin dashboard pages
+│   ├── attendance/      # Accountant dashboard pages  
+│   ├── employee/        # Public employee profiles
+│   ├── api/            # API routes
+│   ├── lib/            # Utilities and configurations
+│   ├── components/     # Reusable React components
+│   └── types/          # TypeScript type definitions
+├── prisma/
+│   ├── schema.prisma   # Database schema
+│   └── seed.ts         # Database seeding script
+├── uploads/            # File upload directory
+└── public/             # Static assets
+```
 
-To learn more about Next.js, take a look at the following resources:
+## 🎯 Production Deployment Status
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+✅ **COMPLETED:**
+1. **Core Functionality**: Login, Employee Management, Attendance Tracking
+2. **Database Schema**: Complete PostgreSQL schema with migrations
+3. **Authentication**: JWT-based auth with role-based access control
+4. **Admin Dashboard**: Full employee management interface
+5. **Accountant Portal**: Attendance viewing and PF/ESI upload interface
+6. **Public Profiles**: Secure employee profile pages
+7. **Docker Setup**: Production Docker configuration
+8. **Security**: Input validation, file upload security, HTTPS headers
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+🔄 **READY FOR PRODUCTION WITH:**
+- Docker Compose deployment
+- PostgreSQL database
+- File upload functionality
+- User authentication
+- Role-based dashboards
 
-## Deploy on Vercel
+📋 **REMAINING (Optional Enhancements):**
+1. **Domain Setup**: Purchase `apexsolar.net` and configure subdomains
+2. **Cloud Database**: Migrate to managed PostgreSQL (RDS, Supabase, etc.)
+3. **File Storage**: Integrate AWS S3 for document storage
+4. **SSL/HTTPS**: Configure SSL certificates for custom domain
+5. **Monitoring**: Add logging and uptime monitoring
+6. **Additional Features**: Document upload UI, Payment management UI
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🤝 Contributing
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Feel free to open issues or submit pull requests for improvements and bug fixes.
+
+## 📄 License
+
+This project is private and proprietary to ApexSolar.

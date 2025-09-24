@@ -1,0 +1,143 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  role      UserRole @default(ADMIN)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  lastLogin DateTime?
+  lastLoginIp String?
+
+  @@map("users")
+}
+
+model Employee {
+  id          String   @id @default(cuid())
+  name        String
+  phone       String?
+  email       String?
+  address     String?
+  dateOfJoining DateTime?
+  uniqueSlug  String   @unique
+  profilePhotoUrl String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  documents   EmployeeDocument[]
+  payments    Payment[]
+  attendance  Attendance[]
+
+  @@map("employees")
+}
+
+model EmployeeDocument {
+  id         String      @id @default(cuid())
+  employeeId String
+  type       DocumentType
+  fileName   String
+  fileUrl    String
+  uploadedAt DateTime    @default(now())
+
+  employee   Employee    @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@map("employee_documents")
+}
+
+model Payment {
+  id         String      @id @default(cuid())
+  employeeId String
+  type       PaymentType
+  amount     Float
+  description String?
+  date       DateTime
+  clearedPaymentId String? // Reference to the original payment that was cleared
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+  employee   Employee    @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  clearedPayment Payment? @relation("PaymentClearing", fields: [clearedPaymentId], references: [id])
+  clearingPayments Payment[] @relation("PaymentClearing")
+
+  @@map("payments")
+}
+
+model Attendance {
+  id         String   @id @default(cuid())
+  employeeId String
+  month      Int      // 1-12
+  year       Int
+  daysWorked Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@unique([employeeId, month, year])
+  @@map("attendance")
+}
+
+model Invoice {
+  id         String   @id @default(cuid())
+  clientName String
+  amount     Float
+  date       DateTime
+  fileName   String
+  fileUrl    String
+  uploadedAt DateTime @default(now())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("invoices")
+}
+
+model PfEsiChallan {
+  id         String   @id @default(cuid())
+  month      Int      // 1-12
+  year       Int
+  type       ChallanType
+  fileName   String
+  fileUrl    String
+  uploadedBy String   // User ID
+  uploadedAt DateTime @default(now())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("pf_esi_challans")
+}
+
+enum UserRole {
+  ADMIN
+  ACCOUNTANT
+}
+
+enum DocumentType {
+  PROFILE_PHOTO
+  AADHAR_CARD
+  MEDICAL_CERTIFICATE
+  PF_DETAILS
+  ESI_DETAILS
+}
+
+enum PaymentType {
+  DUE
+  ADVANCE
+  DUE_CLEARED
+  ADVANCE_REPAID
+}
+
+enum ChallanType {
+  PF
+  ESI
+}
