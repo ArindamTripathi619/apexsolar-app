@@ -130,6 +130,7 @@ apexsolar-app/
 │   ├── schema.prisma   # Database schema
 │   └── seed.ts         # Database seeding script
 ├── uploads/            # File upload directory
+├── scripts/            # Deployment scripts
 └── public/             # Static assets
 ```
 
@@ -142,13 +143,14 @@ apexsolar-app/
 4. **Admin Dashboard**: Full employee management interface
 5. **Accountant Portal**: Attendance viewing and PF/ESI upload interface
 6. **Public Profiles**: Secure employee profile pages
-7. **Docker Setup**: Production Docker configuration
+7. **Native Deployment**: Production-ready Debian/Ubuntu deployment scripts
 8. **Security**: Input validation, file upload security, HTTPS headers
 
 🔄 **READY FOR PRODUCTION WITH:**
-- Docker Compose deployment
+- Native Node.js deployment on Debian/Ubuntu
 - PostgreSQL database
-- File upload functionality
+- PM2 process management
+- Nginx reverse proxy
 - User authentication
 - Role-based dashboards
 
@@ -158,7 +160,7 @@ apexsolar-app/
 3. **File Storage**: Integrate AWS S3 for document storage
 4. **SSL/HTTPS**: Configure SSL certificates for custom domain
 5. **Monitoring**: Add logging and uptime monitoring
-6. **Additional Features**: Document upload UI, Payment management UI
+6. **Additional Features**: Advanced reporting, bulk operations
 
 ## 🤝 Contributing
 

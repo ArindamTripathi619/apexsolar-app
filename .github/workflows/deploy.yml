@@ -8,8 +8,6 @@ on:
 
 env:
   NODE_VERSION: '18'
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
   test:
@@ -52,6 +50,14 @@ jobs:
       env:
         DATABASE_URL: postgresql://postgres:postgres@localhost:5432/apexsolar_test
     
+    - name: Run tests
+      run: npm test
+      env:
+        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/apexsolar_test
+        JWT_SECRET: test-jwt-secret
+        NEXTAUTH_SECRET: test-nextauth-secret
+        NEXTAUTH_URL: http://localhost:3000
+    
     - name: Run linting
       run: npm run lint
     
@@ -63,8 +69,8 @@ jobs:
         NEXTAUTH_SECRET: test-nextauth-secret
         NEXTAUTH_URL: http://localhost:3000
 
-  build-and-push:
-    name: Build and Push Docker Image
+  deploy:
+    name: Deploy to Production Server
     runs-on: ubuntu-latest
     needs: test
     if: github.ref == 'refs/heads/main'
@@ -73,104 +79,38 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
     
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
-    
-    - name: Login to Container Registry
-      uses: docker/login-action@v3
-      with:
-        registry: ${{ env.REGISTRY }}
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-    
-    - name: Extract metadata
-      id: meta
-      uses: docker/metadata-action@v5
-      with:
-        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-        tags: |
-          type=ref,event=branch
-          type=ref,event=pr
-          type=sha,prefix={{branch}}-
-          type=raw,value=latest,enable={{is_default_branch}}
-    
-    - name: Build and push Docker image
-      uses: docker/build-push-action@v5
-      with:
-        context: .
-        push: true
-        tags: ${{ steps.meta.outputs.tags }}
-        labels: ${{ steps.meta.outputs.labels }}
-        cache-from: type=gha
-        cache-to: type=gha,mode=max
-
-  deploy:
-    name: Deploy to Production
-    runs-on: ubuntu-latest
-    needs: [test, build-and-push]
-    if: github.ref == 'refs/heads/main'
-    
-    steps:
-    - name: Deploy to remote server
+    - name: Deploy to Debian server
       uses: appleboy/ssh-action@v1.0.3
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.SSH_KEY }}
+        passphrase: ${{ secrets.PASSPHRASE }}  # Optional: only needed if SSH key has passphrase
         port: ${{ secrets.PORT }}
         script: |
-          # Stop existing containers
-          cd /opt/apexsolar-app || mkdir -p /opt/apexsolar-app && cd /opt/apexsolar-app
+          # Navigate to application directory
+          cd /opt/apexsolar-app
           
-          # Pull latest image
-          echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-          docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          # Pull latest changes
+          git pull origin main
           
-          # Update docker-compose and restart
-          cat > docker-compose.prod.yml << EOF
-          version: '3.8'
-          services:
-            postgres:
-              image: postgres:15
-              environment:
-                POSTGRES_USER: ${{ secrets.DB_USER }}
-                POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD }}
-                POSTGRES_DB: ${{ secrets.DB_NAME }}
-              volumes:
-                - postgres_data:/var/lib/postgresql/data
-              restart: unless-stopped
-              healthcheck:
-                test: ["CMD-SHELL", "pg_isready -U ${{ secrets.DB_USER }}"]
-                interval: 5s
-                timeout: 5s
-                retries: 5
-            
-            app:
-              image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-              ports:
-                - "3000:3000"
-              environment:
-                DATABASE_URL: postgresql://${{ secrets.DB_USER }}:${{ secrets.DB_PASSWORD }}@postgres:5432/${{ secrets.DB_NAME }}
-                JWT_SECRET: ${{ secrets.JWT_SECRET }}
-                NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
-                NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
-                NODE_ENV: production
-              depends_on:
-                postgres:
-                  condition: service_healthy
-              volumes:
-                - ./uploads:/app/uploads
-              restart: unless-stopped
+          # Install dependencies
+          npm ci --production
           
-          volumes:
-            postgres_data:
-          EOF
+          # Generate Prisma client
+          npx prisma generate
           
-          # Start services
-          docker-compose -f docker-compose.prod.yml down
-          docker-compose -f docker-compose.prod.yml up -d
+          # Run database migrations
+          npx prisma db push
           
-          # Wait for app to be ready and run migrations
-          sleep 30
-          docker-compose -f docker-compose.prod.yml exec -T app npx prisma db push
-          docker-compose -f docker-compose.prod.yml exec -T app npx prisma db seed
+          # Build application
+          npm run build
+          
+          # Restart application with PM2
+          pm2 restart apexsolar-app || pm2 start ecosystem.config.js
+          
+          # Save PM2 configuration
+          pm2 save
+          
+          # Check application status
+          pm2 status apexsolar-app
