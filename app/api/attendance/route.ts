@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/app/lib/prisma'
-import { adminOnly, AuthenticatedRequest } from '@/app/lib/middleware'
+import { adminOrAccountant, AuthenticatedRequest } from '@/app/lib/middleware'
 import { z } from 'zod'
 
 const createAttendanceSchema = z.object({
@@ -137,44 +137,6 @@ async function createAttendance(request: AuthenticatedRequest) {
   }
 }
 
-// Middleware that allows both admin and accountant
-const adminOrAccountantOnly = (handler: (request: AuthenticatedRequest) => Promise<NextResponse>) => {
-  return async (request: NextRequest) => {
-    try {
-      const response = await fetch(new URL('/api/auth/me', request.url), {
-        headers: {
-          cookie: request.headers.get('cookie') || ''
-        }
-      })
-      
-      if (!response.ok) {
-        return NextResponse.json(
-          { success: false, error: 'Authentication required' },
-          { status: 401 }
-        )
-      }
-
-      const data = await response.json()
-      if (!data.success || (data.data.role !== 'ADMIN' && data.data.role !== 'ACCOUNTANT')) {
-        return NextResponse.json(
-          { success: false, error: 'Access denied' },
-          { status: 403 }
-        )
-      }
-
-      // Add user to request
-      const authenticatedRequest = request as AuthenticatedRequest  
-      authenticatedRequest.user = data.data
-      
-      return handler(authenticatedRequest)
-    } catch (error) {
-      return NextResponse.json(
-        { success: false, error: 'Authentication failed' },
-        { status: 401 }
-      )
-    }
-  }
-}
-
-export const GET = adminOrAccountantOnly(getAttendance)
-export const POST = adminOrAccountantOnly(createAttendance)
+// Use standard middleware that supports Bearer tokens
+export const GET = adminOrAccountant(getAttendance)
+export const POST = adminOrAccountant(createAttendance)

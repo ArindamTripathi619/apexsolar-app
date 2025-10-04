@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/app/lib/prisma'
-import { adminOnly, AuthenticatedRequest } from '@/app/lib/middleware'
+import { adminOnly, adminOrAccountant, AuthenticatedRequest } from '@/app/lib/middleware'
 import { z } from 'zod'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -13,8 +13,11 @@ const createEmployeeSchema = z.object({
 })
 
 // GET /api/employees - Get all employees
-async function getEmployees(_request: AuthenticatedRequest) {
+async function getEmployees(request: AuthenticatedRequest) {
   try {
+    // Log user info for debugging
+    console.log('User info:', request.user);
+    
     const employees = await prisma.employee.findMany({
       include: {
         documents: true,
@@ -74,43 +77,5 @@ async function createEmployee(request: AuthenticatedRequest) {
 }
 
 // Middleware that allows both admin and accountant for GET, admin only for POST
-const adminOrAccountantOnly = (handler: (request: AuthenticatedRequest) => Promise<NextResponse>) => {
-  return async (request: NextRequest) => {
-    try {
-      const response = await fetch(new URL('/api/auth/me', request.url), {
-        headers: {
-          cookie: request.headers.get('cookie') || ''
-        }
-      })
-      
-      if (!response.ok) {
-        return NextResponse.json(
-          { success: false, error: 'Authentication required' },
-          { status: 401 }
-        )
-      }
-
-      const data = await response.json()
-      if (!data.success || (data.data.role !== 'ADMIN' && data.data.role !== 'ACCOUNTANT')) {
-        return NextResponse.json(
-          { success: false, error: 'Access denied' },
-          { status: 403 }
-        )
-      }
-
-      // Add user to request
-      const authenticatedRequest = request as AuthenticatedRequest  
-      authenticatedRequest.user = data.data
-      
-      return handler(authenticatedRequest)
-    } catch (error) {
-      return NextResponse.json(
-        { success: false, error: 'Authentication failed' },
-        { status: 401 }
-      )
-    }
-  }
-}
-
-export const GET = adminOrAccountantOnly(getEmployees)
+export const GET = adminOrAccountant(getEmployees)
 export const POST = adminOnly(createEmployee)

@@ -1,45 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/app/lib/prisma'
-import { adminOnly, AuthenticatedRequest } from '@/app/lib/middleware'
-
-// Middleware that allows both admin and accountant
-const adminOrAccountantOnly = (handler: (request: AuthenticatedRequest) => Promise<NextResponse>) => {
-  return async (request: NextRequest) => {
-    try {
-      const response = await fetch(new URL('/api/auth/me', request.url), {
-        headers: {
-          cookie: request.headers.get('cookie') || ''
-        }
-      })
-      
-      if (!response.ok) {
-        return NextResponse.json(
-          { success: false, error: 'Authentication required' },
-          { status: 401 }
-        )
-      }
-
-      const data = await response.json()
-      if (!data.success || (data.data.role !== 'ADMIN' && data.data.role !== 'ACCOUNTANT')) {
-        return NextResponse.json(
-          { success: false, error: 'Access denied' },
-          { status: 403 }
-        )
-      }
-
-      // Add user to request
-      const authenticatedRequest = request as AuthenticatedRequest  
-      authenticatedRequest.user = data.data
-      
-      return handler(authenticatedRequest)
-    } catch (error) {
-      return NextResponse.json(
-        { success: false, error: 'Authentication failed' },
-        { status: 401 }
-      )
-    }
-  }
-}
+import { adminOrAccountant, AuthenticatedRequest } from '@/app/lib/middleware'
 import { uploadFile } from '@/app/lib/upload'
 import { ChallanType } from '@prisma/client'
 
@@ -188,5 +149,5 @@ async function uploadChallan(request: AuthenticatedRequest) {
   }
 }
 
-export const GET = adminOrAccountantOnly(getChallans)
-export const POST = adminOrAccountantOnly(uploadChallan)
+export const GET = adminOrAccountant(getChallans)
+export const POST = adminOrAccountant(uploadChallan)

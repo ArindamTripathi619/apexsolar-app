@@ -1,8 +1,6 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
 
 datasource db {
@@ -11,64 +9,61 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  password  String
-  role      UserRole @default(ADMIN)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  lastLogin DateTime?
+  id          String    @id @default(cuid())
+  email       String    @unique
+  password    String
+  role        UserRole  @default(ADMIN)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  lastLogin   DateTime?
   lastLoginIp String?
 
   @@map("users")
 }
 
 model Employee {
-  id          String   @id @default(cuid())
-  name        String
-  phone       String?
-  email       String?
-  address     String?
-  dateOfJoining DateTime?
-  uniqueSlug  String   @unique
+  id              String             @id @default(cuid())
+  name            String
+  phone           String?
+  email           String?
+  address         String?
+  dateOfJoining   DateTime?
+  uniqueSlug      String             @unique
   profilePhotoUrl String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  documents   EmployeeDocument[]
-  payments    Payment[]
-  attendance  Attendance[]
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+  attendance      Attendance[]
+  documents       EmployeeDocument[]
+  payments        Payment[]
 
   @@map("employees")
 }
 
 model EmployeeDocument {
-  id         String      @id @default(cuid())
+  id         String       @id @default(cuid())
   employeeId String
   type       DocumentType
   fileName   String
   fileUrl    String
-  uploadedAt DateTime    @default(now())
-
-  employee   Employee    @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  uploadedAt DateTime     @default(now())
+  employee   Employee     @relation(fields: [employeeId], references: [id], onDelete: Cascade)
 
   @@map("employee_documents")
 }
 
 model Payment {
-  id         String      @id @default(cuid())
-  employeeId String
-  type       PaymentType
-  amount     Float
-  description String?
-  date       DateTime
-  clearedPaymentId String? // Reference to the original payment that was cleared
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
-
-  employee   Employee    @relation(fields: [employeeId], references: [id], onDelete: Cascade)
-  clearedPayment Payment? @relation("PaymentClearing", fields: [clearedPaymentId], references: [id])
-  clearingPayments Payment[] @relation("PaymentClearing")
+  id               String      @id @default(cuid())
+  employeeId       String
+  type             PaymentType
+  amount           Float
+  description      String?
+  date             DateTime
+  clearedPaymentId String?
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+  clearedPayment   Payment?    @relation("PaymentClearing", fields: [clearedPaymentId], references: [id])
+  clearingPayments Payment[]   @relation("PaymentClearing")
+  employee         Employee    @relation(fields: [employeeId], references: [id], onDelete: Cascade)
 
   @@map("payments")
 }
@@ -76,12 +71,11 @@ model Payment {
 model Attendance {
   id         String   @id @default(cuid())
   employeeId String
-  month      Int      // 1-12
+  month      Int
   year       Int
   daysWorked Int
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-
   employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
 
   @@unique([employeeId, month, year])
@@ -103,16 +97,16 @@ model Invoice {
 }
 
 model PfEsiChallan {
-  id         String   @id @default(cuid())
-  month      Int      // 1-12
+  id         String      @id @default(cuid())
+  month      Int
   year       Int
   type       ChallanType
   fileName   String
   fileUrl    String
-  uploadedBy String   // User ID
-  uploadedAt DateTime @default(now())
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  uploadedBy String
+  uploadedAt DateTime    @default(now())
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
 
   @@map("pf_esi_challans")
 }

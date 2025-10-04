@@ -3,7 +3,28 @@ import { verifyToken } from '@/app/lib/auth'
 
 export async function GET(request: NextRequest) {
   try {
-    const token = request.cookies.get('auth-token')?.value
+    // Extract token from various possible sources (same as middleware)
+    let token: string | undefined;
+    
+    // Try to get token from cookies first
+    const cookieToken = request.cookies.get('auth-token')?.value;
+    if (cookieToken) {
+      token = cookieToken;
+    }
+    
+    // If no cookie token, try Authorization header
+    if (!token) {
+      const authHeader = request.headers.get('authorization');
+      if (authHeader && authHeader.startsWith('Bearer ')) {
+        token = authHeader.substring(7); // Remove 'Bearer ' prefix
+      }
+    }
+    
+    // If still no token, try query parameter (for testing)
+    if (!token) {
+      const url = new URL(request.url);
+      token = url.searchParams.get('token') || undefined;
+    }
 
     if (!token) {
       return NextResponse.json(

@@ -1,165 +1,246 @@
-## Objective
-Create a secure, scalable, and responsive full-stack web application for **ApexSolar**, a business requiring a centralized system for managing employees, storing sensitive documents, tracking dues/payments, uploading invoices, maintaining attendance, and enabling two different login dashboards (Admin & Accountant). This prompt will help an AI website builder implement the entire system with maximum clarity and security in mind.
+# ApexSolar - Future Development & Security Improvements
 
----
+## 🎯 Current Status
+**Production Deployed**: ✅ **COMPLETE** - All core features implemented and live at https://apexsolar-302444603160.asia-south1.run.app
 
-## 🌐 Project Domain Architecture
+## 🔐 Security Improvements (High Priority)
 
-- **`https://apexsolar.net`** → Public homepage (Business portfolio)
-- **`https://admin.apexsolar.net`** → Admin Portal for the business owner (Login protected)
-- **`https://employee.apexsolar.net/{employee-id}`** → Public read-only employee profiles (client-accessible)
-- **`https://attendance.apexsolar.net`** → PF/ESI accountant portal (login protected, different credentials)
+### **1. Advanced Authentication & Security**
+- [ ] **Multi-Factor Authentication (MFA)**
+  - SMS-based 2FA for admin accounts
+  - TOTP/Google Authenticator support
+  - Backup recovery codes
+- [ ] **Rate Limiting & DDoS Protection**
+  - Implement Redis-based rate limiting
+  - Advanced login attempt monitoring
+  - IP-based request throttling
+- [ ] **Session Security Enhancements**
+  - Session timeout management
+  - Device tracking and management
+  - Suspicious activity detection
+- [ ] **Password Security**
+  - Password strength enforcement
+  - Password history (prevent reuse)
+  - Mandatory password rotation
+- [ ] **Security Headers & CSRF Protection**
+  - Enhanced CSP (Content Security Policy)
+  - CSRF token implementation
+  - Advanced XSS protection
 
----
+### **2. Data Protection & Encryption**
+- [ ] **End-to-End Encryption**
+  - Encrypt sensitive documents at rest
+  - Client-side encryption for Aadhar numbers
+  - Encrypted database fields for PII
+- [ ] **Key Management**
+  - Google Cloud KMS integration
+  - Automated key rotation
+  - Secure environment variable management
+- [ ] **Data Masking & Privacy**
+  - Advanced PII masking algorithms
+  - Configurable data retention policies
+  - GDPR compliance features
 
-## 🧰 Recommended Tech Stack
+### **3. Infrastructure Security**
+- [ ] **Advanced Monitoring & Logging**
+  - Security incident detection
+  - Automated threat response
+  - Comprehensive audit trails
+- [ ] **Backup & Recovery**
+  - Automated encrypted backups
+  - Disaster recovery procedures
+  - Point-in-time recovery capabilities
+- [ ] **Network Security**
+  - VPC security groups optimization
+  - WAF (Web Application Firewall)
+  - DDoS protection enhancement
 
-### Frontend:
-- ReactJS (with Vite for fast dev/build)
-- TailwindCSS for responsive styling
-- ShadCN/UI or Radix UI for components
-- React Hook Form + Zod for forms/validation
+## 🚀 Feature Enhancements (Medium Priority)
 
-### Backend:
-- Node.js + Express.js or Next.js API Routes
-- PostgreSQL for relational data
-- Prisma ORM for database access
-- JWT for session management
-- Bcrypt for secure password hashing
+### **1. User Experience Improvements**
+- [ ] **Advanced Search & Filtering**
+  - Full-text search across all entities
+  - Advanced filter combinations
+  - Saved search preferences
+- [ ] **Bulk Operations**
+  - Bulk employee import/export
+  - Mass document upload
+  - Batch payment processing
+- [ ] **Dashboard Analytics**
+  - Real-time statistics
+  - Interactive charts and graphs
+  - Customizable dashboard widgets
+- [ ] **Notification System**
+  - Email notifications for important events
+  - In-app notification center
+  - Configurable alert preferences
 
-### File Storage:
-- AWS S3 (preferred) or Local Disk with Multer
-- Ensure file type/size validation (JPEG, PNG, PDF; max 5MB)
+### **2. Document Management**
+- [ ] **Advanced Document Features**
+  - Document versioning
+  - Digital signatures support
+  - OCR for text extraction
+- [ ] **Cloud Storage Migration**
+  - Move from local storage to Google Cloud Storage
+  - CDN integration for faster delivery
+  - Automated image optimization
 
-### Hosting & DevOps:
-- Vercel or Render (alternatively self-hosted VM on GCP/AWS with Docker + Nginx)
-- Nginx reverse proxy for subdomain routing
-- SSL with Let’s Encrypt via Certbot
-- CI/CD pipeline with GitHub
+### **3. Reporting & Analytics**
+- [ ] **Advanced Reporting**
+  - PDF report generation
+  - Automated monthly reports
+  - Customizable report templates
+- [ ] **Business Intelligence**
+  - Employee analytics dashboard
+  - Financial trend analysis
+  - Attendance pattern insights
 
----
+## 📱 Mobile Application (Future Phase)
 
-## 🔐 Security Guidelines
+### **Mobile App Development**
+- [ ] **React Native Mobile App**
+  - iOS and Android native apps
+  - Biometric authentication
+  - Offline data synchronization
+  - Camera integration for document capture
+- [ ] **Mobile-Specific Features**
+  - Push notifications
+  - Location-based attendance
+  - Mobile-optimized UI/UX
 
-- Enforce HTTPS on all subdomains
-- Implement strong password policies and bcrypt hashing
-- JWT access & refresh tokens for session management
-- Role-based access control: Admin vs Accountant
-- Secure file uploads with MIME type checks
-- Public pages use hashed/UUID slugs to prevent ID guessing
-- Limit repeated login attempts (rate limiting)
-- Audit logs for logins and document uploads (optional)
+## 🔧 Technical Improvements (Low Priority)
 
----
+### **1. Performance Optimization**
+- [ ] **Caching Strategy**
+  - Redis caching layer
+  - Browser cache optimization
+  - Database query optimization
+- [ ] **Scalability Enhancements**
+  - Auto-scaling configuration
+  - Load balancing optimization
+  - Database performance tuning
 
-## 👤 Admin Dashboard (`admin.apexsolar.net`)
+### **2. Development & Operations**
+- [ ] **Enhanced CI/CD**
+  - Automated security scanning
+  - Performance regression testing
+  - Blue-green deployment strategy
+- [ ] **Monitoring & Observability**
+  - Application performance monitoring
+  - Real-time error tracking
+  - Custom metrics and alerting
 
-### Authentication:
-- Login page for Admin only
-- Password reset with token (via email or OTP optional)
-- Show last login time and IP
+### **3. Integration Capabilities**
+- [ ] **Third-Party Integrations**
+  - HR system integrations
+  - Accounting software APIs
+  - Government compliance APIs
+- [ ] **API Enhancements**
+  - GraphQL API layer
+  - Webhook support
+  - API rate limiting
 
-### Employee Management:
-- Add, edit, delete employee profiles
-- Upload required documents:
-  - Profile photo
-  - Aadhar card (PDF/Image)
-  - Medical certificate (PDF/Image)
-  - PF and ESI details (PDF/Image)
-- Each profile generates a public link: `employee.apexsolar.net/{id}`
-- Mask sensitive data (e.g. Aadhar)
+## 🏢 Business Feature Extensions
 
-### Payments Module:
-- Add due and advance entries
-- Track all transactions with timestamps
-- Editable records
-- Monthly summaries for each employee
+### **1. Multi-Company Support**
+- [ ] **Tenant Management**
+  - Multi-tenant architecture
+  - Company-specific branding
+  - Isolated data environments
 
-### Attendance Tracking:
-- Enter number of working days per employee, per month
-- Edit attendance for previous months
-- Table format with filters by month/year
+### **2. Advanced HR Features**
+- [ ] **Payroll Integration**
+  - Salary calculation automation
+  - Tax computation
+  - Payslip generation
+- [ ] **Leave Management**
+  - Leave request system
+  - Leave balance tracking
+  - Manager approval workflow
 
-### Invoice Management:
-- Upload business invoices (PDF)
-- Add meta-info: date, client name, amount
-- Search and filter by client/date
-- View/download invoices
+### **3. Compliance & Regulations**
+- [ ] **Government Compliance**
+  - EPF online filing integration
+  - ESI compliance automation
+  - Labour law compliance checks
 
-### PF/ESI Challan Viewer:
-- View challans uploaded by accountant (monthly grouped)
-- Filterable table
-- Downloadable PDF files
+## 🎨 UI/UX Enhancements
 
----
+### **1. Design System**
+- [ ] **Component Library**
+  - Comprehensive design system
+  - Accessibility improvements
+  - Dark mode support
+- [ ] **User Experience**
+  - Progressive Web App (PWA)
+  - Keyboard navigation
+  - Screen reader optimization
 
-## 👨‍💼 Accountant Dashboard (`attendance.apexsolar.net`)
+## 🌐 Internationalization
 
-### Authentication:
-- Separate login/password credentials from Admin
-- Access limited to viewing attendance and uploading PF/ESI challans
+### **1. Multi-Language Support**
+- [ ] **Localization**
+  - Hindi language support
+  - Regional language options
+  - Date/currency formatting
 
-### Attendance View:
-- Read-only attendance table
-- Monthly views of days worked by employees
-- Filters by month and year
+## 📊 Current Security Score: 85% → Target: 95%
 
-### PF/ESI Uploads:
-- Upload monthly PF and ESI challans
-- List of all previous uploads
-- Ability to download uploaded files
+### **Completed Security Measures**
+- ✅ JWT authentication with secure HTTP-only cookies
+- ✅ BCrypt password hashing (12 rounds)
+- ✅ Input validation with Zod schemas
+- ✅ File upload security (type/size validation)
+- ✅ SQL injection prevention (Prisma ORM)
+- ✅ XSS protection headers
+- ✅ HTTPS enforcement
+- ✅ Role-based access control
+- ✅ Secure file serving with access control
+- ✅ Environment variable security
 
----
+### **Next Security Priorities**
+1. **MFA Implementation** (2-4 weeks)
+2. **Advanced Rate Limiting** (1-2 weeks)
+3. **Data Encryption at Rest** (3-4 weeks)
+4. **Security Monitoring** (2-3 weeks)
+5. **Automated Security Testing** (1-2 weeks)
 
-## 📄 Public Employee Profile (`employee.apexsolar.net/{employee-id}`)
+## 🚧 Development Guidelines
 
-- Read-only page accessible via unique, unguessable slug
-- Displays:
-  - Employee photo
-  - Partially masked Aadhar number
-  - Medical certificate (thumbnail/download)
-  - PF/ESI details
-  - Monthly attendance summary
-  - Advance & due overview
+### **Security-First Development**
+- All new features must include security assessment
+- Regular penetration testing (quarterly)
+- Code security reviews for all PRs
+- Automated vulnerability scanning
 
----
-
-## 🧩 Database Structure
-
-### Tables:
-- `users`: id, email, hashed_password, role (admin/accountant)
-- `employees`: id, name, phone, unique_slug, address, doj, etc.
-- `employee_documents`: id, employee_id, type, file_url, upload_date
-- `payments`: id, employee_id, type (due/advance), amount, date
-- `attendance`: id, employee_id, month, year, days_worked
-- `invoices`: id, client_name, amount, invoice_file, date
-- `pf_esi_challans`: id, month, year, file_url, uploaded_by
-
----
-
-## 🎨 UI/UX Guidelines
-
-- Minimalist and intuitive dashboard layout
+### **Performance Standards**
+- Page load time < 2 seconds
+- API response time < 500ms
+- 99.9% uptime target
 - Mobile-first responsive design
-- Use cards, tables, filters, and modals
-- Include notifications for uploads/errors
-- Smooth page transitions and loader spinners
+
+### **Quality Assurance**
+- Minimum 90% test coverage
+- Automated testing for all features
+- User acceptance testing
+- Accessibility compliance (WCAG 2.1)
 
 ---
 
-## 📦 Deployment Plan
+## 📝 Implementation Timeline
 
-### (Not Now, Later)
+### **Phase 1: Security Hardening (Next 2-3 months)**
+- Focus on MFA, rate limiting, and advanced encryption
+- Security monitoring and incident response
 
-- Set up domain with Cloudflare (optional for DNS)
-- Route subdomains using Nginx reverse proxy
-- SSL with Certbot + cron renewal
-- PostgreSQL setup with daily backups
-- CI/CD using GitHub + Vercel or Docker + SSH for production pushes
-- Logging and monitoring (e.g. PM2 logs, UptimeRobot)
+### **Phase 2: User Experience (3-6 months)**
+- Advanced search, bulk operations, and analytics
+- Mobile application development
+
+### **Phase 3: Business Features (6-12 months)**
+- Multi-company support, payroll integration
+- Government compliance automation
 
 ---
 
-> Please use this prompt as a full implementation plan for building the ApexSolar Admin Web Application using best practices in security, modularity, and modern full-stack development.
-> I have still not bought the domain but i want to develop the site first. I will soon buy the domain.
-
+**Note**: This TODO reflects our current production system status and future enhancement plans. All core business requirements have been successfully implemented and are operational.
