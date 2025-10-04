@@ -56,10 +56,10 @@ jobs:
       run: npm ci --legacy-peer-deps
     
     - name: Run npm audit
-      run: npm audit --audit-level=high
+      run: npm audit --audit-level=high --production
     
     - name: Dependency vulnerabilities check
-      run: npm audit --audit-level=moderate --production
+      run: npm audit --audit-level=critical --production
 
   # Unit and Integration Tests
   test:
@@ -117,7 +117,7 @@ jobs:
         NODE_ENV: test
     
     - name: Upload test coverage
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4
       if: always()
       with:
         file: ./coverage/lcov.info
@@ -156,7 +156,7 @@ jobs:
         NODE_ENV: production
     
     - name: Upload build artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: build-files
         path: |
