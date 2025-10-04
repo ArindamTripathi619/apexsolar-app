@@ -114,12 +114,6 @@ export default function AdminLogin() {
               {loading ? 'Signing in...' : 'Sign in'}
             </button>
           </div>
-
-          <div className="text-center">
-            <p className="text-sm text-gray-600">
-              Default admin: admin@apexsolar.net / admin123
-            </p>
-          </div>
         </form>
       </div>
     </div>

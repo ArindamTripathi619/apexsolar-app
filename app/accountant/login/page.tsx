@@ -114,12 +114,6 @@ export default function AccountantLogin() {
               {loading ? 'Signing in...' : 'Sign in'}
             </button>
           </div>
-
-          <div className="text-center">
-            <p className="text-sm text-gray-600">
-              Default accountant: accountant@apexsolar.net / accountant123
-            </p>
-          </div>
         </form>
       </div>
     </div>
