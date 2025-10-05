@@ -46,9 +46,20 @@ jobs:
           exit 1
         else
           echo "✅ DATABASE_URL secret is set"
-          # Don't print the actual URL for security, just check if it starts correctly
-          echo "Database URL starts with: $(echo '${{ secrets.DATABASE_URL }}' | cut -c1-15)..."
+          # Check if it starts with postgresql://
+          if [[ "${{ secrets.DATABASE_URL }}" == postgresql://* ]]; then
+            echo "✅ DATABASE_URL has correct protocol"
+          else
+            echo "❌ DATABASE_URL does not start with postgresql://"
+            exit 1
+          fi
+          echo "Database URL format validated"
         fi
+
+    - name: Test Cloud SQL instance connectivity
+      run: |
+        echo "Testing Cloud SQL instance status..."
+        gcloud sql instances describe apexsolar-db --format="value(state,databaseVersion)" || echo "Could not describe instance"
 
     - name: Authenticate to Google Cloud
       uses: google-github-actions/auth@v2
@@ -112,17 +123,22 @@ jobs:
           --format='value(status.url)')
         echo "Production deployed at: $SERVICE_URL"
         
-        # Simple health check
+        # Basic health check
         sleep 30  # Wait for service to be ready
         echo "Testing health endpoint: $SERVICE_URL/api/health"
-        for i in {1..3}; do
-          if curl -f -s "$SERVICE_URL/api/health" | grep -q '"status":"healthy"'; then
-            echo "✅ Health check passed on attempt $i"
-            echo "🚀 Deployment successful!"
-            exit 0
-          fi
-          echo "⏳ Health check attempt $i failed, retrying in 30s..."
-          sleep 30
-        done
-        echo "⚠️ Health check failed, but deployment completed"
-        echo "🚀 Deployment successful! (Health check may need more time)"
+        
+        # Try health check
+        if curl -f -s "$SERVICE_URL/api/health" | grep -q '"status":"healthy"'; then
+          echo "✅ Health check passed"
+        else
+          echo "⚠️ Health check failed, checking service logs..."
+          gcloud run services logs read ${{ env.SERVICE_NAME }} --region=${{ env.GOOGLE_CLOUD_REGION }} --limit=10 || echo "Could not fetch logs"
+        fi
+        
+        # Test database connectivity by trying a simple API call
+        echo "Testing database connectivity via API..."
+        curl -s -X POST "$SERVICE_URL/api/auth/login" \
+          -H "Content-Type: application/json" \
+          -d '{"email":"test@test.com","password":"test"}' || echo "Login test completed (expected to fail)"
+        
+        echo "🚀 Deployment completed! Service available at: $SERVICE_URL"
