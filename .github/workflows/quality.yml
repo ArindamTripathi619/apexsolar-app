@@ -135,10 +135,10 @@ jobs:
       run: npm ci --legacy-peer-deps
     
     - name: Make performance test executable
-      run: chmod +x ./performance-test-suite.sh
+      run: chmod +x ./tests/performance-test-suite.sh
     
     - name: Run Performance Benchmarks
-      run: ./performance-test-suite.sh
+      run: ./tests/performance-test-suite.sh
       env:
         BASE_URL: https://apexsolar-302444603160.asia-south1.run.app
     

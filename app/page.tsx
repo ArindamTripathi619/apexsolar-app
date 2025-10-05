@@ -12,13 +12,13 @@ export default function Home() {
             Advanced Employee Management System - Secure, Scalable, and Responsive
           </p>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 max-w-7xl mx-auto mb-12 sm:mb-16">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 max-w-5xl mx-auto mb-12 sm:mb-16">
             <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6 mx-2 sm:mx-0">
               <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-blue-600">
                 Admin Portal
               </h3>
               <p className="text-sm sm:text-base text-gray-600 mb-4 leading-relaxed">
-                Comprehensive employee management, document storage, and payment tracking.
+                Comprehensive employee management, document storage, payment tracking, and invoice management.
               </p>
               <Link 
                 href="/admin/login" 
@@ -40,21 +40,6 @@ export default function Home() {
                 className="inline-block w-full sm:w-auto text-center bg-green-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg hover:bg-green-700 transition-colors text-sm sm:text-base font-medium"
               >
                 Accountant Login
-              </Link>
-            </div>
-            
-            <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6 mx-2 sm:mx-0">
-              <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-orange-600">
-                Employee Management
-              </h3>
-              <p className="text-sm sm:text-base text-gray-600 mb-4 leading-relaxed">
-                Create and manage employee profiles with secure document access.
-              </p>
-              <Link 
-                href="/admin/dashboard" 
-                className="inline-block w-full sm:w-auto text-center bg-orange-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg hover:bg-orange-700 transition-colors text-sm sm:text-base font-medium"
-              >
-                Manage Employees
               </Link>
             </div>
             

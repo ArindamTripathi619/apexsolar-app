@@ -32,10 +32,10 @@ jobs:
       run: npm ci --legacy-peer-deps
     
     - name: Make test scripts executable
-      run: chmod +x ./test-auth-fixes.sh
+      run: chmod +x ./tests/test-auth-fixes.sh
     
     - name: Run Authentication Tests
-      run: ./test-auth-fixes.sh
+      run: ./tests/test-auth-fixes.sh
       env:
         BASE_URL: https://apexsolar-302444603160.asia-south1.run.app
 
@@ -58,10 +58,10 @@ jobs:
       run: npm ci --legacy-peer-deps
     
     - name: Make test scripts executable
-      run: chmod +x ./comprehensive-test-suite.sh
+      run: chmod +x ./tests/comprehensive-test-suite.sh
     
     - name: Run Comprehensive Tests
-      run: ./comprehensive-test-suite.sh
+      run: ./tests/comprehensive-test-suite.sh
       env:
         BASE_URL: https://apexsolar-302444603160.asia-south1.run.app
     
@@ -93,10 +93,10 @@ jobs:
       run: npm ci --legacy-peer-deps
     
     - name: Make test scripts executable
-      run: chmod +x ./security-test-suite.sh
+      run: chmod +x ./tests/security-test-suite.sh
     
     - name: Run Security Tests
-      run: ./security-test-suite.sh
+      run: ./tests/security-test-suite.sh
       env:
         BASE_URL: https://apexsolar-302444603160.asia-south1.run.app
     
@@ -128,10 +128,10 @@ jobs:
       run: npm ci --legacy-peer-deps
     
     - name: Make test scripts executable
-      run: chmod +x ./performance-test-suite.sh
+      run: chmod +x ./tests/performance-test-suite.sh
     
     - name: Run Performance Tests
-      run: ./performance-test-suite.sh
+      run: ./tests/performance-test-suite.sh
       env:
         BASE_URL: https://apexsolar-302444603160.asia-south1.run.app
     
@@ -165,10 +165,10 @@ jobs:
       run: npm ci --legacy-peer-deps
     
     - name: Make test scripts executable
-      run: chmod +x ./test-summary.sh
+      run: chmod +x ./tests/test-summary.sh
     
     - name: Generate Test Summary
-      run: ./test-summary.sh
+      run: ./tests/test-summary.sh
       env:
         BASE_URL: https://apexsolar-302444603160.asia-south1.run.app
     

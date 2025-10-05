@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import InvoiceModal from '@/app/components/InvoiceModal'
+import DeleteConfirmationModal from '@/app/components/DeleteConfirmationModal'
 
 interface User {
   id: string
@@ -26,6 +27,9 @@ export default function InvoiceManagement() {
   const [invoices, setInvoices] = useState<Invoice[]>([])
   const [loading, setLoading] = useState(true)
   const [showInvoiceModal, setShowInvoiceModal] = useState(false)
+  const [deleting, setDeleting] = useState<string | null>(null) // Track which invoice is being deleted
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [invoiceToDelete, setInvoiceToDelete] = useState<Invoice | null>(null)
   const [filters, setFilters] = useState({
     clientName: '',
     startDate: '',
@@ -109,6 +113,48 @@ export default function InvoiceManagement() {
 
   const handleViewInvoice = (fileUrl: string) => {
     window.open(fileUrl, '_blank')
+  }
+
+  const handleDeleteInvoice = async (invoiceId: string, clientName: string, amount: number) => {
+    const invoice = invoices.find(inv => inv.id === invoiceId)
+    if (!invoice) return
+    
+    setInvoiceToDelete(invoice)
+    setShowDeleteModal(true)
+  }
+
+  const confirmDeleteInvoice = async () => {
+    if (!invoiceToDelete) return
+
+    setDeleting(invoiceToDelete.id)
+
+    try {
+      const response = await fetch(`/api/invoices/${invoiceToDelete.id}`, {
+        method: 'DELETE',
+        credentials: 'include'
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        // Remove the deleted invoice from the state
+        setInvoices(prev => prev.filter(invoice => invoice.id !== invoiceToDelete.id))
+        
+        // Close the modal
+        setShowDeleteModal(false)
+        setInvoiceToDelete(null)
+        
+        // Show success message
+        alert(`Invoice for ${invoiceToDelete.clientName} (₹${invoiceToDelete.amount.toFixed(2)}) has been deleted successfully.`)
+      } else {
+        alert(`Failed to delete invoice: ${data.error}`)
+      }
+    } catch (error) {
+      console.error('Delete invoice error:', error)
+      alert('An unexpected error occurred while deleting the invoice.')
+    } finally {
+      setDeleting(null)
+    }
   }
 
   const totalAmount = invoices.reduce((sum, invoice) => sum + invoice.amount, 0)
@@ -329,6 +375,13 @@ export default function InvoiceManagement() {
                               >
                                 Download
                               </a>
+                              <button
+                                onClick={() => handleDeleteInvoice(invoice.id, invoice.clientName, invoice.amount)}
+                                disabled={deleting === invoice.id}
+                                className="text-red-600 hover:text-red-900 text-xs px-2 py-1 border border-red-200 rounded disabled:opacity-50 disabled:cursor-not-allowed"
+                              >
+                                {deleting === invoice.id ? 'Deleting...' : 'Delete'}
+                              </button>
                             </div>
                           </td>
                         </tr>
@@ -359,7 +412,7 @@ export default function InvoiceManagement() {
                         </div>
                       </div>
                       
-                      <div className="grid grid-cols-2 gap-2">
+                      <div className="grid grid-cols-3 gap-2">
                         <button
                           onClick={() => handleViewInvoice(invoice.fileUrl)}
                           className="w-full text-center bg-blue-600 hover:bg-blue-700 text-white text-xs px-3 py-2 rounded font-medium"
@@ -373,6 +426,13 @@ export default function InvoiceManagement() {
                         >
                           💾 Download
                         </a>
+                        <button
+                          onClick={() => handleDeleteInvoice(invoice.id, invoice.clientName, invoice.amount)}
+                          disabled={deleting === invoice.id}
+                          className="w-full text-center bg-red-600 hover:bg-red-700 text-white text-xs px-3 py-2 rounded font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          {deleting === invoice.id ? '⏳ Deleting...' : '🗑️ Delete'}
+                        </button>
                       </div>
                     </div>
                   ))}
@@ -391,6 +451,20 @@ export default function InvoiceManagement() {
           setShowInvoiceModal(false)
           fetchInvoices()
         }}
+      />
+
+      {/* Delete Confirmation Modal */}
+      <DeleteConfirmationModal
+        isOpen={showDeleteModal}
+        onClose={() => {
+          setShowDeleteModal(false)
+          setInvoiceToDelete(null)
+        }}
+        onConfirm={confirmDeleteInvoice}
+        title="Delete Invoice"
+        message="Are you sure you want to delete this invoice?"
+        itemName={invoiceToDelete ? `${invoiceToDelete.clientName} - ₹${invoiceToDelete.amount.toFixed(2)} (${new Date(invoiceToDelete.date).toLocaleDateString()})` : ''}
+        loading={!!deleting}
       />
     </div>
   )

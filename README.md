@@ -52,6 +52,28 @@ A comprehensive, production-ready employee management platform built with modern
 - **Deployment**: Google Cloud Run
 - **Security**: BCrypt password hashing, role-based access control
 
+## 📁 Project Structure
+
+```
+apexsolar-app/
+├── 📱 app/                    # Next.js 15 app directory
+│   ├── api/                   # API routes
+│   ├── admin/                 # Admin dashboard pages
+│   ├── accountant/            # Accountant dashboard pages
+│   ├── components/            # React components
+│   └── lib/                   # Utility libraries
+├── 🧪 tests/                  # Test scripts & automation
+│   ├── comprehensive-test-suite.sh
+│   ├── security-test-suite.sh
+│   ├── performance-test-suite.sh
+│   └── README.md             # Test documentation
+├── 📊 prisma/                # Database schema & migrations
+├── 📄 docs/                  # Project documentation
+├── 🔧 .github/               # CI/CD workflows
+├── 🐳 Dockerfile             # Container configuration
+└── 📋 package.json           # Dependencies & scripts
+```
+
 ## 🚀 Quick Start
 
 ### Prerequisites
@@ -138,19 +160,19 @@ The system includes comprehensive test suites:
 
 ```bash
 # Run authentication tests
-./test-auth-fixes.sh
+./tests/test-auth-fixes.sh
 
 # Run full system tests (28 tests)
-./comprehensive-test-suite.sh
+./tests/comprehensive-test-suite.sh
 
 # Run security validation
-./security-test-suite.sh
+./tests/security-test-suite.sh
 
 # Run performance tests
-./performance-test-suite.sh
+./tests/performance-test-suite.sh
 
 # Get test summary
-./test-summary.sh
+./tests/test-summary.sh
 ```
 
 **Current Test Status**: ✅ 100% Pass Rate (28/28 tests passing)
@@ -226,7 +248,7 @@ apexsolar-app/
 - **Uptime**: 99.9%
 - **Response Time**: <500ms average
 - **Test Coverage**: 100% (28/28 tests passing)
-- **Security Score**: 85% (see security-test-suite.sh)
+- **Security Score**: 85% (see tests/security-test-suite.sh)
 - **Performance**: Handles 50+ concurrent users
 
 ## 🤝 Contributing

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/app/lib/prisma'
 import { adminOnly, AuthenticatedRequest } from '@/app/lib/middleware'
-import { uploadFile, ALLOWED_FILE_TYPES } from '@/app/lib/upload'
+import { uploadFile, ALLOWED_FILE_TYPES, deleteFile } from '@/app/lib/upload'
 import { z } from 'zod'
 
 const createInvoiceSchema = z.object({

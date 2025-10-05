@@ -98,7 +98,7 @@ If you discover a security vulnerability, please follow these steps:
 
 Our security is validated through comprehensive test suites:
 
-#### Security Test Suite (`./security-test-suite.sh`)
+#### Security Test Suite (`./tests/security-test-suite.sh`)
 - ✅ SQL Injection Protection
 - ✅ Authentication Bypass Prevention  
 - ✅ JWT Token Tampering Protection
