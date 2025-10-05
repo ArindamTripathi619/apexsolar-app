@@ -112,15 +112,47 @@ jobs:
     - name: Make test scripts executable
       run: chmod +x ./tests/*.sh
     
-    - name: Run Shell Script Tests
-      run: ./tests/comprehensive-test-suite.sh
+    - name: Build application for testing
+      run: npm run build
       env:
-        BASE_URL: https://apexsolar-302444603160.asia-south1.run.app
         DATABASE_URL: postgresql://postgres:postgres@localhost:5432/apexsolar_test
         JWT_SECRET: test-jwt-secret-for-github-actions
         NEXTAUTH_SECRET: test-nextauth-secret-for-github-actions
         NEXTAUTH_URL: http://localhost:3000
         NODE_ENV: test
+    
+    - name: Start test server in background
+      run: |
+        npm start &
+        echo $! > server.pid
+        # Wait for server to start
+        sleep 10
+        curl --retry 5 --retry-delay 2 --retry-connrefused http://localhost:3000/api/health || echo "Server startup check failed"
+      env:
+        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/apexsolar_test
+        JWT_SECRET: test-jwt-secret-for-github-actions
+        NEXTAUTH_SECRET: test-nextauth-secret-for-github-actions
+        NEXTAUTH_URL: http://localhost:3000
+        NODE_ENV: test
+        PORT: 3000
+    
+    - name: Run Shell Script Tests
+      run: ./tests/minimal-test-suite.sh
+      env:
+        TEST_BASE_URL: http://localhost:3000
+        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/apexsolar_test
+        JWT_SECRET: test-jwt-secret-for-github-actions
+        NEXTAUTH_SECRET: test-nextauth-secret-for-github-actions
+        NEXTAUTH_URL: http://localhost:3000
+        NODE_ENV: test
+    
+    - name: Stop test server
+      run: |
+        if [ -f server.pid ]; then
+          kill $(cat server.pid) || echo "Server already stopped"
+          rm server.pid
+        fi
+      if: always()
     
     - name: Upload test coverage
       uses: codecov/codecov-action@v4

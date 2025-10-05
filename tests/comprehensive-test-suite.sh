@@ -14,7 +14,8 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # Configuration
-BASE_URL="https://apexsolar-302444603160.asia-south1.run.app"
+# Use environment variable or default to localhost for testing
+BASE_URL="${TEST_BASE_URL:-http://localhost:3000}"
 ADMIN_EMAIL="admin@apexsolar.net"
 ADMIN_PASSWORD="admin123"
 ACCOUNTANT_EMAIL="accountant@apexsolar.net"
@@ -102,13 +103,14 @@ get_auth_token() {
 # Function to create test employee
 create_test_employee() {
     local token="$1"
-    local employee_data='{
-        "name": "Test Employee",
-        "phone": "9876543210",
-        "email": "test.employee@apexsolar.com",
-        "address": "Test Address, Test City",
-        "dateOfJoining": "2024-01-01"
-    }'
+    local timestamp=$(date +%s)
+    local employee_data="{
+        \"name\": \"TEST_EMPLOYEE_${timestamp}\",
+        \"phone\": \"9876543210\",
+        \"email\": \"test.employee.${timestamp}@test.apexsolar.com\",
+        \"address\": \"TEST_ADDRESS_${timestamp}, Test City\",
+        \"dateOfJoining\": \"2024-01-01\"
+    }"
     
     local response=$(curl -s -X POST "$BASE_URL/api/employees" \
         -H "Content-Type: application/json" \
