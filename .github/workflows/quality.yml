@@ -77,12 +77,12 @@ jobs:
     - name: Run Comprehensive Test Suite
       run: ./tests/comprehensive-test-suite.sh
       env:
-        BASE_URL: https://apexsolar-302444603160.asia-south1.run.app
+        BASE_URL: ${{ secrets.STAGING_URL || 'https://staging.example.com' }}
     
     - name: Generate Test Summary
       run: ./tests/test-summary.sh
       env:
-        BASE_URL: https://apexsolar-302444603160.asia-south1.run.app
+        BASE_URL: ${{ secrets.STAGING_URL || 'https://staging.example.com' }}
 
   # Performance Benchmarks
   performance-benchmarks:
@@ -108,7 +108,7 @@ jobs:
     - name: Run Performance Benchmarks
       run: ./tests/performance-test-suite.sh
       env:
-        BASE_URL: https://apexsolar-302444603160.asia-south1.run.app
+        BASE_URL: ${{ secrets.STAGING_URL || 'https://staging.example.com' }}
     
     - name: Upload performance reports
       uses: actions/upload-artifact@v4

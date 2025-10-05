@@ -206,8 +206,9 @@ apexsolar-app/
 ├── prisma/
 │   ├── schema.prisma   # Database schema
 │   └── seed.ts         # Database seeding script
+├── tests/              # Test scripts and automation
+├── production-cleanup.sh # Database cleanup tool
 ├── uploads/            # File upload directory
-├── scripts/            # Deployment scripts
 └── public/             # Static assets
 ```
 

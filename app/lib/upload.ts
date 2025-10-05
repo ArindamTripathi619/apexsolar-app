@@ -143,3 +143,9 @@ export async function deleteFile(fileName: string): Promise<{ success: boolean; 
     }
   }
 }
+
+export function extractFileNameFromUrl(fileUrl: string): string {
+  // Remove leading slashes and uploads prefix
+  // Handles both "/uploads/path/file.ext" and "uploads/path/file.ext"
+  return fileUrl.replace(/^\/+uploads\/+/, '').replace(/^\/+/, '')
+}

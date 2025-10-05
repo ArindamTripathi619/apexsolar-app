@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/app/lib/prisma'
 import { adminOnly, AuthenticatedRequest } from '@/app/lib/middleware'
 import { z } from 'zod'
+import { deleteFile, extractFileNameFromUrl } from '@/app/lib/upload'
 
 const updateEmployeeSchema = z.object({
   name: z.string().min(1).optional(),
@@ -104,7 +105,7 @@ async function deleteEmployee(request: AuthenticatedRequest, context: { params: 
   try {
     const { id } = context.params
 
-    // Check if employee exists
+    // Check if employee exists and get their documents
     const existingEmployee = await prisma.employee.findUnique({
       where: { id },
       include: {
@@ -121,10 +122,46 @@ async function deleteEmployee(request: AuthenticatedRequest, context: { params: 
       )
     }
 
-    // Delete employee (cascade will handle related records)
-    await prisma.employee.delete({
-      where: { id }
+    // Delete employee and related data in a transaction
+    await prisma.$transaction(async (tx) => {
+      // Delete the employee (cascade will handle related database records)
+      await tx.employee.delete({
+        where: { id }
+      })
     })
+
+    // Delete associated files after successful database deletion
+    const fileDeletionPromises = []
+
+    // Delete profile photo if exists
+    if (existingEmployee.profilePhotoUrl) {
+      const fileName = extractFileNameFromUrl(existingEmployee.profilePhotoUrl)
+      fileDeletionPromises.push(
+        deleteFile(fileName).catch(error => 
+          console.error(`Failed to delete profile photo ${fileName}:`, error)
+        )
+      )
+    }
+
+    // Delete all document files
+    for (const document of existingEmployee.documents) {
+      const fileName = extractFileNameFromUrl(document.fileUrl)
+      fileDeletionPromises.push(
+        deleteFile(fileName).catch(error => 
+          console.error(`Failed to delete document ${fileName}:`, error)
+        )
+      )
+    }
+
+    // Execute all file deletions (don't block the response on these)
+    if (fileDeletionPromises.length > 0) {
+      console.log(`Initiating cleanup of ${fileDeletionPromises.length} files for employee ${existingEmployee.name}`)
+      Promise.all(fileDeletionPromises).then(() => {
+        console.log(`Successfully cleaned up ${fileDeletionPromises.length} files for employee ${existingEmployee.name}`)
+      }).catch(error => {
+        console.error(`Some files failed to delete for employee ${existingEmployee.name}:`, error)
+      })
+    }
 
     return NextResponse.json({
       success: true,

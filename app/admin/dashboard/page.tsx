@@ -29,6 +29,7 @@ export default function AdminDashboard() {
   const router = useRouter()
   const [user, setUser] = useState<User | null>(null)
   const [employees, setEmployees] = useState<Employee[]>([])
+  const [selectedEmployees, setSelectedEmployees] = useState<string[]>([])
   const [loading, setLoading] = useState(true)
   const [showAddEmployee, setShowAddEmployee] = useState(false)
   const [showDocumentUpload, setShowDocumentUpload] = useState(false)
@@ -150,6 +151,59 @@ export default function AdminDashboard() {
     }
   }
 
+  // Bulk selection functions
+  const handleSelectEmployee = (employeeId: string) => {
+    setSelectedEmployees(prev => 
+      prev.includes(employeeId) 
+        ? prev.filter(id => id !== employeeId)
+        : [...prev, employeeId]
+    )
+  }
+
+  const handleSelectAllEmployees = () => {
+    if (selectedEmployees.length === employees.length) {
+      setSelectedEmployees([])
+    } else {
+      setSelectedEmployees(employees.map(emp => emp.id))
+    }
+  }
+
+  const handleBulkDeleteEmployees = async () => {
+    if (selectedEmployees.length === 0) {
+      alert('Please select employees to delete')
+      return
+    }
+
+    if (!confirm(`Are you sure you want to delete ${selectedEmployees.length} selected employees? This action cannot be undone.`)) {
+      return
+    }
+
+    try {
+      const response = await fetch('/api/employees/bulk-delete', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({ employeeIds: selectedEmployees })
+      })
+
+      if (response.ok) {
+        const result = await response.json()
+        fetchEmployees() // Refresh the list
+        fetchStats() // Refresh stats
+        setSelectedEmployees([]) // Clear selection
+        alert(`Successfully deleted ${result.deletedCount} employees`)
+      } else {
+        const error = await response.json()
+        alert(`Failed to delete employees: ${error.error}`)
+      }
+    } catch (err) {
+      console.error('Bulk delete failed:', err)
+      alert('Failed to delete employees')
+    }
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -259,13 +313,36 @@ export default function AdminDashboard() {
         <div className="bg-white shadow rounded-lg">
           <div className="px-4 py-5 sm:p-6">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3 sm:gap-0">
-              <h3 className="text-lg leading-6 font-medium text-gray-900">Employee Management</h3>
-              <button
-                onClick={() => setShowAddEmployee(true)}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium w-full sm:w-auto"
-              >
-                Add Employee
-              </button>
+              <div>
+                <h3 className="text-lg leading-6 font-medium text-gray-900">Employee Management</h3>
+                {selectedEmployees.length > 0 && (
+                  <p className="text-sm text-gray-500 mt-1">{selectedEmployees.length} employees selected</p>
+                )}
+              </div>
+              <div className="flex flex-col sm:flex-row gap-2">
+                {selectedEmployees.length > 0 && (
+                  <>
+                    <button
+                      onClick={handleBulkDeleteEmployees}
+                      className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+                    >
+                      🗑️ Delete Selected ({selectedEmployees.length})
+                    </button>
+                    <button
+                      onClick={() => setSelectedEmployees([])}
+                      className="bg-gray-500 hover:bg-gray-600 text-white px-3 py-2 rounded-md text-sm font-medium"
+                    >
+                      Clear
+                    </button>
+                  </>
+                )}
+                <button
+                  onClick={() => setShowAddEmployee(true)}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium w-full sm:w-auto"
+                >
+                  Add Employee
+                </button>
+              </div>
             </div>
 
             {employees.length === 0 ? (
@@ -279,6 +356,14 @@ export default function AdminDashboard() {
                   <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50">
                       <tr>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          <input
+                            type="checkbox"
+                            checked={selectedEmployees.length === employees.length && employees.length > 0}
+                            onChange={handleSelectAllEmployees}
+                            className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                          />
+                        </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
@@ -288,7 +373,15 @@ export default function AdminDashboard() {
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
                     {employees.map((employee) => (
-                      <tr key={employee.id}>
+                      <tr key={employee.id} className={selectedEmployees.includes(employee.id) ? 'bg-blue-50' : ''}>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <input
+                            type="checkbox"
+                            checked={selectedEmployees.includes(employee.id)}
+                            onChange={() => handleSelectEmployee(employee.id)}
+                            className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                          />
+                        </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                           {employee.name}
                         </td>

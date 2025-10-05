@@ -25,9 +25,11 @@ export default function InvoiceManagement() {
   const router = useRouter()
   const [_user, setUser] = useState<User | null>(null)
   const [invoices, setInvoices] = useState<Invoice[]>([])
+  const [selectedInvoices, setSelectedInvoices] = useState<string[]>([])
   const [loading, setLoading] = useState(true)
   const [showInvoiceModal, setShowInvoiceModal] = useState(false)
   const [deleting, setDeleting] = useState<string | null>(null) // Track which invoice is being deleted
+  const [bulkDeleting, setBulkDeleting] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [invoiceToDelete, setInvoiceToDelete] = useState<Invoice | null>(null)
   const [filters, setFilters] = useState({
@@ -154,6 +156,63 @@ export default function InvoiceManagement() {
       alert('An unexpected error occurred while deleting the invoice.')
     } finally {
       setDeleting(null)
+    }
+  }
+
+  const handleSelectInvoice = (invoiceId: string) => {
+    setSelectedInvoices(prev => 
+      prev.includes(invoiceId) 
+        ? prev.filter(id => id !== invoiceId)
+        : [...prev, invoiceId]
+    )
+  }
+
+  const handleSelectAllInvoices = () => {
+    if (selectedInvoices.length === invoices.length) {
+      setSelectedInvoices([])
+    } else {
+      setSelectedInvoices(invoices.map(invoice => invoice.id))
+    }
+  }
+
+  const handleBulkDeleteInvoices = async () => {
+    if (selectedInvoices.length === 0) {
+      alert('Please select invoices to delete')
+      return
+    }
+
+    const selectedCount = selectedInvoices.length
+    const confirmed = confirm(`Are you sure you want to delete ${selectedCount} selected invoice${selectedCount > 1 ? 's' : ''}?`)
+    
+    if (!confirmed) return
+
+    setBulkDeleting(true)
+
+    try {
+      const response = await fetch('/api/invoices/bulk-delete', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({ invoiceIds: selectedInvoices })
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        // Remove deleted invoices from state
+        setInvoices(prev => prev.filter(invoice => !selectedInvoices.includes(invoice.id)))
+        setSelectedInvoices([])
+        alert(`Successfully deleted ${data.deletedCount} invoice${data.deletedCount > 1 ? 's' : ''}`)
+      } else {
+        alert(`Failed to delete invoices: ${data.error}`)
+      }
+    } catch (error) {
+      console.error('Bulk delete error:', error)
+      alert('An unexpected error occurred while deleting invoices.')
+    } finally {
+      setBulkDeleting(false)
     }
   }
 
@@ -307,6 +366,24 @@ export default function InvoiceManagement() {
           <div className="px-4 py-5 sm:p-6">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg leading-6 font-medium text-gray-900">Invoices</h3>
+              {selectedInvoices.length > 0 && (
+                <div className="flex items-center space-x-2">
+                  <span className="text-sm text-gray-600">{selectedInvoices.length} selected</span>
+                  <button
+                    onClick={handleBulkDeleteInvoices}
+                    disabled={bulkDeleting}
+                    className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm font-medium disabled:opacity-50"
+                  >
+                    {bulkDeleting ? 'Deleting...' : 'Delete Selected'}
+                  </button>
+                  <button
+                    onClick={() => setSelectedInvoices([])}
+                    className="bg-gray-500 hover:bg-gray-600 text-white px-3 py-1 rounded text-sm font-medium"
+                  >
+                    Clear Selection
+                  </button>
+                </div>
+              )}
             </div>
 
             {invoices.length === 0 ? (
@@ -320,6 +397,14 @@ export default function InvoiceManagement() {
                   <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50">
                       <tr>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          <input
+                            type="checkbox"
+                            checked={selectedInvoices.length === invoices.length && invoices.length > 0}
+                            onChange={handleSelectAllInvoices}
+                            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                          />
+                        </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Client Name
                         </th>
@@ -342,7 +427,18 @@ export default function InvoiceManagement() {
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
                       {invoices.map((invoice) => (
-                        <tr key={invoice.id}>
+                        <tr 
+                          key={invoice.id}
+                          className={selectedInvoices.includes(invoice.id) ? 'bg-blue-50' : ''}
+                        >
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <input
+                              type="checkbox"
+                              checked={selectedInvoices.includes(invoice.id)}
+                              onChange={() => handleSelectInvoice(invoice.id)}
+                              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                            />
+                          </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                             {invoice.clientName}
                           </td>
@@ -393,22 +489,33 @@ export default function InvoiceManagement() {
                 {/* Mobile Card View */}
                 <div className="md:hidden space-y-4">
                   {invoices.map((invoice) => (
-                    <div key={invoice.id} className="bg-gray-50 rounded-lg p-4 border">
+                    <div 
+                      key={invoice.id} 
+                      className={`rounded-lg p-4 border ${selectedInvoices.includes(invoice.id) ? 'bg-blue-50 border-blue-200' : 'bg-gray-50'}`}
+                    >
                       <div className="flex justify-between items-start mb-3">
-                        <div className="flex-1">
-                          <h4 className="text-lg font-medium text-gray-900 mb-1">{invoice.clientName}</h4>
-                          <p className="text-sm text-gray-600 mb-1">
-                            <span className="font-medium">Amount:</span> ₹{invoice.amount.toFixed(2)}
-                          </p>
-                          <p className="text-sm text-gray-600 mb-1">
-                            <span className="font-medium">Invoice Date:</span> {new Date(invoice.date).toLocaleDateString()}
-                          </p>
-                          <p className="text-sm text-gray-600 mb-1">
-                            <span className="font-medium">File:</span> {invoice.fileName.length > 25 ? invoice.fileName.substring(0, 25) + '...' : invoice.fileName}
-                          </p>
-                          <p className="text-xs text-gray-500">
-                            Uploaded: {new Date(invoice.createdAt).toLocaleDateString()}
-                          </p>
+                        <div className="flex items-start space-x-3">
+                          <input
+                            type="checkbox"
+                            checked={selectedInvoices.includes(invoice.id)}
+                            onChange={() => handleSelectInvoice(invoice.id)}
+                            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded mt-1"
+                          />
+                          <div className="flex-1">
+                            <h4 className="text-lg font-medium text-gray-900 mb-1">{invoice.clientName}</h4>
+                            <p className="text-sm text-gray-600 mb-1">
+                              <span className="font-medium">Amount:</span> ₹{invoice.amount.toFixed(2)}
+                            </p>
+                            <p className="text-sm text-gray-600 mb-1">
+                              <span className="font-medium">Invoice Date:</span> {new Date(invoice.date).toLocaleDateString()}
+                            </p>
+                            <p className="text-sm text-gray-600 mb-1">
+                              <span className="font-medium">File:</span> {invoice.fileName.length > 25 ? invoice.fileName.substring(0, 25) + '...' : invoice.fileName}
+                            </p>
+                            <p className="text-xs text-gray-500">
+                              Uploaded: {new Date(invoice.createdAt).toLocaleDateString()}
+                            </p>
+                          </div>
                         </div>
                       </div>
                       
