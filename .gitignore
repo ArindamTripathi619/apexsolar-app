@@ -17,6 +17,8 @@ db_password.txt
 .env
 .env.*
 !.env.example
+env.yaml
+*.env.yaml
 
 # dependencies
 /node_modules
