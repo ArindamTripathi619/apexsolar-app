@@ -32,7 +32,7 @@ jobs:
       run: npm ci --legacy-peer-deps
     
     - name: Run ESLint
-      run: npm run lint
+      run: npm run lint -- --max-warnings 50
     
     - name: TypeScript check
       run: npx tsc --noEmit
@@ -106,6 +106,9 @@ jobs:
       run: npm run db:seed
       env:
         DATABASE_URL: postgresql://postgres:postgres@localhost:5432/apexsolar_test
+    
+    - name: Make test scripts executable
+      run: chmod +x ./tests/*.sh
     
     - name: Run Shell Script Tests
       run: ./tests/comprehensive-test-suite.sh

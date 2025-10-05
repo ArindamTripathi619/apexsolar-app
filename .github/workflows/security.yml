@@ -67,7 +67,7 @@ jobs:
     - name: Run Security Linting
       run: |
         npx eslint . --ext .js,.jsx,.ts,.tsx --config eslint.config.mjs --format json --output-file security-lint-report.json || true
-        npx eslint . --ext .js,.jsx,.ts,.tsx --config eslint.config.mjs
+        npx eslint . --ext .js,.jsx,.ts,.tsx --config eslint.config.mjs --max-warnings 50
     
     - name: Upload security lint report
       uses: actions/upload-artifact@v4
@@ -153,8 +153,8 @@ jobs:
     - name: Install dependencies
       run: npm ci --legacy-peer-deps
     
-    - name: Make security test executable
-      run: chmod +x ./tests/security-test-suite.sh
+    - name: Make test scripts executable
+      run: chmod +x ./tests/*.sh
     
     - name: Run API Security Tests
       run: ./tests/security-test-suite.sh

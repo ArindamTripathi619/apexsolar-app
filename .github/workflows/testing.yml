@@ -32,7 +32,7 @@ jobs:
       run: npm ci --legacy-peer-deps
     
     - name: Make test scripts executable
-      run: chmod +x ./tests/test-auth-fixes.sh
+      run: chmod +x ./tests/*.sh
     
     - name: Run Authentication Tests
       run: ./tests/test-auth-fixes.sh
@@ -58,7 +58,7 @@ jobs:
       run: npm ci --legacy-peer-deps
     
     - name: Make test scripts executable
-      run: chmod +x ./tests/comprehensive-test-suite.sh
+      run: chmod +x ./tests/*.sh
     
     - name: Run Comprehensive Tests
       run: ./tests/comprehensive-test-suite.sh
@@ -93,7 +93,7 @@ jobs:
       run: npm ci --legacy-peer-deps
     
     - name: Make test scripts executable
-      run: chmod +x ./tests/security-test-suite.sh
+      run: chmod +x ./tests/*.sh
     
     - name: Run Security Tests
       run: ./tests/security-test-suite.sh
@@ -128,7 +128,7 @@ jobs:
       run: npm ci --legacy-peer-deps
     
     - name: Make test scripts executable
-      run: chmod +x ./tests/performance-test-suite.sh
+      run: chmod +x ./tests/*.sh
     
     - name: Run Performance Tests
       run: ./tests/performance-test-suite.sh
@@ -165,7 +165,7 @@ jobs:
       run: npm ci --legacy-peer-deps
     
     - name: Make test scripts executable
-      run: chmod +x ./tests/test-summary.sh
+      run: chmod +x ./tests/*.sh
     
     - name: Generate Test Summary
       run: ./tests/test-summary.sh

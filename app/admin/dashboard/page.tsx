@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import AddEmployeeModal from '@/app/components/AddEmployeeModal'
 import DocumentUploadModal from '@/app/components/DocumentUploadModal'
@@ -30,23 +30,21 @@ export default function AdminDashboard() {
   const [user, setUser] = useState<User | null>(null)
   const [employees, setEmployees] = useState<Employee[]>([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
   const [showAddEmployee, setShowAddEmployee] = useState(false)
   const [showDocumentUpload, setShowDocumentUpload] = useState(false)
   const [showPaymentModal, setShowPaymentModal] = useState(false)
   const [showAttendanceModal, setShowAttendanceModal] = useState(false)
   const [showInvoiceModal, setShowInvoiceModal] = useState(false)
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null)
-  const [stats, setStats] = useState<any>(null)
+  const [stats, setStats] = useState<{
+    totalEmployees: number;
+    totalChallans: number;
+    totalInvoices: number;
+    totalPayments: number;
+    totalDocuments: number;
+  } | null>(null)
 
-  // Check authentication on component mount
-  useEffect(() => {
-    checkAuth()
-    fetchEmployees()
-    fetchStats()
-  }, [])
-
-  const checkAuth = async () => {
+  const checkAuth = useCallback(async () => {
     try {
       const response = await fetch('/api/auth/me', {
         credentials: 'include'
@@ -63,14 +61,14 @@ export default function AdminDashboard() {
       } else {
         router.push('/admin/login')
       }
-    } catch (err) {
+    } catch {
       router.push('/admin/login')
     } finally {
       setLoading(false)
     }
-  }
+  }, [router])
 
-  const fetchStats = async () => {
+  const fetchStats = useCallback(async () => {
     try {
       const response = await fetch('/api/dashboard/stats', {
         credentials: 'include'
@@ -85,9 +83,9 @@ export default function AdminDashboard() {
     } catch (err) {
       console.error('Failed to fetch stats:', err)
     }
-  }
+  }, [])
 
-  const fetchEmployees = async () => {
+  const fetchEmployees = useCallback(async () => {
     try {
       const response = await fetch('/api/employees', {
         credentials: 'include'
@@ -102,7 +100,7 @@ export default function AdminDashboard() {
     } catch (err) {
       console.error('Failed to fetch employees:', err)
     }
-  }
+  }, [])
 
   const handleLogout = async () => {
     try {
@@ -115,6 +113,13 @@ export default function AdminDashboard() {
       console.error('Logout failed:', err)
     }
   }
+
+  // Check authentication on component mount
+  useEffect(() => {
+    checkAuth()
+    fetchEmployees()
+    fetchStats()
+  }, [checkAuth, fetchEmployees, fetchStats])
 
   const handleAddEmployeeSuccess = () => {
     fetchEmployees()
