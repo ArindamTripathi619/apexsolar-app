@@ -28,7 +28,7 @@ jobs:
         cache: 'npm'
     
     - name: Install dependencies
-      run: npm ci
+      run: npm ci --legacy-peer-deps
     
     - name: Run ESLint
       run: |
@@ -46,7 +46,7 @@ jobs:
         echo "TypeScript type checking completed"
     
     - name: Upload code quality reports
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: code-quality-reports
@@ -84,7 +84,7 @@ jobs:
         cache: 'npm'
     
     - name: Install dependencies
-      run: npm ci
+      run: npm ci --legacy-peer-deps
     
     - name: Setup test environment
       run: |
@@ -98,7 +98,7 @@ jobs:
         npm run test -- --coverage --coverageReporters=json --coverageReporters=lcov --coverageReporters=html
     
     - name: Upload coverage reports
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: coverage-reports
@@ -132,7 +132,7 @@ jobs:
         cache: 'npm'
     
     - name: Install dependencies
-      run: npm ci
+      run: npm ci --legacy-peer-deps
     
     - name: Make performance test executable
       run: chmod +x ./performance-test-suite.sh
@@ -143,7 +143,7 @@ jobs:
         BASE_URL: https://apexsolar-302444603160.asia-south1.run.app
     
     - name: Upload performance reports
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: performance-benchmarks
@@ -151,55 +151,89 @@ jobs:
           performance-report.json
           load-test-results.html
 
-  # Bundle Size Analysis
-  bundle-analysis:
-    name: Bundle Size Analysis
+  # Container Performance Analysis
+  container-performance:
+    name: Container Performance Analysis
     runs-on: ubuntu-latest
     
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
     
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ env.NODE_VERSION }}
-        cache: 'npm'
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
     
-    - name: Install dependencies
-      run: npm ci
-    
-    - name: Build application
+    - name: Build Docker image
       run: |
-        npm run build
+        docker build -t apexsolar-perf-test:latest .
     
-    - name: Analyze bundle size
+    - name: Analyze Docker image size
       run: |
-        echo "# 📦 Bundle Size Analysis" > bundle-analysis.md
-        echo "" >> bundle-analysis.md
-        echo "## Build Output" >> bundle-analysis.md
-        echo "\`\`\`" >> bundle-analysis.md
-        ls -la .next/static/chunks/ | head -20 >> bundle-analysis.md || echo "No chunks directory found" >> bundle-analysis.md
-        echo "\`\`\`" >> bundle-analysis.md
-        echo "" >> bundle-analysis.md
+        echo "# 📦 Container Performance Analysis" > container-performance.md
+        echo "" >> container-performance.md
         
-        if [ -d ".next" ]; then
-          echo "✅ Build completed successfully" >> bundle-analysis.md
-          du -sh .next >> bundle-analysis.md
+        # Image size analysis
+        IMAGE_SIZE=$(docker images apexsolar-perf-test:latest --format "{{.Size}}")
+        echo "## Docker Image Analysis" >> container-performance.md
+        echo "- Image size: $IMAGE_SIZE" >> container-performance.md
+        
+        # Layer analysis
+        echo "- Layers:" >> container-performance.md
+        docker history apexsolar-perf-test:latest --format "{{.Size}}\t{{.CreatedBy}}" | head -10 >> container-performance.md
+        
+        echo "" >> container-performance.md
+        echo "## Performance Recommendations" >> container-performance.md
+        
+        # Size recommendations
+        IMAGE_SIZE_MB=$(docker inspect apexsolar-perf-test:latest | jq '.[0].Size' | awk '{print int($1/1024/1024)}')
+        if [ "$IMAGE_SIZE_MB" -gt 1000 ]; then
+          echo "⚠️  Image size ($IMAGE_SIZE_MB MB) is large - consider optimization" >> container-performance.md
         else
-          echo "❌ Build failed or .next directory not found" >> bundle-analysis.md
+          echo "✅ Image size ($IMAGE_SIZE_MB MB) is reasonable" >> container-performance.md
         fi
         
-        cat bundle-analysis.md
+        cat container-performance.md
     
-    - name: Upload bundle analysis
-      uses: actions/upload-artifact@v3
+    - name: Test container startup time
+      run: |
+        echo "" >> container-performance.md
+        echo "## Container Startup Performance" >> container-performance.md
+        
+        # Test startup time
+        START_TIME=$(date +%s%N)
+        CONTAINER_ID=$(docker run -d -p 3001:3000 apexsolar-perf-test:latest)
+        
+        # Wait for container to be ready
+        timeout 60s bash -c 'until curl -f http://localhost:3001/api/health > /dev/null 2>&1; do sleep 1; done' || true
+        
+        END_TIME=$(date +%s%N)
+        STARTUP_TIME=$(( (END_TIME - START_TIME) / 1000000 ))
+        
+        echo "- Container startup time: ${STARTUP_TIME}ms" >> container-performance.md
+        
+        if [ "$STARTUP_TIME" -lt 10000 ]; then
+          echo "✅ Fast startup time (< 10s)" >> container-performance.md
+        elif [ "$STARTUP_TIME" -lt 30000 ]; then
+          echo "⚠️  Moderate startup time (10-30s)" >> container-performance.md
+        else
+          echo "❌ Slow startup time (> 30s) - optimization needed" >> container-performance.md
+        fi
+        
+        # Memory usage test
+        MEMORY_USAGE=$(docker stats $CONTAINER_ID --no-stream --format "{{.MemUsage}}" | cut -d'/' -f1)
+        echo "- Memory usage: $MEMORY_USAGE" >> container-performance.md
+        
+        docker stop $CONTAINER_ID
+        docker rm $CONTAINER_ID
+        
+        cat container-performance.md
+    
+    - name: Upload container performance report
+      uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: bundle-analysis
-        path: |
-          bundle-analysis.md
-          .next/
+        name: container-performance
+        path: container-performance.md
 
   # Documentation Quality
   docs-quality:
@@ -264,7 +298,7 @@ jobs:
         cat docs-quality.md
     
     - name: Upload documentation report
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: docs-quality-report
@@ -286,7 +320,7 @@ jobs:
         cache: 'npm'
     
     - name: Install dependencies
-      run: npm ci
+      run: npm ci --legacy-peer-deps
     
     - name: Install complexity analysis tools
       run: npm install -g jscpd plato
@@ -323,7 +357,7 @@ jobs:
         cat complexity-report.md
     
     - name: Upload complexity analysis
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: complexity-analysis
@@ -335,7 +369,7 @@ jobs:
   quality-summary:
     name: Generate Quality Summary
     runs-on: ubuntu-latest
-    needs: [code-quality, test-coverage, performance-benchmarks, bundle-analysis, docs-quality, complexity-analysis]
+    needs: [code-quality, test-coverage, performance-benchmarks, container-performance, docs-quality, complexity-analysis]
     if: always()
     
     steps:
@@ -343,7 +377,7 @@ jobs:
       uses: actions/checkout@v4
     
     - name: Download all quality reports
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         path: quality-reports/
     
@@ -380,10 +414,10 @@ jobs:
           echo "" >> quality-summary.md
         fi
         
-        # Bundle analysis summary
-        if [ -f "quality-reports/bundle-analysis/bundle-analysis.md" ]; then
-          echo "### 📦 Bundle Analysis" >> quality-summary.md
-          echo "- Bundle size analysis completed: ✅" >> quality-summary.md
+        # Container performance summary
+        if [ -f "quality-reports/container-performance/container-performance.md" ]; then
+          echo "### � Container Performance" >> quality-summary.md
+          echo "- Container analysis completed: ✅" >> quality-summary.md
           echo "" >> quality-summary.md
         fi
         
@@ -420,7 +454,7 @@ jobs:
         cat quality-summary.md
     
     - name: Upload quality summary
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: quality-summary

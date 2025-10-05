@@ -29,7 +29,7 @@ jobs:
         cache: 'npm'
     
     - name: Install dependencies
-      run: npm ci
+      run: npm ci --legacy-peer-deps
     
     - name: Make test scripts executable
       run: chmod +x ./test-auth-fixes.sh
@@ -55,7 +55,7 @@ jobs:
         cache: 'npm'
     
     - name: Install dependencies
-      run: npm ci
+      run: npm ci --legacy-peer-deps
     
     - name: Make test scripts executable
       run: chmod +x ./comprehensive-test-suite.sh
@@ -66,7 +66,7 @@ jobs:
         BASE_URL: https://apexsolar-302444603160.asia-south1.run.app
     
     - name: Upload test results
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: comprehensive-test-results
@@ -90,7 +90,7 @@ jobs:
         cache: 'npm'
     
     - name: Install dependencies
-      run: npm ci
+      run: npm ci --legacy-peer-deps
     
     - name: Make test scripts executable
       run: chmod +x ./security-test-suite.sh
@@ -101,7 +101,7 @@ jobs:
         BASE_URL: https://apexsolar-302444603160.asia-south1.run.app
     
     - name: Upload security report
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: security-test-results
@@ -125,7 +125,7 @@ jobs:
         cache: 'npm'
     
     - name: Install dependencies
-      run: npm ci
+      run: npm ci --legacy-peer-deps
     
     - name: Make test scripts executable
       run: chmod +x ./performance-test-suite.sh
@@ -136,7 +136,7 @@ jobs:
         BASE_URL: https://apexsolar-302444603160.asia-south1.run.app
     
     - name: Upload performance report
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: performance-test-results
@@ -162,7 +162,7 @@ jobs:
         cache: 'npm'
     
     - name: Install dependencies
-      run: npm ci
+      run: npm ci --legacy-peer-deps
     
     - name: Make test scripts executable
       run: chmod +x ./test-summary.sh
@@ -173,7 +173,7 @@ jobs:
         BASE_URL: https://apexsolar-302444603160.asia-south1.run.app
     
     - name: Upload test summary
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: test-summary-report

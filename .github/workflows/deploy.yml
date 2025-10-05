@@ -124,9 +124,9 @@ jobs:
         flags: unittests
         name: codecov-umbrella
 
-  # Build Application
-  build:
-    name: Build Application
+  # Build and Test Docker Image
+  build-docker:
+    name: Build Docker Image
     runs-on: ubuntu-latest
     needs: [lint, test]
     
@@ -134,42 +134,65 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
     
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+    
+    - name: Authenticate to Google Cloud
+      uses: google-github-actions/auth@v2
       with:
-        node-version: ${{ env.NODE_VERSION }}
-        cache: 'npm'
+        credentials_json: ${{ secrets.GOOGLE_CLOUD_SERVICE_ACCOUNT_KEY }}
     
-    - name: Install dependencies
-      run: npm ci --legacy-peer-deps
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v2
+      with:
+        project_id: ${{ env.GOOGLE_CLOUD_PROJECT }}
     
-    - name: Generate Prisma client
-      run: npm run db:generate
+    - name: Configure Docker for GCR
+      run: gcloud auth configure-docker
     
-    - name: Build application
-      run: npm run build
-      env:
-        DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        JWT_SECRET: ${{ secrets.JWT_SECRET }}
-        NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
-        NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
-        NODE_ENV: production
+    - name: Build Docker image
+      run: |
+        docker build -t gcr.io/${{ env.GOOGLE_CLOUD_PROJECT }}/${{ env.SERVICE_NAME }}:${{ github.sha }} .
+        docker build -t gcr.io/${{ env.GOOGLE_CLOUD_PROJECT }}/${{ env.SERVICE_NAME }}:latest .
     
-    - name: Upload build artifacts
+    - name: Test Docker image
+      run: |
+        # Test that the image can start
+        docker run --rm -d --name test-container \
+          -p 3000:3000 \
+          -e NODE_ENV=production \
+          gcr.io/${{ env.GOOGLE_CLOUD_PROJECT }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
+        
+        sleep 10
+        
+        # Basic health check
+        if curl -f http://localhost:3000/api/health; then
+          echo "✅ Docker image health check passed"
+        else
+          echo "❌ Docker image health check failed"
+          docker logs test-container
+          exit 1
+        fi
+        
+        docker stop test-container
+    
+    - name: Push Docker image to GCR
+      run: |
+        docker push gcr.io/${{ env.GOOGLE_CLOUD_PROJECT }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
+        docker push gcr.io/${{ env.GOOGLE_CLOUD_PROJECT }}/${{ env.SERVICE_NAME }}:latest
+    
+    - name: Upload Docker image metadata
       uses: actions/upload-artifact@v4
       with:
-        name: build-files
+        name: docker-metadata
         path: |
-          .next/
-          node_modules/
-          package.json
-          package-lock.json
+          Dockerfile
 
   # Deploy to Google Cloud Run (Production)
   deploy-production:
     name: Deploy to Production (Google Cloud Run)
     runs-on: ubuntu-latest
-    needs: [lint, security, test, build]
+    needs: [lint, security, test, build-docker]
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     
     steps:
@@ -186,14 +209,12 @@ jobs:
       with:
         project_id: ${{ env.GOOGLE_CLOUD_PROJECT }}
     
-    - name: Configure Docker for GCR
-      run: gcloud auth configure-docker
-    
-    - name: Deploy to Cloud Run
+    - name: Deploy to Cloud Run from Container Registry
       run: |
         gcloud run deploy ${{ env.SERVICE_NAME }} \
-          --source . \
+          --image=gcr.io/${{ env.GOOGLE_CLOUD_PROJECT }}/${{ env.SERVICE_NAME }}:${{ github.sha }} \
           --region=${{ env.GOOGLE_CLOUD_REGION }} \
+          --platform=managed \
           --allow-unauthenticated \
           --set-env-vars="DATABASE_URL=${{ secrets.DATABASE_URL }}" \
           --set-env-vars="JWT_SECRET=${{ secrets.JWT_SECRET }}" \
@@ -202,9 +223,12 @@ jobs:
           --set-env-vars="GOOGLE_CLOUD_PROJECT_ID=${{ env.GOOGLE_CLOUD_PROJECT }}" \
           --set-env-vars="GCS_BUCKET_NAME=${{ secrets.GCS_BUCKET_NAME }}" \
           --cpu=1 \
-          --memory=512Mi \
+          --memory=1Gi \
           --max-instances=10 \
-          --timeout=300s
+          --min-instances=1 \
+          --timeout=300s \
+          --port=3000 \
+          --concurrency=80
     
     - name: Get service URL
       run: |
@@ -213,6 +237,12 @@ jobs:
           --format='value(status.url)')
         echo "Service deployed at: $SERVICE_URL"
         echo "SERVICE_URL=$SERVICE_URL" >> $GITHUB_ENV
+    
+    - name: Update Cloud Run traffic
+      run: |
+        gcloud run services update-traffic ${{ env.SERVICE_NAME }} \
+          --region=${{ env.GOOGLE_CLOUD_REGION }} \
+          --to-latest
 
   # Post-deployment Health Check
   health-check:
@@ -249,7 +279,7 @@ jobs:
   deploy-staging:
     name: Deploy to Staging
     runs-on: ubuntu-latest
-    needs: [lint, security, test, build]
+    needs: [lint, security, test, build-docker]
     if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
     
     steps:
@@ -269,8 +299,9 @@ jobs:
     - name: Deploy to Cloud Run (Staging)
       run: |
         gcloud run deploy ${{ env.SERVICE_NAME }}-staging \
-          --source . \
+          --image=gcr.io/${{ env.GOOGLE_CLOUD_PROJECT }}/${{ env.SERVICE_NAME }}:${{ github.sha }} \
           --region=${{ env.GOOGLE_CLOUD_REGION }} \
+          --platform=managed \
           --allow-unauthenticated \
           --set-env-vars="DATABASE_URL=${{ secrets.STAGING_DATABASE_URL }}" \
           --set-env-vars="JWT_SECRET=${{ secrets.JWT_SECRET }}" \
@@ -281,4 +312,7 @@ jobs:
           --cpu=1 \
           --memory=512Mi \
           --max-instances=5 \
-          --timeout=300s
+          --min-instances=0 \
+          --timeout=300s \
+          --port=3000 \
+          --concurrency=80
