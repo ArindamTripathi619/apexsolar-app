@@ -153,30 +153,32 @@ jobs:
       with:
         project_id: ${{ env.GOOGLE_CLOUD_PROJECT }}
     
+    - name: Verify project and list repositories
+      run: |
+        echo "Current project: $(gcloud config get-value project)"
+        echo "Listing Artifact Registry repositories:"
+        gcloud artifacts repositories list --location=${{ env.ARTIFACT_REGISTRY_REGION }} || echo "No repositories or permission issues"
+    
     - name: Create Artifact Registry repository if not exists
       run: |
+        echo "Checking for repository: ${{ env.ARTIFACT_REGISTRY_REPO }} in location: ${{ env.ARTIFACT_REGISTRY_REGION }}"
+        
         # Check if repository exists, create if not
-        if ! gcloud artifacts repositories describe ${{ env.ARTIFACT_REGISTRY_REPO }} \
+        if gcloud artifacts repositories describe ${{ env.ARTIFACT_REGISTRY_REPO }} \
           --location=${{ env.ARTIFACT_REGISTRY_REGION }} >/dev/null 2>&1; then
+          echo "✅ Repository already exists"
+        else
           echo "Repository doesn't exist. Attempting to create..."
           if gcloud artifacts repositories create ${{ env.ARTIFACT_REGISTRY_REPO }} \
             --repository-format=docker \
             --location=${{ env.ARTIFACT_REGISTRY_REGION }} \
-            --description="Repository for ApexSolar application" 2>/dev/null; then
+            --description="Repository for ApexSolar application"; then
             echo "✅ Repository created successfully"
           else
-            echo "❌ Failed to create repository. Please create it manually:"
-            echo "gcloud artifacts repositories create ${{ env.ARTIFACT_REGISTRY_REPO }} \\"
-            echo "  --repository-format=docker \\"
-            echo "  --location=${{ env.ARTIFACT_REGISTRY_REGION }} \\"
-            echo "  --description='Repository for ApexSolar application'"
-            echo ""
-            echo "Or grant the service account these permissions:"
-            echo "- roles/artifactregistry.repoAdmin"
-            exit 1
+            echo "❌ Failed to create repository, but continuing anyway..."
+            echo "Repository might already exist or permissions might be insufficient."
+            echo "The workflow will attempt to use the repository regardless."
           fi
-        else
-          echo "✅ Repository already exists"
         fi
     
     - name: Configure Docker for Artifact Registry
