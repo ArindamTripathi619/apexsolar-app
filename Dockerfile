@@ -35,8 +35,9 @@ COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-# Copy service account key
-COPY --chown=nextjs:nodejs apexsolar-storage-key.json ./
+# Create a placeholder service account key file
+# In production, real credentials are provided via environment variables
+RUN echo '{"type": "placeholder"}' > apexsolar-storage-key.json && chown nextjs:nodejs apexsolar-storage-key.json
 
 USER nextjs
 

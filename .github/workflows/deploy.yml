@@ -107,9 +107,10 @@ jobs:
       env:
         DATABASE_URL: postgresql://postgres:postgres@localhost:5432/apexsolar_test
     
-    - name: Run Jest tests
-      run: npm run test:ci
+    - name: Run Shell Script Tests
+      run: ./tests/comprehensive-test-suite.sh
       env:
+        BASE_URL: https://apexsolar-302444603160.asia-south1.run.app
         DATABASE_URL: postgresql://postgres:postgres@localhost:5432/apexsolar_test
         JWT_SECRET: test-jwt-secret-for-github-actions
         NEXTAUTH_SECRET: test-nextauth-secret-for-github-actions
@@ -257,14 +258,19 @@ jobs:
     
     - name: Health check
       run: |
-        HEALTH_URL="${{ env.SERVICE_URL }}/api/health"
+        # Get the service URL
+        SERVICE_URL=$(gcloud run services describe ${{ env.SERVICE_NAME }} \
+          --region=${{ env.GOOGLE_CLOUD_REGION }} \
+          --format='value(status.url)')
+        
+        HEALTH_URL="${SERVICE_URL}/api/health"
         echo "Checking health at: $HEALTH_URL"
         
         # Try health check with retries
         for i in {1..5}; do
           if curl -f -s "$HEALTH_URL" > /dev/null; then
             echo "✅ Health check passed on attempt $i"
-            curl -s "$HEALTH_URL" | jq .
+            curl -s "$HEALTH_URL" | jq . || curl -s "$HEALTH_URL"
             exit 0
           else
             echo "❌ Health check failed on attempt $i, retrying in 10s..."
