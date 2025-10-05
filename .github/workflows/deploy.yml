@@ -41,7 +41,8 @@ jobs:
     - name: Authenticate to Google Cloud
       uses: google-github-actions/auth@v2
       with:
-        credentials_json: ${{ secrets.GOOGLE_CLOUD_SA_KEY }}
+        credentials_json: ${{ secrets.GOOGLE_CLOUD_SERVICE_ACCOUNT_KEY }}
+      continue-on-error: false
 
     - name: Setup Google Cloud CLI
       uses: google-github-actions/setup-gcloud@v2
@@ -80,7 +81,7 @@ jobs:
           --set-env-vars="NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}" \
           --set-env-vars="NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }}" \
           --set-env-vars="GOOGLE_CLOUD_PROJECT_ID=${{ env.GOOGLE_CLOUD_PROJECT }}" \
-          --set-env-vars="GOOGLE_CLOUD_BUCKET_NAME=${{ secrets.GOOGLE_CLOUD_BUCKET_NAME }}" \
+          --set-env-vars="GOOGLE_CLOUD_BUCKET_NAME=${{ secrets.GCS_BUCKET_NAME }}" \
           --set-env-vars="NODE_ENV=production" \
           --memory=2Gi \
           --cpu=2 \
