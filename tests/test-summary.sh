@@ -38,7 +38,7 @@ clear
 
 print_header "APEXSOLAR COMPREHENSIVE TEST RESULTS"
 echo -e "${BLUE}Test Date: $(date)${NC}"
-echo -e "${BLUE}System URL: https://apexsolar-302444603160.asia-south1.run.app${NC}"
+echo -e "${BLUE}System URL: ${BASE_URL:-http://localhost:3000}${NC}"
 echo ""
 
 print_section "FUNCTIONAL TESTS (28 total)"

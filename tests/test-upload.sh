@@ -2,9 +2,12 @@
 
 # Test employee profile picture upload
 
+# Configuration
+BASE_URL="${BASE_URL:-http://localhost:3000}"
+
 # First login to get a token
 echo "Getting admin token..."
-TOKEN_RESPONSE=$(curl -s -X POST https://apexsolar-302444603160.asia-south1.run.app/api/auth/login \
+TOKEN_RESPONSE=$(curl -s -X POST $BASE_URL/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email":"admin@apexsolar.net","password":"admin123"}')
 
@@ -23,7 +26,7 @@ echo "Token obtained: ${TOKEN:0:20}..."
 # Get an employee ID to test with
 echo "Getting employee list..."
 EMPLOYEES_RESPONSE=$(curl -s -H "Authorization: Bearer $TOKEN" \
-  https://apexsolar-302444603160.asia-south1.run.app/api/employees)
+  $BASE_URL/api/employees)
 
 echo "Employees response: $EMPLOYEES_RESPONSE"
 
@@ -43,7 +46,7 @@ echo "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60
 
 # Test upload
 echo "Testing file upload..."
-UPLOAD_RESPONSE=$(curl -s -X POST https://apexsolar-302444603160.asia-south1.run.app/api/documents/upload \
+UPLOAD_RESPONSE=$(curl -s -X POST $BASE_URL/api/documents/upload \
   -H "Authorization: Bearer $TOKEN" \
   -F "file=@test-image.png" \
   -F "employeeId=$EMPLOYEE_ID" \

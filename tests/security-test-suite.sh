@@ -7,7 +7,7 @@
 # set -e
 
 # Configuration
-BASE_URL="https://apexsolar-302444603160.asia-south1.run.app"
+BASE_URL="${BASE_URL:-http://localhost:3000}"
 ADMIN_EMAIL="admin@apexsolar.net"
 ADMIN_PASSWORD="admin123"
 

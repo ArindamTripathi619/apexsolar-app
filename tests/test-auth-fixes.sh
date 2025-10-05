@@ -1,9 +1,10 @@
 #!/bin/bash
 
 # Test Authentication Fixes
-BASE_URL="https://apexsolar-302444603160.asia-south1.run.app"
+BASE_URL="${BASE_URL:-http://localhost:3000}"
 
 echo "🔧 Testing Authentication Fixes"
+echo "Target: $BASE_URL"
 echo "=================================="
 
 # Test 1: Login and get token
