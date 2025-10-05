@@ -8,7 +8,7 @@ on:
 
 env:
   NODE_VERSION: '18'
-  GOOGLE_CLOUD_PROJECT: 'apexsolar-302444603160'
+  GOOGLE_CLOUD_PROJECT: 'apexsolar-app'
   GOOGLE_CLOUD_REGION: 'asia-south1'
   SERVICE_NAME: 'apexsolar'
   ARTIFACT_REGISTRY_REGION: 'asia-south1'
@@ -158,17 +158,32 @@ jobs:
         # Check if repository exists, create if not
         if ! gcloud artifacts repositories describe ${{ env.ARTIFACT_REGISTRY_REPO }} \
           --location=${{ env.ARTIFACT_REGISTRY_REGION }} >/dev/null 2>&1; then
-          echo "Creating Artifact Registry repository..."
-          gcloud artifacts repositories create ${{ env.ARTIFACT_REGISTRY_REPO }} \
+          echo "Repository doesn't exist. Attempting to create..."
+          if gcloud artifacts repositories create ${{ env.ARTIFACT_REGISTRY_REPO }} \
             --repository-format=docker \
             --location=${{ env.ARTIFACT_REGISTRY_REGION }} \
-            --description="Repository for ApexSolar application"
+            --description="Repository for ApexSolar application" 2>/dev/null; then
+            echo "✅ Repository created successfully"
+          else
+            echo "❌ Failed to create repository. Please create it manually:"
+            echo "gcloud artifacts repositories create ${{ env.ARTIFACT_REGISTRY_REPO }} \\"
+            echo "  --repository-format=docker \\"
+            echo "  --location=${{ env.ARTIFACT_REGISTRY_REGION }} \\"
+            echo "  --description='Repository for ApexSolar application'"
+            echo ""
+            echo "Or grant the service account these permissions:"
+            echo "- roles/artifactregistry.repoAdmin"
+            exit 1
+          fi
         else
-          echo "Repository already exists"
+          echo "✅ Repository already exists"
         fi
     
     - name: Configure Docker for Artifact Registry
-      run: gcloud auth configure-docker ${{ env.ARTIFACT_REGISTRY_REGION }}-docker.pkg.dev
+      run: |
+        gcloud auth configure-docker ${{ env.ARTIFACT_REGISTRY_REGION }}-docker.pkg.dev
+        # Also configure GCR as fallback
+        gcloud auth configure-docker gcr.io
     
     - name: Build Docker image
       run: |
