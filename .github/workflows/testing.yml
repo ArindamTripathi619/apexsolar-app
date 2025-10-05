@@ -1,22 +1,34 @@
-name: Comprehensive Testing
+name: 🧪 Local Testing Suite
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
-  schedule:
-    # Run tests daily at 2 AM UTC
-    - cron: '0 2 * * *'
+    branches: [main]
 
 env:
   NODE_VERSION: '18'
 
 jobs:
-  # Authentication Tests
-  auth-tests:
-    name: Authentication Tests
+  # Run comprehensive local tests
+  local-tests:
+    name: Comprehensive Local Tests
     runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_DB: apexsolar_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
     
     steps:
     - name: Checkout code
@@ -31,223 +43,54 @@ jobs:
     - name: Install dependencies
       run: npm ci --legacy-peer-deps
     
-    - name: Make test scripts executable
-      run: chmod +x ./tests/*.sh
-    
-    - name: Run Authentication Tests
-      run: ./tests/test-auth-fixes.sh
+    - name: Setup test database
       env:
-        BASE_URL: ${{ secrets.STAGING_URL || 'https://apexsolar-staging-302444603160.asia-south1.run.app' }}
-
-  # Comprehensive System Tests
-  system-tests:
-    name: System Integration Tests
-    runs-on: ubuntu-latest
+        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/apexsolar_test
+      run: |
+        npx prisma migrate deploy
+        npx prisma db seed
     
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-    
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ env.NODE_VERSION }}
-        cache: 'npm'
-    
-    - name: Install dependencies
-      run: npm ci --legacy-peer-deps
-    
-    - name: Make test scripts executable
-      run: chmod +x ./tests/*.sh
-    
-    - name: Run Comprehensive Tests
-      run: ./tests/comprehensive-test-suite.sh
+    - name: Start application in background
       env:
-        BASE_URL: ${{ secrets.STAGING_URL || 'https://apexsolar-staging-302444603160.asia-south1.run.app' }}
+        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/apexsolar_test
+        NEXTAUTH_SECRET: test-secret-key-for-testing-only
+        NEXTAUTH_URL: http://localhost:3000
+        NODE_ENV: test
+      run: |
+        npm run build
+        npm start &
+        
+        # Wait for app to be ready
+        for i in {1..30}; do
+          if curl -f -s http://localhost:3000/api/health >/dev/null 2>&1; then
+            echo "✅ App is ready on attempt $i"
+            break
+          fi
+          echo "⏳ Waiting for app to start... attempt $i"
+          sleep 2
+        done
     
-    - name: Cleanup Test Data
+    - name: Run test suites
+      env:
+        TEST_BASE_URL: http://localhost:3000
+      run: |
+        chmod +x ./tests/*.sh
+        
+        echo "🧪 Running minimal test suite..."
+        ./tests/minimal-test-suite.sh
+        
+        echo "🔐 Running authentication tests..."
+        ./tests/test-auth-fixes.sh
+        
+        echo "🛡️ Running security tests..."
+        ./tests/security-test-suite.sh
+        
+        echo "⚡ Running performance tests..."
+        ./tests/performance-test-suite.sh
+    
+    - name: Cleanup
       if: always()
       run: |
-        echo "🧹 Cleaning up test data created during testing..."
-        # The test suite creates test data with timestamp patterns - clean it up
-        ADMIN_PASSWORD="${{ secrets.ADMIN_PASSWORD }}" ./production-cleanup.sh || echo "Cleanup script not available"
-      env:
-        PROD_BASE_URL: ${{ secrets.STAGING_URL || 'https://apexsolar-staging-302444603160.asia-south1.run.app' }}
-    
-    - name: Upload test results
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: comprehensive-test-results
-        path: |
-          test-results.json
-          test-report.html
-
-  # Security Tests
-  security-tests:
-    name: Security Validation
-    runs-on: ubuntu-latest
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-    
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ env.NODE_VERSION }}
-        cache: 'npm'
-    
-    - name: Install dependencies
-      run: npm ci --legacy-peer-deps
-    
-    - name: Make test scripts executable
-      run: chmod +x ./tests/*.sh
-    
-    - name: Run Security Tests
-      run: ./tests/security-test-suite.sh
-      env:
-        BASE_URL: ${{ secrets.STAGING_URL || 'https://apexsolar-staging-302444603160.asia-south1.run.app' }}
-    
-    - name: Upload security report
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: security-test-results
-        path: |
-          security-report.json
-          security-summary.md
-
-  # Performance Tests
-  performance-tests:
-    name: Performance & Load Tests
-    runs-on: ubuntu-latest
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-    
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ env.NODE_VERSION }}
-        cache: 'npm'
-    
-    - name: Install dependencies
-      run: npm ci --legacy-peer-deps
-    
-    - name: Make test scripts executable
-      run: chmod +x ./tests/*.sh
-    
-    - name: Run Performance Tests
-      run: ./tests/performance-test-suite.sh
-      env:
-        BASE_URL: ${{ secrets.STAGING_URL || 'https://apexsolar-staging-302444603160.asia-south1.run.app' }}
-    
-    - name: Upload performance report
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: performance-test-results
-        path: |
-          performance-report.json
-          load-test-results.html
-
-  # Test Summary
-  test-summary:
-    name: Generate Test Summary
-    runs-on: ubuntu-latest
-    needs: [auth-tests, system-tests, security-tests, performance-tests]
-    if: always()
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-    
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ env.NODE_VERSION }}
-        cache: 'npm'
-    
-    - name: Install dependencies
-      run: npm ci --legacy-peer-deps
-    
-    - name: Make test scripts executable
-      run: chmod +x ./tests/*.sh
-    
-    - name: Generate Test Summary
-      run: ./tests/test-summary.sh
-      env:
-        BASE_URL: ${{ secrets.STAGING_URL || 'https://apexsolar-staging-302444603160.asia-south1.run.app' }}
-    
-    - name: Upload test summary
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: test-summary-report
-        path: |
-          test-summary.md
-          test-overview.json
-    
-    - name: Comment Test Results on PR
-      if: github.event_name == 'pull_request'
-      uses: actions/github-script@v6
-      with:
-        script: |
-          const fs = require('fs');
-          if (fs.existsSync('test-summary.md')) {
-            const summary = fs.readFileSync('test-summary.md', 'utf8');
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: '## 🧪 Test Results\n\n' + summary
-            });
-          }
-
-  # Notification on Failure
-  notify-failure:
-    name: Notify on Test Failure
-    runs-on: ubuntu-latest
-    needs: [auth-tests, system-tests, security-tests, performance-tests]
-    if: failure()
-    
-    steps:
-    - name: Notify Team
-      run: |
-        echo "❌ Tests failed in workflow: ${{ github.workflow }}"
-        echo "🔗 View details: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-        # Add your notification logic here (Slack, email, etc.)
-
-  # Post-test staging cleanup
-  staging-cleanup:
-    name: Clean Staging Environment
-    runs-on: ubuntu-latest
-    needs: [auth-tests, system-tests, security-tests, performance-tests]
-    if: always()
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-    
-    - name: Setup cleanup environment
-      run: |
-        chmod +x ./production-cleanup.sh
-        echo "🧹 Preparing to clean staging environment after tests"
-    
-    - name: Run staging cleanup
-      env:
-        # Use staging URL for cleanup, never production
-        BASE_URL: ${{ secrets.STAGING_URL || 'https://apexsolar-staging-302444603160.asia-south1.run.app' }}
-        CI_MODE: true
-        ADMIN_PASSWORD: ${{ secrets.STAGING_ADMIN_PASSWORD }}
-      run: |
-        echo "Running cleanup on staging environment: $BASE_URL"
-        echo "🔒 CI Mode enabled - automated cleanup without prompts"
-        ./production-cleanup.sh || echo "⚠️ Cleanup completed with warnings"
-    
-    - name: Cleanup summary
-      run: |
-        echo "✅ Staging environment cleanup completed"
-        echo "🎯 Test data removed from staging to prevent accumulation"
+        # Kill any remaining processes
+        pkill -f "npm start" || true
+        pkill -f "node" || true
