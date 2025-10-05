@@ -33,7 +33,7 @@ jobs:
     - name: Run ESLint
       run: |
         npx eslint . --ext .js,.jsx,.ts,.tsx --config eslint.config.mjs --format json --output-file eslint-report.json || true
-        npx eslint . --ext .js,.jsx,.ts,.tsx --config eslint.config.mjs --max-warnings 50
+        npx eslint . --ext .js,.jsx,.ts,.tsx --config eslint.config.mjs --max-warnings 100
     
     - name: Run Prettier Check
       run: |

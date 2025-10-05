@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import InvoiceModal from '@/app/components/InvoiceModal'
 import DeleteConfirmationModal from '@/app/components/DeleteConfirmationModal'
@@ -23,7 +23,7 @@ interface Invoice {
 
 export default function InvoiceManagement() {
   const router = useRouter()
-  const [user, setUser] = useState<User | null>(null)
+  const [_user, setUser] = useState<User | null>(null)
   const [invoices, setInvoices] = useState<Invoice[]>([])
   const [loading, setLoading] = useState(true)
   const [showInvoiceModal, setShowInvoiceModal] = useState(false)
@@ -36,12 +36,7 @@ export default function InvoiceManagement() {
     endDate: ''
   })
 
-  useEffect(() => {
-    checkAuth()
-    fetchInvoices()
-  }, [])
-
-  const checkAuth = async () => {
+  const checkAuth = useCallback(async () => {
     try {
       const response = await fetch('/api/auth/me', {
         credentials: 'include'
@@ -58,14 +53,14 @@ export default function InvoiceManagement() {
       } else {
         router.push('/admin/login')
       }
-    } catch (err) {
+    } catch (_err) {
       router.push('/admin/login')
     } finally {
       setLoading(false)
     }
-  }
+  }, [router])
 
-  const fetchInvoices = async () => {
+  const fetchInvoices = useCallback(async () => {
     try {
       const queryParams = new URLSearchParams()
       if (filters.clientName) queryParams.append('clientName', filters.clientName)
@@ -85,7 +80,12 @@ export default function InvoiceManagement() {
     } catch (err) {
       console.error('Failed to fetch invoices:', err)
     }
-  }
+  }, [filters.clientName, filters.startDate, filters.endDate])
+
+  useEffect(() => {
+    checkAuth()
+    fetchInvoices()
+  }, [checkAuth, fetchInvoices])
 
   const handleLogout = async () => {
     try {
@@ -115,7 +115,7 @@ export default function InvoiceManagement() {
     window.open(fileUrl, '_blank')
   }
 
-  const handleDeleteInvoice = async (invoiceId: string, clientName: string, amount: number) => {
+  const handleDeleteInvoice = async (invoiceId: string, _clientName: string, _amount: number) => {
     const invoice = invoices.find(inv => inv.id === invoiceId)
     if (!invoice) return
     

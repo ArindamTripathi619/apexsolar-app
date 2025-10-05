@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import ChallanModal from '@/app/components/ChallanModal'
 
@@ -25,7 +25,7 @@ interface Attendance {
 
 export default function AccountantDashboard() {
   const router = useRouter()
-  const [user, setUser] = useState<User | null>(null)
+  const [_user, setUser] = useState<User | null>(null)
   const [employees, setEmployees] = useState<Employee[]>([])
   const [loading, setLoading] = useState(true)
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1)
@@ -33,12 +33,7 @@ export default function AccountantDashboard() {
   const [showPfModal, setShowPfModal] = useState(false)
   const [showEsiModal, setShowEsiModal] = useState(false)
 
-  useEffect(() => {
-    checkAuth()
-    fetchEmployees()
-  }, [])
-
-  const checkAuth = async () => {
+  const checkAuth = useCallback(async () => {
     try {
       const response = await fetch('/api/auth/me', {
         credentials: 'include'
@@ -55,14 +50,14 @@ export default function AccountantDashboard() {
       } else {
         router.push('/accountant/login')
       }
-    } catch (err) {
+    } catch (_err) {
       router.push('/accountant/login')
     } finally {
       setLoading(false)
     }
-  }
+  }, [router])
 
-  const fetchEmployees = async () => {
+  const fetchEmployees = useCallback(async () => {
     try {
       const response = await fetch('/api/employees', {
         credentials: 'include'
@@ -77,7 +72,12 @@ export default function AccountantDashboard() {
     } catch (err) {
       console.error('Failed to fetch employees:', err)
     }
-  }
+  }, [])
+
+  useEffect(() => {
+    checkAuth()
+    fetchEmployees()
+  }, [checkAuth, fetchEmployees])
 
   const handleLogout = async () => {
     try {
@@ -111,7 +111,7 @@ export default function AccountantDashboard() {
           <div className="flex justify-between items-center py-6">
             <div>
               <h1 className="text-3xl font-bold text-gray-900">Accountant Dashboard</h1>
-              <p className="text-gray-600">Welcome, {user?.email}</p>
+              <p className="text-gray-600">Welcome, {_user?.email}</p>
             </div>
             <button
               onClick={handleLogout}

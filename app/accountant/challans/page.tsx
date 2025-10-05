@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 
 interface User {
@@ -24,18 +24,13 @@ interface Challan {
 
 export default function ChallanManagement() {
   const router = useRouter()
-  const [user, setUser] = useState<User | null>(null)
+  const [_user, setUser] = useState<User | null>(null)
   const [challans, setChallans] = useState<Challan[]>([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState<'ALL' | 'PF' | 'ESI'>('ALL')
   const [yearFilter, setYearFilter] = useState<number>(new Date().getFullYear())
 
-  useEffect(() => {
-    checkAuth()
-    fetchChallans()
-  }, [])
-
-  const checkAuth = async () => {
+  const checkAuth = useCallback(async () => {
     try {
       const response = await fetch('/api/auth/me', {
         credentials: 'include'
@@ -52,14 +47,14 @@ export default function ChallanManagement() {
       } else {
         router.push('/accountant/login')
       }
-    } catch (err) {
+    } catch (_err) {
       router.push('/accountant/login')
     } finally {
       setLoading(false)
     }
-  }
+  }, [router])
 
-  const fetchChallans = async () => {
+  const fetchChallans = useCallback(async () => {
     try {
       const response = await fetch('/api/challans', {
         credentials: 'include'
@@ -74,7 +69,12 @@ export default function ChallanManagement() {
     } catch (err) {
       console.error('Failed to fetch challans:', err)
     }
-  }
+  }, [])
+
+  useEffect(() => {
+    checkAuth()
+    fetchChallans()
+  }, [checkAuth, fetchChallans])
 
   const handleLogout = async () => {
     try {
