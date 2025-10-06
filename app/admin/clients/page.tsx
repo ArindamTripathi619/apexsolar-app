@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import ClientPaymentModal from '@/app/components/ClientPaymentModal';
 
 interface User {
   id: string;
@@ -36,6 +37,8 @@ export default function ClientsPage() {
   const [user, setUser] = useState<User | null>(null);
   const [clients, setClients] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [selectedClient, setSelectedClient] = useState<Client | null>(null);
 
   // Authentication check
   const checkAuth = useCallback(async () => {
@@ -85,6 +88,7 @@ export default function ClientsPage() {
       console.error('Failed to fetch clients:', err);
     }
   }, [router]);
+
   const handleDeleteClient = async (clientId: string) => {
     if (!confirm("Are you sure you want to delete this client? This action cannot be undone.")) {
       return;
@@ -115,6 +119,16 @@ export default function ClientsPage() {
     }
   };
 
+  const handleAddPayment = (client: Client) => {
+    setSelectedClient(client);
+    setShowPaymentModal(true);
+  };
+
+  const handlePaymentSuccess = () => {
+    setShowPaymentModal(false);
+    setSelectedClient(null);
+    fetchClients(); // Refresh clients to update due amounts
+  };
 
   useEffect(() => {
     checkAuth();
@@ -136,6 +150,8 @@ export default function ClientsPage() {
       </div>
     );
   }
+
+  const totalDue = clients.reduce((sum, client) => sum + (client.dueAmount || 0), 0);
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -159,6 +175,33 @@ export default function ClientsPage() {
               >
                 Back to Dashboard
               </Link>
+            </div>
+          </div>
+        </div>
+
+        {/* Summary Card */}
+        <div className="mb-8">
+          <div className="bg-white overflow-hidden shadow rounded-lg">
+            <div className="p-5">
+              <div className="flex items-center">
+                <div className="flex-shrink-0">
+                  <div className="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center">
+                    <span className="text-white font-bold">₹</span>
+                  </div>
+                </div>
+                <div className="ml-5 w-0 flex-1">
+                  <dl>
+                    <dt className="text-sm font-medium text-gray-500 truncate">Total Due Amount</dt>
+                    <dd className="text-lg font-medium text-red-600">₹{totalDue.toLocaleString()}</dd>
+                  </dl>
+                </div>
+                <div className="ml-5">
+                  <dl>
+                    <dt className="text-sm font-medium text-gray-500 truncate">Total Clients</dt>
+                    <dd className="text-lg font-medium text-gray-900">{clients.length}</dd>
+                  </dl>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -206,7 +249,7 @@ export default function ClientsPage() {
                       <div className="text-sm text-gray-500">{client.email || 'N/A'}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="text-sm font-medium text-red-600">
+                      <span className={`text-sm font-medium ${(client.dueAmount || 0) > 0 ? 'text-red-600' : 'text-green-600'}`}>
                         ₹{(client.dueAmount || 0).toLocaleString()}
                       </span>
                     </td>
@@ -214,13 +257,21 @@ export default function ClientsPage() {
                       <div className="flex space-x-2">
                         <Link
                           href={`/admin/clients/edit?id=${client.id}`}
-                          className="text-blue-600 hover:text-blue-900"
+                          className="text-blue-600 hover:text-blue-900 px-2 py-1 border border-blue-200 rounded text-xs"
                         >
                           Edit
                         </Link>
+                        {(client.dueAmount || 0) > 0 && (
+                          <button
+                            onClick={() => handleAddPayment(client)}
+                            className="text-green-600 hover:text-green-900 px-2 py-1 border border-green-200 rounded text-xs"
+                          >
+                            Add Payment
+                          </button>
+                        )}
                         <button
                           onClick={() => handleDeleteClient(client.id.toString())}
-                          className="text-red-600 hover:text-red-900"
+                          className="text-red-600 hover:text-red-900 px-2 py-1 border border-red-200 rounded text-xs"
                         >
                           Delete
                         </button>
@@ -233,6 +284,19 @@ export default function ClientsPage() {
           </div>
         )}
       </div>
+
+      {/* Payment Modal */}
+      {selectedClient && (
+        <ClientPaymentModal
+          isOpen={showPaymentModal}
+          onClose={() => {
+            setShowPaymentModal(false);
+            setSelectedClient(null);
+          }}
+          onSuccess={handlePaymentSuccess}
+          client={selectedClient}
+        />
+      )}
     </div>
   );
 }

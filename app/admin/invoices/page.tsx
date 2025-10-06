@@ -62,6 +62,28 @@ export default function InvoiceManagement() {
     }
   }, [router])
 
+  const fetchStats = useCallback(async () => {
+    try {
+      const queryParams = new URLSearchParams()
+      if (filters.clientName) queryParams.append('clientName', filters.clientName)
+      if (filters.startDate) queryParams.append('startDate', filters.startDate)
+      if (filters.endDate) queryParams.append('endDate', filters.endDate)
+
+      const response = await fetch(`/api/invoices/stats?${queryParams.toString()}`, {
+        credentials: 'include'
+      })
+      
+      if (response.ok) {
+        const data = await response.json()
+        if (data.success) {
+          setStats(data.data)
+        }
+      }
+    } catch (err) {
+      console.error('Failed to fetch stats:', err)
+    }
+  }, [filters.clientName, filters.startDate, filters.endDate])
+
   const fetchInvoices = useCallback(async () => {
     try {
       const queryParams = new URLSearchParams()
@@ -86,8 +108,9 @@ export default function InvoiceManagement() {
 
   useEffect(() => {
     checkAuth()
+    fetchStats()
     fetchInvoices()
-  }, [checkAuth, fetchInvoices])
+  }, [checkAuth, fetchInvoices, fetchStats])
 
   const handleLogout = async () => {
     try {
@@ -216,7 +239,7 @@ export default function InvoiceManagement() {
     }
   }
 
-  const totalAmount = invoices.reduce((sum, invoice) => sum + invoice.amount, 0)
+  const [stats, setStats] = useState({ totalInvoiceAmount: 0, totalPaidAmount: 0, totalDueAmount: 0, invoiceCount: 0 })
 
   if (loading) {
     return (
@@ -274,8 +297,8 @@ export default function InvoiceManagement() {
                 </div>
                 <div className="ml-5 w-0 flex-1">
                   <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">Total Invoice Amount</dt>
-                    <dd className="text-lg font-medium text-gray-900">₹{totalAmount.toFixed(2)}</dd>
+                    <dt className="text-sm font-medium text-gray-500 truncate">Total Due Amount</dt>
+                    <dd className="text-lg font-medium text-gray-900">₹{stats.totalDueAmount.toFixed(2)}</dd>
                   </dl>
                 </div>
                 <div className="ml-5">

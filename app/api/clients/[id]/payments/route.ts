@@ -1,10 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
+import { prisma } from '../../../../lib/prisma'
 import { verifyToken } from '../../../../lib/auth'
 
-const prisma = new PrismaClient()
-
 async function authenticateRequest(request: NextRequest) {
+  // Try to get token from cookies first
+  const cookieToken = request.cookies.get('auth-token')?.value;
+  if (cookieToken) {
+    return verifyToken(cookieToken);
+  }
+  
+  // Fallback to Authorization header
   const authHeader = request.headers.get('authorization')
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return null
@@ -58,7 +63,11 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       }
     })
 
-    return NextResponse.json({ payment }, { status: 201 })
+    return NextResponse.json({ 
+      success: true,
+      payment,
+      message: 'Payment recorded successfully'
+    }, { status: 201 })
   } catch (error) {
     console.error('Error recording payment:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
@@ -79,7 +88,10 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       orderBy: { date: 'desc' }
     })
 
-    return NextResponse.json({ payments })
+    return NextResponse.json({ 
+      success: true,
+      payments
+    })
   } catch (error) {
     console.error('Error fetching payments:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

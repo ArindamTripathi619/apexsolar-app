@@ -6,13 +6,15 @@ interface PaymentModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
-  employeeId: string;
-  employeeName: string;
+  client: {
+    id: string;
+    companyName: string;
+    dueAmount?: number;
+  };
 }
 
-export default function PaymentModal({ isOpen, onClose, onSuccess, employeeId, employeeName }: PaymentModalProps) {
+export default function PaymentModal({ isOpen, onClose, onSuccess, client }: PaymentModalProps) {
   const [amount, setAmount] = useState('');
-  const [type, setType] = useState('DUE');
   const [description, setDescription] = useState('');
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [loading, setLoading] = useState(false);
@@ -33,15 +35,13 @@ export default function PaymentModal({ isOpen, onClose, onSuccess, employeeId, e
     setLoading(true);
 
     try {
-      const response = await fetch('/api/payments', {
+      const response = await fetch(`/api/clients/${client.id}/payments`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         credentials: 'include',
         body: JSON.stringify({
-          employeeId,
-          type,
           amount: parseFloat(amount),
           description,
           date,
@@ -69,11 +69,13 @@ export default function PaymentModal({ isOpen, onClose, onSuccess, employeeId, e
 
   if (!isOpen) return null;
 
+  const dueAmount = client.dueAmount || 0;
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold text-gray-900">Record Employee Payment</h2>
+          <h2 className="text-xl font-bold text-gray-900">Record Payment</h2>
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600"
@@ -85,28 +87,11 @@ export default function PaymentModal({ isOpen, onClose, onSuccess, employeeId, e
         </div>
 
         <div className="mb-4 p-3 bg-gray-50 rounded-lg">
-          <p className="text-sm text-gray-600">Employee: <span className="font-medium">{employeeName}</span></p>
+          <p className="text-sm text-gray-600">Client: <span className="font-medium">{client.companyName}</span></p>
+          <p className="text-sm text-gray-600">Current Due Amount: <span className="font-medium text-red-600">₹{dueAmount.toLocaleString()}</span></p>
         </div>
 
         <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label htmlFor="type" className="block text-sm font-medium text-gray-700 mb-2">
-              Payment Type *
-            </label>
-            <select
-              id="type"
-              value={type}
-              onChange={(e) => setType(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              required
-            >
-              <option value="DUE">Due Payment</option>
-              <option value="ADVANCE">Advance Payment</option>
-              <option value="DUE_CLEARED">Due Cleared</option>
-              <option value="ADVANCE_REPAID">Advance Repaid</option>
-            </select>
-          </div>
-
           <div className="mb-4">
             <label htmlFor="amount" className="block text-sm font-medium text-gray-700 mb-2">
               Payment Amount *
@@ -116,12 +101,16 @@ export default function PaymentModal({ isOpen, onClose, onSuccess, employeeId, e
               id="amount"
               step="0.01"
               min="0.01"
+              max={dueAmount || undefined}
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
               placeholder="Enter payment amount"
               required
             />
+            <p className="text-xs text-gray-500 mt-1">
+              {dueAmount > 0 && `Maximum: ₹${dueAmount.toLocaleString()}`}
+            </p>
           </div>
 
           <div className="mb-4">
