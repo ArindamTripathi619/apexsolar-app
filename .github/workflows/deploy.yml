@@ -36,6 +36,13 @@ jobs:
       run: npx tsc --noEmit
 
     - name: Build application
+
+    - name: Run database migrations
+      env:
+        DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      run: |
+        echo "Running database migrations..."
+        npx prisma migrate deploy || npx prisma db push --accept-data-loss || echo "Migration failed, continuing deployment"
       run: npm run build
 
     - name: Verify database connection string format

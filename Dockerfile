@@ -52,4 +52,5 @@ ENV PORT 3000
 ENV HOSTNAME "0.0.0.0"
 
 # Use the correct command for standalone output
-CMD ["node", "server.js"]
+COPY start.sh ./
+CMD ["/bin/bash", "start.sh"]
