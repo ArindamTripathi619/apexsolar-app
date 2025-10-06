@@ -1,9 +1,9 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 
-export default function EditClientPage() {
+function EditClientForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const clientId = searchParams.get('id')
@@ -37,7 +37,7 @@ export default function EditClientPage() {
       const data = await response.json()
       
       if (data.success) {
-        const client = data.clients.find((c: any) => c.id === parseInt(clientId!))
+        const client = data.clients.find((c: any) => c.id === clientId)
         if (client) {
           setFormData({
             companyName: client.companyName || '',
@@ -318,5 +318,20 @@ export default function EditClientPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function EditClientPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading...</p>
+        </div>
+      </div>
+    }>
+      <EditClientForm />
+    </Suspense>
   )
 }
