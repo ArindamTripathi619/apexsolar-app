@@ -44,6 +44,10 @@ COPY --from=builder /app/prisma ./prisma
 # In production, real credentials are provided via environment variables
 RUN echo '{"type": "placeholder"}' > apexsolar-storage-key.json && chown nextjs:nodejs apexsolar-storage-key.json
 
+# Copy startup script
+COPY --from=builder /app/start.sh ./start.sh
+RUN chown nextjs:nodejs start.sh && chmod +x start.sh
+
 USER nextjs
 
 EXPOSE 3000
@@ -52,5 +56,4 @@ ENV PORT 3000
 ENV HOSTNAME "0.0.0.0"
 
 # Use the correct command for standalone output
-COPY start.sh ./
 CMD ["/bin/bash", "start.sh"]
