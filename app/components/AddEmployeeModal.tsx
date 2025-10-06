@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import IndianDateInput from './IndianDateInput'
 
 interface AddEmployeeModalProps {
   isOpen: boolean
@@ -129,16 +130,16 @@ className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px
             </div>
 
             <div>
-              <label htmlFor="dateOfJoining" className="block text-sm font-medium text-gray-700">
-                Date of Joining
-              </label>
-              <input
-                type="date"
-                name="dateOfJoining"
+              <IndianDateInput
                 id="dateOfJoining"
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-gray-700"
+                name="dateOfJoining"
+                label="Date of Joining"
                 value={formData.dateOfJoining}
-                onChange={handleChange}
+                onChange={(value) => setFormData(prev => ({
+                  ...prev,
+                  dateOfJoining: value
+                }))}
+                placeholder="dd/mm/yyyy"
               />
             </div>
 

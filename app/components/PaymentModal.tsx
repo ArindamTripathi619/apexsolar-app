@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { formatIndianCurrency } from '@/app/lib/indianLocalization';
+import IndianDateInput from './IndianDateInput';
 
 interface PaymentModalProps {
   isOpen: boolean;
@@ -134,16 +135,13 @@ export default function PaymentModal({ isOpen, onClose, onSuccess, employeeId, e
           </div>
 
           <div className="mb-4">
-            <label htmlFor="date" className="block text-sm font-medium text-gray-700 mb-2">
-              Payment Date *
-            </label>
-            <input
-              type="date"
+            <IndianDateInput
               id="date"
+              label="Payment Date"
               value={date}
-              onChange={(e) => setDate(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              onChange={setDate}
               required
+              placeholder="dd/mm/yyyy"
             />
           </div>
 

@@ -94,14 +94,12 @@ export function formatIndianCurrency(amount: number): string {
  * @param amount - Number to format
  * @returns Formatted currency with Indian numbering system
  */
-export function formatIndianCurrencyLarge(amount: number): string {
+export const formatIndianCurrencyLarge = (amount: number): string => {
   if (amount >= 10000000) { // 1 crore
-    return `₹${(amount / 10000000).toFixed(2)} Cr`;
+    return `₹${(amount / 10000000).toFixed(2)} Cr`
   } else if (amount >= 100000) { // 1 lakh
-    return `₹${(amount / 100000).toFixed(2)} L`;
-  } else if (amount >= 1000) { // 1 thousand
-    return `₹${(amount / 1000).toFixed(2)} K`;
+    return `₹${(amount / 100000).toFixed(2)} L`
   } else {
-    return formatIndianCurrency(amount);
+    return formatIndianCurrency(amount)
   }
 }
