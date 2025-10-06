@@ -162,7 +162,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const uploadResult = await uploadFile(file, 'documents')
+    const uploadResult = await uploadFile(file, 'documents', allowedTypes)
     
     if (!uploadResult.success || !uploadResult.fileName || !uploadResult.fileUrl) {
       return NextResponse.json(
@@ -181,7 +181,7 @@ export async function POST(request: NextRequest) {
         fileUrl: uploadResult.fileUrl,
         fileSize: file.size,
         mimeType: file.type,
-        category: category || DocumentCategory.GENERAL,
+        category: (category?.toUpperCase() as DocumentCategory) || DocumentCategory.GENERAL,
         uploadedBy: user.id,
         uploadedFor,
         tags: tagArray,
