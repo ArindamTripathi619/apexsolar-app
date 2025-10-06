@@ -1,21 +1,26 @@
-# Node modules
+# Node modules (handled by Cloud Build)
 node_modules/
 
-# Environment files (keep secrets local)
+# Environment files (keep secrets local, use Cloud Run env vars)
 .env*
 !.env.example
+cookies.txt
 
-# Build files that aren't needed
+# Build files that aren't needed for Cloud Build
 .next/
 out/
 build/
 dist/
+.swc/
+tsconfig.tsbuildinfo
 
-# IDE files
+# IDE and editor files
 .vscode/
 .idea/
 *.swp
 *.swo
+*~
+apexsolar-app.code-workspace
 
 # Logs
 *.log
@@ -24,14 +29,50 @@ logs/
 # OS files
 .DS_Store
 Thumbs.db
+desktop.ini
 
-# Test files
+# Test files and coverage
 coverage/
+tests/
+__tests__/
+*.test.js
+*.test.ts
+*.spec.js
+*.spec.ts
 
 # Temporary files
 *.tmp
 *.temp
 
-# User uploads (not needed for build)
+# Development uploads (production uses Cloud Storage)
 uploads/*
 !uploads/.gitkeep
+screenshots/
+
+# Documentation (not needed for deployment)
+README.md
+SECURITY.md
+LICENSE
+docs/
+*.md
+
+# Development scripts and tools
+scripts/
+*.sh
+!start.sh
+production-cleanup.sh
+run-migration.sh
+fix-production-documents.sh
+apply_production_schema.sql
+
+# Git files
+.git/
+.gitignore
+
+# Docker files (not needed for Cloud Build)
+Dockerfile
+.dockerignore
+docker-compose.yml
+
+# NPM configuration
+.npmrc

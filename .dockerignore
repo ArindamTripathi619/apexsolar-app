@@ -1,62 +1,91 @@
-# Dependencies
+# Dependencies (will be copied separately in multi-stage build)
 node_modules
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Testing
+# Testing and development files
 coverage
 __tests__
 jest.config.js
 jest.setup.js
+tests/
+*.test.js
+*.test.ts
+*.spec.js
+*.spec.ts
 
-# Build outputs
+# Build outputs (will be generated during build)
 .next
 dist
 build
+.swc/
+tsconfig.tsbuildinfo
 
-# Environment files
+# Environment files (handled via Cloud Run env vars)
 .env
 .env.local
 .env.development.local
 .env.test.local
+.env.example
+cookies.txt
 
-# Editor files
+# Editor and IDE files
 .vscode
 .idea
+*.swp
+*.swo
+*~
 
 # OS files
 .DS_Store
 Thumbs.db
+desktop.ini
 
-# Git
+# Git and version control
 .git
 .gitignore
+.github/
 
-# Documentation
+# Documentation (not needed in container)
 README.md
+SECURITY.md
+LICENSE
 docs/
 *.md
+apexsolar-app.code-workspace
 
-# Upload directories (can be large)
+# Development uploads (production uses Cloud Storage)
 uploads/
+screenshots/
 
-# Development scripts
+# Development and maintenance scripts
 scripts/
-# Development scripts
 *.sh
 !start.sh
+production-cleanup.sh
+run-migration.sh
+fix-production-documents.sh
+apply_production_schema.sql
 
-# Test files
+# Test files and utilities
 test-*.js
 test-*.html
+test-*.ts
 check-*.js
 demo-*.js
 manual-*.js
+verify-*.sh
+cleanup-*.sh
 
-# Docker files
+# Docker files (not needed inside container)
 Dockerfile
 docker-compose.yml
+.dockerignore
 
-# GitHub Actions
-.github/
+# Cloud build files
+cloudbuild.yaml
+.gcloudignore
+
+# NPM configuration
+.npmrc
