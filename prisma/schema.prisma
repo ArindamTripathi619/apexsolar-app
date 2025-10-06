@@ -58,9 +58,9 @@ model Payment {
   amount           Float
   description      String?
   date             DateTime
-  clearedPaymentId String?
   createdAt        DateTime    @default(now())
   updatedAt        DateTime    @updatedAt
+  clearedPaymentId String?
   clearedPayment   Payment?    @relation("PaymentClearing", fields: [clearedPaymentId], references: [id])
   clearingPayments Payment[]   @relation("PaymentClearing")
   employee         Employee    @relation(fields: [employeeId], references: [id], onDelete: Cascade)
@@ -82,6 +82,28 @@ model Attendance {
   @@map("attendance")
 }
 
+model Client {
+  id            String          @id @default(cuid())
+  companyName   String
+  gstNumber     String?
+  panNumber     String?
+  addressLine1  String
+  addressLine2  String?
+  addressLine3  String?
+  city          String?
+  state         String?
+  pinCode       String?
+  contactPerson String?
+  email         String?
+  phone         String?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  payments      ClientPayment[]
+  invoices      Invoice[]
+
+  @@map("clients")
+}
+
 model Invoice {
   id         String   @id @default(cuid())
   clientName String
@@ -92,8 +114,23 @@ model Invoice {
   uploadedAt DateTime @default(now())
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+  clientId   String
+  client     Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
 
   @@map("invoices")
+}
+
+model ClientPayment {
+  id          String   @id @default(cuid())
+  clientId    String
+  amount      Float
+  description String?
+  date        DateTime
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  client      Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  @@map("client_payments")
 }
 
 model PfEsiChallan {

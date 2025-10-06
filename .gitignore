@@ -140,3 +140,6 @@ cookies.txt
 scratch/
 temp/
 tmp/
+
+# GitHub directory and documentation
+.github/*.md

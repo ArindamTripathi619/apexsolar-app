@@ -61,10 +61,11 @@ async function uploadInvoice(request: AuthenticatedRequest) {
     const formData = await request.formData()
     const file = formData.get('file') as File
     const clientName = formData.get('clientName') as string
+    const clientId = formData.get('clientId') as string
     const amount = parseFloat(formData.get('amount') as string)
     const date = formData.get('date') as string
 
-    if (!file || !clientName || !amount || !date) {
+    if (!file || !clientName || !clientId || !amount || !date) {
       return NextResponse.json(
         { success: false, error: 'Missing required fields' },
         { status: 400 }
@@ -97,6 +98,7 @@ async function uploadInvoice(request: AuthenticatedRequest) {
     const invoice = await prisma.invoice.create({
       data: {
         clientName,
+        clientId,
         amount,
         date: new Date(date),
         fileName: uploadResult.fileName!,

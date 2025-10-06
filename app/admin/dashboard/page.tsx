@@ -512,7 +512,20 @@ export default function AdminDashboard() {
         </div>
 
         {/* Quick Actions */}
-        <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="bg-white overflow-hidden shadow rounded-lg">
+            <div className="p-5">
+              <h3 className="text-lg font-medium text-gray-900 mb-2">Client Management</h3>
+              <p className="text-sm text-gray-500 mb-4">Manage clients and track payments</p>
+              <button 
+                onClick={() => router.push('/admin/clients')}
+                className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+              >
+                Manage Clients →
+              </button>
+            </div>
+          </div>
+
           <div className="bg-white overflow-hidden shadow rounded-lg">
             <div className="p-5">
               <h3 className="text-lg font-medium text-gray-900 mb-2">Attendance Tracking</h3>
