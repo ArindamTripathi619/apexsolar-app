@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
     const testQuery = await (prisma as any).$queryRaw`SELECT 1 as test`
     
     // Test environment variables
-    const envCheck = {
+    const envCheck: any = {
       NODE_ENV: process.env.NODE_ENV,
       DATABASE_URL: process.env.DATABASE_URL ? 'Set' : 'Not set',
       JWT_SECRET: process.env.JWT_SECRET ? 'Set' : 'Not set',
@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
       envCheck.hasClients = true
       envCheck.clientCount = clientCount
     } catch (e) {
-      envCheck.clientError = e.message
+      envCheck.clientError = e instanceof Error ? e.message : 'Unknown error'
     }
     
     return NextResponse.json({
@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
     console.error('Debug endpoint error:', error)
     return NextResponse.json({ 
       error: 'Debug check failed', 
-      details: error.message,
+      details: error instanceof Error ? error.message : 'Unknown error',
       timestamp: new Date().toISOString()
     }, { status: 500 })
   }

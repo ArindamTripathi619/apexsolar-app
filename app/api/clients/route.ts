@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
       console.log('Database connection successful')
     } catch (dbError) {
       console.error('Database connection failed:', dbError)
-      return NextResponse.json({ error: 'Database connection failed', details: dbError.message }, { status: 500 })
+      return NextResponse.json({ error: 'Database connection failed', details: dbError instanceof Error ? dbError.message : "Unknown database error" }, { status: 500 })
     }
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -106,7 +106,7 @@ export async function POST(request: NextRequest) {
       console.log('Database connection successful')
     } catch (dbError) {
       console.error('Database connection failed:', dbError)
-      return NextResponse.json({ error: 'Database connection failed', details: dbError.message }, { status: 500 })
+      return NextResponse.json({ error: 'Database connection failed', details: dbError instanceof Error ? dbError.message : "Unknown database error" }, { status: 500 })
     }
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -117,7 +117,6 @@ export async function POST(request: NextRequest) {
       companyName, 
       addressLine1,
       addressLine2, 
-      addressLine3,
       city, 
       state, 
       pinCode, 
@@ -141,7 +140,6 @@ export async function POST(request: NextRequest) {
         companyName,
         addressLine1,
         addressLine2: addressLine2 || null,
-        addressLine3: addressLine3 || null,
         city: city || null,
         state: state || null,
         pinCode: pinCode || null,
@@ -160,9 +158,9 @@ export async function POST(request: NextRequest) {
     })
   } catch (error) {
     console.error('Error creating client:', {
-      message: error.message,
-      stack: error.stack,
-      name: error.name,
+      message: error instanceof Error ? error.message : "Unknown error",
+      stack: error instanceof Error ? error.stack : undefined,
+      name: error instanceof Error ? error.name : "Unknown",
       timestamp: new Date().toISOString()
     })
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
@@ -187,7 +185,7 @@ export async function PUT(request: NextRequest) {
       console.log('Database connection successful')
     } catch (dbError) {
       console.error('Database connection failed:', dbError)
-      return NextResponse.json({ error: 'Database connection failed', details: dbError.message }, { status: 500 })
+      return NextResponse.json({ error: 'Database connection failed', details: dbError instanceof Error ? dbError.message : "Unknown database error" }, { status: 500 })
     }
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -199,7 +197,6 @@ export async function PUT(request: NextRequest) {
       companyName, 
       addressLine1,
       addressLine2, 
-      addressLine3,
       city, 
       state, 
       pinCode, 
@@ -241,7 +238,6 @@ export async function PUT(request: NextRequest) {
         companyName,
         addressLine1,
         addressLine2: addressLine2 || null,
-        addressLine3: addressLine3 || null,
         city: city || null,
         state: state || null,
         pinCode: pinCode || null,
@@ -282,7 +278,7 @@ export async function DELETE(request: NextRequest) {
       console.log('Database connection successful')
     } catch (dbError) {
       console.error('Database connection failed:', dbError)
-      return NextResponse.json({ error: 'Database connection failed', details: dbError.message }, { status: 500 })
+      return NextResponse.json({ error: 'Database connection failed', details: dbError instanceof Error ? dbError.message : "Unknown database error" }, { status: 500 })
     }
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
