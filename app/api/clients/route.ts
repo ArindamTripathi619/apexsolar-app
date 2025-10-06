@@ -21,13 +21,30 @@ async function authenticateRequest(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
+    // Debug authentication
+    const cookieToken = request.cookies.get('auth-token')?.value
+    const authHeader = request.headers.get('authorization')
+    console.log('Auth debug:', {
+      hasCookieToken: !!cookieToken,
+      hasAuthHeader: !!authHeader,
+      timestamp: new Date().toISOString()
+    })
     const user = await authenticateRequest(request)
+
+    // Test database connection
+    try {
+      await (prisma as any).$queryRaw`SELECT 1`
+      console.log('Database connection successful')
+    } catch (dbError) {
+      console.error('Database connection failed:', dbError)
+      return NextResponse.json({ error: 'Database connection failed', details: dbError.message }, { status: 500 })
+    }
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
     // Fetch clients with invoices and payments to calculate due amounts
-    const clients = await (prisma as any).client.findMany({
+    const clients = await prisma.client.findMany({
       include: {
         invoices: true,
         payments: true
@@ -67,7 +84,30 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    // Log environment info for debugging
+    console.log('POST /api/clients - Environment:', {
+      NODE_ENV: process.env.NODE_ENV,
+      DATABASE_URL: process.env.DATABASE_URL ? 'Connected' : 'Not set',
+      timestamp: new Date().toISOString()
+    })
+    // Debug authentication
+    const cookieToken = request.cookies.get('auth-token')?.value
+    const authHeader = request.headers.get('authorization')
+    console.log('Auth debug:', {
+      hasCookieToken: !!cookieToken,
+      hasAuthHeader: !!authHeader,
+      timestamp: new Date().toISOString()
+    })
     const user = await authenticateRequest(request)
+
+    // Test database connection
+    try {
+      await (prisma as any).$queryRaw`SELECT 1`
+      console.log('Database connection successful')
+    } catch (dbError) {
+      console.error('Database connection failed:', dbError)
+      return NextResponse.json({ error: 'Database connection failed', details: dbError.message }, { status: 500 })
+    }
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -96,7 +136,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create client in database
-    const client = await (prisma as any).client.create({
+    const client = await prisma.client.create({
       data: {
         companyName,
         addressLine1,
@@ -119,14 +159,36 @@ export async function POST(request: NextRequest) {
       message: 'Client created successfully'
     })
   } catch (error) {
-    console.error('Error creating client:', error)
+    console.error('Error creating client:', {
+      message: error.message,
+      stack: error.stack,
+      name: error.name,
+      timestamp: new Date().toISOString()
+    })
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
 export async function PUT(request: NextRequest) {
   try {
+    // Debug authentication
+    const cookieToken = request.cookies.get('auth-token')?.value
+    const authHeader = request.headers.get('authorization')
+    console.log('Auth debug:', {
+      hasCookieToken: !!cookieToken,
+      hasAuthHeader: !!authHeader,
+      timestamp: new Date().toISOString()
+    })
     const user = await authenticateRequest(request)
+
+    // Test database connection
+    try {
+      await (prisma as any).$queryRaw`SELECT 1`
+      console.log('Database connection successful')
+    } catch (dbError) {
+      console.error('Database connection failed:', dbError)
+      return NextResponse.json({ error: 'Database connection failed', details: dbError.message }, { status: 500 })
+    }
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -162,7 +224,7 @@ export async function PUT(request: NextRequest) {
     }
 
     // Check if client exists
-    const existingClient = await (prisma as any).client.findUnique({
+    const existingClient = await prisma.client.findUnique({
       where: { id: id }
     })
 
@@ -173,7 +235,7 @@ export async function PUT(request: NextRequest) {
     }
 
     // Update client in database
-    const updatedClient = await (prisma as any).client.update({
+    const updatedClient = await prisma.client.update({
       where: { id: id },
       data: {
         companyName,
@@ -204,7 +266,24 @@ export async function PUT(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   try {
+    // Debug authentication
+    const cookieToken = request.cookies.get('auth-token')?.value
+    const authHeader = request.headers.get('authorization')
+    console.log('Auth debug:', {
+      hasCookieToken: !!cookieToken,
+      hasAuthHeader: !!authHeader,
+      timestamp: new Date().toISOString()
+    })
     const user = await authenticateRequest(request)
+
+    // Test database connection
+    try {
+      await (prisma as any).$queryRaw`SELECT 1`
+      console.log('Database connection successful')
+    } catch (dbError) {
+      console.error('Database connection failed:', dbError)
+      return NextResponse.json({ error: 'Database connection failed', details: dbError.message }, { status: 500 })
+    }
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -219,7 +298,7 @@ export async function DELETE(request: NextRequest) {
     }
 
     // Check if client exists
-    const existingClient = await (prisma as any).client.findUnique({
+    const existingClient = await prisma.client.findUnique({
       where: { id: id },
       include: {
         invoices: true,
@@ -241,7 +320,7 @@ export async function DELETE(request: NextRequest) {
     }
 
     // Delete client
-    await (prisma as any).client.delete({
+    await prisma.client.delete({
       where: { id: id }
     })
 
