@@ -2,6 +2,7 @@
 set -e
 
 echo "Starting ApexSolar application..."
+echo "Node version: $(node --version)"
 
 # Run database migrations if DATABASE_URL is set
 if [ ! -z "$DATABASE_URL" ]; then
@@ -86,4 +87,7 @@ fi
 
 # Start the application
 echo "Starting Next.js server..."
+echo "Current directory: $(pwd)" 
+echo "Files in current directory:" 
+ls -la
 exec node server.js
