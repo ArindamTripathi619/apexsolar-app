@@ -4,9 +4,10 @@ import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import AddEmployeeModal from '@/app/components/AddEmployeeModal'
 import DocumentUploadModal from '@/app/components/DocumentUploadModal'
-import PaymentModal from '@/app/components/PaymentModal'
-import AttendanceModal from '@/app/components/AttendanceModal'
 import InvoiceModal from '@/app/components/InvoiceModal'
+import AttendanceModal from '@/app/components/AttendanceModal'
+import PaymentModal from '@/app/components/PaymentModal'
+import { formatIndianDate } from '@/app/lib/indianLocalization'
 
 interface User {
   id: string
@@ -392,7 +393,7 @@ export default function AdminDashboard() {
                           {employee.phone || 'N/A'}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {employee.dateOfJoining ? new Date(employee.dateOfJoining).toLocaleDateString() : 'N/A'}
+                          {employee.dateOfJoining ? formatIndianDate(employee.dateOfJoining) : 'N/A'}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                           <div className="flex items-center space-x-2">
@@ -455,7 +456,7 @@ export default function AdminDashboard() {
                         <p className="text-sm text-gray-600">{employee.email || 'No email'}</p>
                         <p className="text-sm text-gray-600">{employee.phone || 'No phone'}</p>
                         <p className="text-xs text-gray-500 mt-1">
-                          Joined: {employee.dateOfJoining ? new Date(employee.dateOfJoining).toLocaleDateString() : 'N/A'}
+                          Joined: {employee.dateOfJoining ? formatIndianDate(employee.dateOfJoining) : 'N/A'}
                         </p>
                       </div>
                       <a

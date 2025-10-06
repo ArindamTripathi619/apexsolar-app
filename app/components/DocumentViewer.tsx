@@ -1,6 +1,7 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
+import { formatIndianDate } from '@/app/lib/indianLocalization'
 import { DocumentCategory } from '@prisma/client'
 
 interface Document {
@@ -290,7 +291,7 @@ export default function DocumentViewer({ userRole, refreshTrigger }: DocumentVie
                 <div className="border-t pt-3 mt-3">
                   <div className="flex items-center justify-between text-xs text-gray-500">
                     <span>By: {document.uploader.email}</span>
-                    <span>{new Date(document.createdAt).toLocaleDateString()}</span>
+                    <span>{formatIndianDate(new Date(document.createdAt))}</span>
                   </div>
                   
                   {/* Download Button */}

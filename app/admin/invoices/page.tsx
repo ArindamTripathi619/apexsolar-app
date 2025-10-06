@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import InvoiceModal from '@/app/components/InvoiceModal'
 import DeleteConfirmationModal from '@/app/components/DeleteConfirmationModal'
+import { formatIndianCurrency, formatIndianDate } from '@/app/lib/indianLocalization'
 
 interface User {
   id: string
@@ -170,7 +171,7 @@ export default function InvoiceManagement() {
         setInvoiceToDelete(null)
         
         // Show success message
-        alert(`Invoice for ${invoiceToDelete.clientName} (₹${invoiceToDelete.amount.toFixed(2)}) has been deleted successfully.`)
+        alert(`Invoice for ${invoiceToDelete.clientName} (${formatIndianCurrency(invoiceToDelete.amount)}) has been deleted successfully.`)
       } else {
         alert(`Failed to delete invoice: ${data.error}`)
       }
@@ -298,7 +299,7 @@ export default function InvoiceManagement() {
                 <div className="ml-5 w-0 flex-1">
                   <dl>
                     <dt className="text-sm font-medium text-gray-500 truncate">Total Due Amount</dt>
-                    <dd className="text-lg font-medium text-gray-900">₹{stats.totalDueAmount.toFixed(2)}</dd>
+                    <dd className="text-lg font-medium text-gray-900">{formatIndianCurrency(stats.totalDueAmount)}</dd>
                   </dl>
                 </div>
                 <div className="ml-5">
@@ -466,10 +467,10 @@ export default function InvoiceManagement() {
                             {invoice.clientName}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            ₹{invoice.amount.toFixed(2)}
+                            {formatIndianCurrency(invoice.amount)}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {new Date(invoice.date).toLocaleDateString()}
+                            {formatIndianDate(new Date(invoice.date))}
                           </td>
                           <td className="px-6 py-4 text-sm text-gray-500">
                             <span className="truncate max-w-xs block" title={invoice.fileName}>
@@ -477,7 +478,7 @@ export default function InvoiceManagement() {
                             </span>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {new Date(invoice.createdAt).toLocaleDateString()}
+                            {formatIndianDate(new Date(invoice.createdAt))}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             <div className="flex items-center space-x-2">
@@ -527,16 +528,16 @@ export default function InvoiceManagement() {
                           <div className="flex-1">
                             <h4 className="text-lg font-medium text-gray-900 mb-1">{invoice.clientName}</h4>
                             <p className="text-sm text-gray-600 mb-1">
-                              <span className="font-medium">Amount:</span> ₹{invoice.amount.toFixed(2)}
+                              <span className="font-medium">Amount:</span> {formatIndianCurrency(invoice.amount)}
                             </p>
                             <p className="text-sm text-gray-600 mb-1">
-                              <span className="font-medium">Invoice Date:</span> {new Date(invoice.date).toLocaleDateString()}
+                              <span className="font-medium">Invoice Date:</span> {formatIndianDate(new Date(invoice.date))}
                             </p>
                             <p className="text-sm text-gray-600 mb-1">
                               <span className="font-medium">File:</span> {invoice.fileName.length > 25 ? invoice.fileName.substring(0, 25) + '...' : invoice.fileName}
                             </p>
                             <p className="text-xs text-gray-500">
-                              Uploaded: {new Date(invoice.createdAt).toLocaleDateString()}
+                              Uploaded: {formatIndianDate(new Date(invoice.createdAt))}
                             </p>
                           </div>
                         </div>
@@ -593,7 +594,7 @@ export default function InvoiceManagement() {
         onConfirm={confirmDeleteInvoice}
         title="Delete Invoice"
         message="Are you sure you want to delete this invoice?"
-        itemName={invoiceToDelete ? `${invoiceToDelete.clientName} - ₹${invoiceToDelete.amount.toFixed(2)} (${new Date(invoiceToDelete.date).toLocaleDateString()})` : ''}
+        itemName={invoiceToDelete ? `${invoiceToDelete.clientName} - ${formatIndianCurrency(invoiceToDelete.amount)} (${formatIndianDate(new Date(invoiceToDelete.date))})` : ''}
         loading={!!deleting}
       />
     </div>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
+import { formatIndianDate } from '@/app/lib/indianLocalization'
 
 interface User {
   id: string
@@ -239,7 +240,7 @@ export default function ChallanManagement() {
                                       Uploaded by {challan.uploadedBy.email}
                                     </p>
                                     <p className="text-xs text-gray-400">
-                                      {new Date(challan.uploadedAt).toLocaleDateString()}
+                                      {formatIndianDate(new Date(challan.uploadedAt))}
                                     </p>
                                   </div>
                                 </div>

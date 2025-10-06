@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import PaymentModal from '@/app/components/PaymentModal'
+import { formatIndianDate, formatIndianCurrency } from '@/app/lib/indianLocalization'
 
 interface User {
   id: string
@@ -116,7 +117,7 @@ export default function PaymentManagement() {
   }
 
   const handleDeletePayment = async (paymentId: string, employeeName: string, amount: number, type: string) => {
-    if (!confirm(`Are you sure you want to delete this ${type.toLowerCase()} payment of ₹${amount.toFixed(2)} for ${employeeName}?`)) {
+    if (!confirm(`Are you sure you want to delete this ${type.toLowerCase()} payment of ${formatIndianCurrency(amount)} for ${employeeName}?`)) {
       return
     }
 
@@ -140,7 +141,7 @@ export default function PaymentManagement() {
   }
 
   const handleClearPayment = async (paymentId: string, employeeName: string, amount: number, type: string) => {
-    if (!confirm(`Are you sure you want to clear this ${type.toLowerCase()} payment of ₹${amount.toFixed(2)} for ${employeeName}?`)) {
+    if (!confirm(`Are you sure you want to clear this ${type.toLowerCase()} payment of ${formatIndianCurrency(amount)} for ${employeeName}?`)) {
       return
     }
 
@@ -239,8 +240,8 @@ export default function PaymentManagement() {
                 <div className="ml-5 w-0 flex-1">
                   <dl>
                     <dt className="text-sm font-medium text-gray-500 truncate">Net Dues</dt>
-                    <dd className="text-lg font-medium text-gray-900">₹{netDues.toFixed(2)}</dd>
-                    <dd className="text-xs text-gray-500 mt-1">₹{totalDuesCleared.toFixed(2)} cleared</dd>
+                    <dd className="text-lg font-medium text-gray-900">{formatIndianCurrency(netDues)}</dd>
+                    <dd className="text-xs text-gray-500 mt-1">{formatIndianCurrency(totalDuesCleared)} cleared</dd>
                   </dl>
                 </div>
               </div>
@@ -258,8 +259,8 @@ export default function PaymentManagement() {
                 <div className="ml-5 w-0 flex-1">
                   <dl>
                     <dt className="text-sm font-medium text-gray-500 truncate">Net Advances</dt>
-                    <dd className="text-lg font-medium text-gray-900">₹{netAdvances.toFixed(2)}</dd>
-                    <dd className="text-xs text-gray-500 mt-1">₹{totalAdvancesRepaid.toFixed(2)} repaid</dd>
+                    <dd className="text-lg font-medium text-gray-900">{formatIndianCurrency(netAdvances)}</dd>
+                    <dd className="text-xs text-gray-500 mt-1">{formatIndianCurrency(totalAdvancesRepaid)} repaid</dd>
                   </dl>
                 </div>
               </div>
@@ -279,7 +280,7 @@ export default function PaymentManagement() {
                     <dt className="text-sm font-medium text-gray-500 truncate">Net Balance</dt>
                     <dd className={`text-lg font-medium ${
                       netBalance >= 0 ? 'text-green-600' : 'text-red-600'
-                    }`}>₹{Math.abs(netBalance).toFixed(2)} {netBalance >= 0 ? '(Credit)' : '(Debit)'}</dd>
+                    }`}>{formatIndianCurrency(Math.abs(netBalance))} {netBalance >= 0 ? '(Credit)' : '(Debit)'}</dd>
                   </dl>
                 </div>
               </div>
@@ -413,13 +414,13 @@ export default function PaymentManagement() {
                             </span>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            ₹{payment.amount.toFixed(2)}
+                            {formatIndianCurrency(payment.amount)}
                           </td>
                           <td className="px-6 py-4 text-sm text-gray-500">
                             {payment.description || 'No description'}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {new Date(payment.date).toLocaleDateString()}
+                            {formatIndianDate(payment.date)}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             <div className="flex space-x-2">
@@ -467,9 +468,9 @@ export default function PaymentManagement() {
                         </span>
                       </div>
                       <div className="flex justify-between items-center">
-                        <span className="text-lg font-bold text-gray-900">₹{payment.amount.toFixed(2)}</span>
+                        <span className="text-lg font-bold text-gray-900">{formatIndianCurrency(payment.amount)}</span>
                         <div className="flex items-center space-x-2">
-                          <span className="text-sm text-gray-500">{new Date(payment.date).toLocaleDateString()}</span>
+                          <span className="text-sm text-gray-500">{formatIndianDate(payment.date)}</span>
                           {(!payment.isCleared && (payment.type === 'DUE' || payment.type === 'ADVANCE')) && (
                             <button
                               onClick={() => handleClearPayment(payment.id, payment.employee.name, payment.amount, payment.type)}

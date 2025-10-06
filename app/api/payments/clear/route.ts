@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/app/lib/prisma'
 import { adminOnly, AuthenticatedRequest } from '@/app/lib/middleware'
+import { formatIndianDate } from '@/app/lib/indianLocalization'
 import { z } from 'zod'
 import { PaymentType } from '@prisma/client'
 
@@ -65,7 +66,7 @@ async function clearPayment(request: AuthenticatedRequest) {
         employeeId: originalPayment.employeeId,
         type: clearingType,
         amount: originalPayment.amount,
-        description: data.description || `Clearing ${originalPayment.type.toLowerCase()} payment from ${originalPayment.date.toLocaleDateString()}`,
+        description: data.description || `Clearing ${originalPayment.type.toLowerCase()} payment from ${formatIndianDate(originalPayment.date)}`,
         date: new Date(),
         clearedPaymentId: originalPayment.id
       },

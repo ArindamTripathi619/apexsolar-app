@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import ClientPaymentModal from '@/app/components/ClientPaymentModal';
+import { formatIndianCurrency } from '@/app/lib/indianLocalization';
 
 interface User {
   id: string;
@@ -192,7 +193,7 @@ export default function ClientsPage() {
                 <div className="ml-5 w-0 flex-1">
                   <dl>
                     <dt className="text-sm font-medium text-gray-500 truncate">Total Due Amount</dt>
-                    <dd className="text-lg font-medium text-red-600">₹{totalDue.toLocaleString()}</dd>
+                    <dd className="text-lg font-medium text-red-600">{formatIndianCurrency(totalDue)}</dd>
                   </dl>
                 </div>
                 <div className="ml-5">
@@ -250,7 +251,7 @@ export default function ClientsPage() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className={`text-sm font-medium ${(client.dueAmount || 0) > 0 ? 'text-red-600' : 'text-green-600'}`}>
-                        ₹{(client.dueAmount || 0).toLocaleString()}
+                        {formatIndianCurrency(client.dueAmount || 0)}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
