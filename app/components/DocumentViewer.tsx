@@ -75,7 +75,9 @@ export default function DocumentViewer({ userRole, refreshTrigger }: DocumentVie
       if (filters.tags) params.append('tags', filters.tags)
       if (filters.isPublic) params.append('isPublic', filters.isPublic)
 
-      const response = await fetch(`/api/documents?${params.toString()}`)
+      const response = await fetch(`/api/documents?${params.toString()}`, {
+        credentials: 'include'
+      })
       const result = await response.json()
 
       if (result.success) {
@@ -102,6 +104,7 @@ export default function DocumentViewer({ userRole, refreshTrigger }: DocumentVie
 
     try {
       const response = await fetch(`/api/documents/${documentId}`, {
+        credentials: 'include',
         method: 'DELETE'
       })
 

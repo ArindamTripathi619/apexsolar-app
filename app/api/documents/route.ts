@@ -128,7 +128,7 @@ export async function POST(request: NextRequest) {
     const tags = formData.get('tags') as string
     const isPublic = formData.get('isPublic') === 'true'
 
-    if (file app/admin/clients/page.tsx || !title) {
+    if (!file || !title) {
       return NextResponse.json(
         { success: false, error: 'File and title are required' },
         { status: 400 }

@@ -69,6 +69,7 @@ export default function DocumentUploadModal({
       submitData.append('isPublic', formData.isPublic.toString())
 
       const response = await fetch('/api/documents', {
+        credentials: 'include',
         method: 'POST',
         body: submitData
       })

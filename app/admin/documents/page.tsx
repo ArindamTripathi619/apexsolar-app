@@ -1,10 +1,36 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
+import { useRouter } from 'next/navigation'
 import DocumentUploadModal from '@/app/components/DocumentUploadModal'
 import DocumentViewer from '@/app/components/DocumentViewer'
 
 export default function AdminDocumentsPage() {
+  const router = useRouter()
+
+  const checkAuth = useCallback(async () => {
+    try {
+      const response = await fetch('/api/auth/me', {
+        credentials: 'include'
+      })
+      
+      if (!response.ok) {
+        router.push('/admin/login')
+        return
+      }
+
+      const data = await response.json()
+      if (!data.success || data.data.role !== 'ADMIN') {
+        router.push('/admin/login')
+      }
+    } catch (err) {
+      router.push('/admin/login')
+    }
+  }, [router])
+
+  useEffect(() => {
+    checkAuth()
+  }, [checkAuth])
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
   const [refreshTrigger, setRefreshTrigger] = useState(0)
 
