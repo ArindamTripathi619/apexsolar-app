@@ -17,6 +17,7 @@ model User {
   updatedAt   DateTime  @updatedAt
   lastLogin   DateTime?
   lastLoginIp String?
+  documents   Document[]
 
   @@map("users")
 }
@@ -171,4 +172,37 @@ enum PaymentType {
 enum ChallanType {
   PF
   ESI
+}
+
+model Document {
+  id          String       @id @default(cuid())
+  title       String
+  description String?
+  fileName    String
+  fileUrl     String
+  fileSize    Int?
+  mimeType    String?
+  category    DocumentCategory @default(GENERAL)
+  uploadedBy  String
+  uploadedFor String?      // Optional: specific user/employee this document is for
+  tags        String[]     // Array of tags for categorization
+  isPublic    Boolean      @default(false) // Public documents visible to all users
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  uploader    User         @relation(fields: [uploadedBy], references: [id], onDelete: Cascade)
+
+  @@map("documents")
+}
+
+enum DocumentCategory {
+  GENERAL
+  FINANCIAL
+  LEGAL
+  HR
+  COMPLIANCE
+  CONTRACTS
+  INVOICES
+  REPORTS
+  POLICIES
+  CERTIFICATES
 }

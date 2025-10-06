@@ -1,0 +1,309 @@
+'use client'
+
+import React, { useState, useEffect } from 'react'
+import { DocumentCategory } from '@prisma/client'
+
+interface Document {
+  id: string
+  title: string
+  description?: string
+  fileName: string
+  fileUrl: string
+  fileSize?: number
+  mimeType?: string
+  category: DocumentCategory
+  uploadedBy: string
+  uploadedFor?: string
+  tags: string[]
+  isPublic: boolean
+  createdAt: string
+  updatedAt: string
+  uploader: {
+    id: string
+    email: string
+    role: string
+  }
+}
+
+interface DocumentViewerProps {
+  userRole?: string
+  refreshTrigger?: number
+}
+
+const CATEGORY_LABELS = {
+  GENERAL: 'General',
+  FINANCIAL: 'Financial',
+  LEGAL: 'Legal',
+  HR: 'HR',
+  COMPLIANCE: 'Compliance',
+  CONTRACTS: 'Contracts',
+  INVOICES: 'Invoices',
+  REPORTS: 'Reports',
+  POLICIES: 'Policies',
+  CERTIFICATES: 'Certificates'
+}
+
+const CATEGORY_COLORS = {
+  GENERAL: 'bg-gray-100 text-gray-800',
+  FINANCIAL: 'bg-green-100 text-green-800',
+  LEGAL: 'bg-red-100 text-red-800',
+  HR: 'bg-blue-100 text-blue-800',
+  COMPLIANCE: 'bg-yellow-100 text-yellow-800',
+  CONTRACTS: 'bg-purple-100 text-purple-800',
+  INVOICES: 'bg-indigo-100 text-indigo-800',
+  REPORTS: 'bg-pink-100 text-pink-800',
+  POLICIES: 'bg-orange-100 text-orange-800',
+  CERTIFICATES: 'bg-teal-100 text-teal-800'
+}
+
+export default function DocumentViewer({ userRole, refreshTrigger }: DocumentViewerProps) {
+  const [documents, setDocuments] = useState<Document[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+  const [filters, setFilters] = useState({
+    category: '',
+    tags: '',
+    isPublic: ''
+  })
+
+  const fetchDocuments = async () => {
+    try {
+      setLoading(true)
+      const params = new URLSearchParams()
+      
+      if (filters.category) params.append('category', filters.category)
+      if (filters.tags) params.append('tags', filters.tags)
+      if (filters.isPublic) params.append('isPublic', filters.isPublic)
+
+      const response = await fetch(`/api/documents?${params.toString()}`)
+      const result = await response.json()
+
+      if (result.success) {
+        setDocuments(result.data)
+      } else {
+        setError(result.error || 'Failed to fetch documents')
+      }
+    } catch (error) {
+      setError('Failed to fetch documents')
+      console.error('Fetch error:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchDocuments()
+  }, [filters, refreshTrigger])
+
+  const handleDelete = async (documentId: string) => {
+    if (!confirm('Are you sure you want to delete this document?')) {
+      return
+    }
+
+    try {
+      const response = await fetch(`/api/documents/${documentId}`, {
+        method: 'DELETE'
+      })
+
+      const result = await response.json()
+
+      if (result.success) {
+        fetchDocuments() // Refresh the list
+      } else {
+        alert(result.error || 'Failed to delete document')
+      }
+    } catch (error) {
+      alert('Failed to delete document')
+      console.error('Delete error:', error)
+    }
+  }
+
+  const formatFileSize = (bytes?: number) => {
+    if (!bytes) return 'Unknown size'
+    const sizes = ['Bytes', 'KB', 'MB', 'GB']
+    const i = Math.floor(Math.log(bytes) / Math.log(1024))
+    return Math.round(bytes / Math.pow(1024, i) * 100) / 100 + ' ' + sizes[i]
+  }
+
+  const getFileIcon = (mimeType?: string) => {
+    if (!mimeType) return '📄'
+    if (mimeType.includes('pdf')) return '📕'
+    if (mimeType.includes('word')) return '📘'
+    if (mimeType.includes('excel') || mimeType.includes('spreadsheet')) return '📗'
+    if (mimeType.includes('image')) return '🖼️'
+    if (mimeType.includes('text')) return '📝'
+    return '📄'
+  }
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-32">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Filters */}
+      <div className="bg-white p-4 rounded-lg shadow border">
+        <h3 className="text-lg font-medium text-gray-900 mb-4">Filter Documents</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Category
+            </label>
+            <select
+              value={filters.category}
+              onChange={(e) => setFilters(prev => ({ ...prev, category: e.target.value }))}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">All Categories</option>
+              {Object.entries(CATEGORY_LABELS).map(([value, label]) => (
+                <option key={value} value={value}>{label}</option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Tags
+            </label>
+            <input
+              type="text"
+              value={filters.tags}
+              onChange={(e) => setFilters(prev => ({ ...prev, tags: e.target.value }))}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Search by tags..."
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Visibility
+            </label>
+            <select
+              value={filters.isPublic}
+              onChange={(e) => setFilters(prev => ({ ...prev, isPublic: e.target.value }))}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">All Documents</option>
+              <option value="true">Public Documents</option>
+              <option value="false">Private Documents</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      {/* Error Message */}
+      {error && (
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+          {error}
+        </div>
+      )}
+
+      {/* Documents Grid */}
+      {documents.length === 0 ? (
+        <div className="text-center py-12 bg-white rounded-lg shadow border">
+          <div className="text-gray-500 text-lg">No documents found</div>
+          <div className="text-gray-400 text-sm mt-2">
+            {userRole === 'ADMIN' || userRole === 'ACCOUNTANT' 
+              ? 'Upload your first document to get started'
+              : 'No documents have been shared yet'
+            }
+          </div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {documents.map((document) => (
+            <div key={document.id} className="bg-white rounded-lg shadow border hover:shadow-md transition-shadow">
+              <div className="p-4">
+                {/* Header */}
+                <div className="flex items-start justify-between mb-3">
+                  <div className="flex items-center space-x-2">
+                    <span className="text-2xl">{getFileIcon(document.mimeType)}</span>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="text-sm font-medium text-gray-900 truncate">
+                        {document.title}
+                      </h4>
+                      <p className="text-xs text-gray-500">
+                        {formatFileSize(document.fileSize)}
+                      </p>
+                    </div>
+                  </div>
+                  
+                  {/* Actions */}
+                  {(userRole === 'ADMIN' || document.uploader.id === userRole) && (
+                    <button
+                      onClick={() => handleDelete(document.id)}
+                      className="text-red-600 hover:text-red-800 text-sm"
+                      title="Delete document"
+                    >
+                      🗑️
+                    </button>
+                  )}
+                </div>
+
+                {/* Category & Visibility */}
+                <div className="flex items-center space-x-2 mb-3">
+                  <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${CATEGORY_COLORS[document.category]}`}>
+                    {CATEGORY_LABELS[document.category]}
+                  </span>
+                  {document.isPublic ? (
+                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                      Public
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                      Private
+                    </span>
+                  )}
+                </div>
+
+                {/* Description */}
+                {document.description && (
+                  <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+                    {document.description}
+                  </p>
+                )}
+
+                {/* Tags */}
+                {document.tags.length > 0 && (
+                  <div className="flex flex-wrap gap-1 mb-3">
+                    {document.tags.slice(0, 3).map((tag, index) => (
+                      <span key={index} className="inline-block bg-blue-50 text-blue-700 text-xs px-2 py-1 rounded">
+                        {tag}
+                      </span>
+                    ))}
+                    {document.tags.length > 3 && (
+                      <span className="inline-block text-blue-700 text-xs px-2 py-1">
+                        +{document.tags.length - 3} more
+                      </span>
+                    )}
+                  </div>
+                )}
+
+                {/* Footer */}
+                <div className="border-t pt-3 mt-3">
+                  <div className="flex items-center justify-between text-xs text-gray-500">
+                    <span>By: {document.uploader.email}</span>
+                    <span>{new Date(document.createdAt).toLocaleDateString()}</span>
+                  </div>
+                  
+                  {/* Download Button */}
+                  <a
+                    href={document.fileUrl}
+                    download={document.fileName}
+                    className="mt-2 w-full inline-flex justify-center items-center px-3 py-2 border border-blue-300 shadow-sm text-sm font-medium rounded-md text-blue-700 bg-blue-50 hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                  >
+                    📥 Download
+                  </a>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
