@@ -43,7 +43,9 @@ uploads/
 
 # Development scripts
 scripts/
+# Development scripts
 *.sh
+!start.sh
 
 # Test files
 test-*.js
