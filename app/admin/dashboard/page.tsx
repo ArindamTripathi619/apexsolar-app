@@ -585,6 +585,19 @@ export default function AdminDashboard() {
               </button>
             </div>
           </div>
+
+          <div className="bg-white overflow-hidden shadow rounded-lg">
+            <div className="p-5">
+              <h3 className="text-lg font-medium text-gray-900 mb-2">Document Management</h3>
+              <p className="text-sm text-gray-500 mb-4">Upload and manage all documents</p>
+              <button 
+                onClick={() => router.push('/admin/documents')}
+                className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+              >
+                Manage Documents →
+              </button>
+            </div>
+          </div>
         </div>
       </main>
 

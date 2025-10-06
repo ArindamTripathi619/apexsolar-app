@@ -95,6 +95,9 @@
 - [x] Modal dialogs for uploads and forms
 - [x] Data tables with sorting and filtering
 - [x] Navigation and breadcrumbs
+- [x] **Dashboard navigation to documents** ✅ NEW
+- [x] **Back-to-dashboard buttons on all pages** ✅ NEW
+- [x] **Quick actions sections** ✅ NEW
 
 ### Data Management
 - [x] Database seeding with default users

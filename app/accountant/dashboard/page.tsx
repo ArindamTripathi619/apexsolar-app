@@ -259,6 +259,31 @@ export default function AccountantDashboard() {
             </div>
           </div>
         </div>
+
+        {/* Quick Actions */}
+        <div className="mt-8 bg-white shadow rounded-lg">
+          <div className="px-4 py-5 sm:p-6">
+            <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
+              Quick Actions
+            </h3>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <button 
+                onClick={() => router.push('/accountant/documents')}
+                className="p-4 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors text-left"
+              >
+                <div className="text-indigo-600 font-medium mb-2">Document Management</div>
+                <div className="text-sm text-gray-500">View and manage all documents</div>
+              </button>
+              <button 
+                onClick={() => router.push('/accountant/challans')}
+                className="p-4 bg-orange-50 rounded-lg hover:bg-orange-100 transition-colors text-left"
+              >
+                <div className="text-orange-600 font-medium mb-2">View Challans</div>
+                <div className="text-sm text-gray-500">View uploaded PF/ESI challans</div>
+              </button>
+            </div>
+          </div>
+        </div>
       </main>
 
       {/* PF Challan Modal */}
