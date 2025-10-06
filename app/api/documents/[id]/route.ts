@@ -31,6 +31,14 @@ export async function GET(request: NextRequest, context: RouteContext) {
       )
     }
 
+    // Only ADMIN and ACCOUNTANT can access documents
+    if (user.role !== 'ADMIN' && user.role !== 'ACCOUNTANT') {
+      return NextResponse.json(
+        { success: false, error: 'Access denied. Documents are only accessible to Admin and Accountant roles.' },
+        { status: 403 }
+      )
+    }
+
     const { id } = await context.params
     
     const document = await prisma.document.findUnique({
@@ -55,9 +63,7 @@ export async function GET(request: NextRequest, context: RouteContext) {
 
     const canAccess = 
       user.role === 'ADMIN' ||
-      document.isPublic ||
-      document.uploadedBy === user.id ||
-      document.uploadedFor === user.id
+      document.uploadedBy === user.id
 
     if (!canAccess) {
       return NextResponse.json(
@@ -86,6 +92,14 @@ export async function DELETE(request: NextRequest, context: RouteContext) {
       return NextResponse.json(
         { success: false, error: 'Unauthorized' },
         { status: 401 }
+      )
+    }
+
+    // Only ADMIN and ACCOUNTANT can access documents
+    if (user.role !== 'ADMIN' && user.role !== 'ACCOUNTANT') {
+      return NextResponse.json(
+        { success: false, error: 'Access denied. Documents are only accessible to Admin and Accountant roles.' },
+        { status: 403 }
       )
     }
 

@@ -29,6 +29,14 @@ export async function GET(request: NextRequest) {
       )
     }
 
+    // Only ADMIN and ACCOUNTANT can access documents
+    if (user.role !== 'ADMIN' && user.role !== 'ACCOUNTANT') {
+      return NextResponse.json(
+        { success: false, error: 'Access denied. Documents are only accessible to Admin and Accountant roles.' },
+        { status: 403 }
+      )
+    }
+
     const { searchParams } = new URL(request.url)
     const category = searchParams.get('category')
     const uploadedBy = searchParams.get('uploadedBy')
@@ -44,8 +52,6 @@ export async function GET(request: NextRequest) {
         { isPublic: true },
         { uploadedBy: user.id }
       ]
-    } else {
-      whereClause.isPublic = true
     }
     
     if (category && Object.values(DocumentCategory).includes(category as DocumentCategory)) {
@@ -105,6 +111,14 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Only ADMIN and ACCOUNTANT can upload documents
+    if (user.role !== 'ADMIN' && user.role !== 'ACCOUNTANT') {
+      return NextResponse.json(
+        { success: false, error: 'Access denied. Only Admin and Accountant can upload documents.' },
+        { status: 403 }
+      )
+    }
+
     const formData = await request.formData()
     const file = formData.get('file') as File
     const title = formData.get('title') as string
@@ -114,7 +128,7 @@ export async function POST(request: NextRequest) {
     const tags = formData.get('tags') as string
     const isPublic = formData.get('isPublic') === 'true'
 
-    if (!file || !title) {
+    if (file app/admin/clients/page.tsx || !title) {
       return NextResponse.json(
         { success: false, error: 'File and title are required' },
         { status: 400 }
@@ -149,6 +163,7 @@ export async function POST(request: NextRequest) {
     }
 
     const uploadResult = await uploadFile(file, 'documents')
+    
     if (!uploadResult.success || !uploadResult.fileName || !uploadResult.fileUrl) {
       return NextResponse.json(
         { success: false, error: uploadResult.error || "Upload failed" },
