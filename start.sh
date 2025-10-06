@@ -6,6 +6,11 @@ echo "Starting ApexSolar application..."
 # Run database migrations if DATABASE_URL is set
 if [ ! -z "$DATABASE_URL" ]; then
     echo "Running database migrations..."
+    
+    # Try to resolve the initial migration as applied (for existing databases)
+    npx prisma migrate resolve --applied 20250126_init 2>/dev/null || echo "Initial migration resolution skipped"
+    
+    # Try to deploy new migrations
     npx prisma migrate deploy 2>/dev/null || {
         echo "Migrate deploy failed, trying db push..."
         npx prisma db push --accept-data-loss 2>/dev/null || {
@@ -17,6 +22,7 @@ if [ ! -z "$DATABASE_URL" ]; then
                 
                 async function createTables() {
                     try {
+                        // Create clients table
                         await prisma.\$executeRaw\`
                             CREATE TABLE IF NOT EXISTS clients (
                                 id TEXT NOT NULL,
@@ -38,6 +44,7 @@ if [ ! -z "$DATABASE_URL" ]; then
                             );
                         \`;
                         
+                        // Create client_payments table
                         await prisma.\$executeRaw\`
                             CREATE TABLE IF NOT EXISTS client_payments (
                                 id TEXT NOT NULL,
@@ -51,7 +58,16 @@ if [ ! -z "$DATABASE_URL" ]; then
                             );
                         \`;
                         
-                        console.log('Tables created successfully');
+                        // Add columns to existing tables if they don't exist
+                        await prisma.\$executeRaw\`
+                            ALTER TABLE payments ADD COLUMN IF NOT EXISTS \"clearedPaymentId\" TEXT;
+                        \` || true;
+                        
+                        await prisma.\$executeRaw\`
+                            ALTER TABLE invoices ADD COLUMN IF NOT EXISTS \"clientId\" TEXT;
+                        \` || true;
+                        
+                        console.log('Tables created/updated successfully');
                     } catch (error) {
                         console.log('Table creation skipped:', error.message);
                     } finally {

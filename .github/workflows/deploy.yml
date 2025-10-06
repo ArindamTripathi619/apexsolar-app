@@ -40,7 +40,7 @@ jobs:
         DATABASE_URL: ${{ secrets.DATABASE_URL }}
       run: |
         echo "Running database migrations..."
-        npx prisma migrate deploy || npx prisma db push --accept-data-loss || echo "Migration failed, continuing deployment"
+        npx prisma migrate deploy || npx prisma migrate resolve --applied 20250126_init || npx prisma db push --accept-data-loss || echo "Migration failed, continuing deployment"
 
     - name: Build application
       run: npm run build
