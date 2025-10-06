@@ -94,22 +94,22 @@ get_data_counts() {
     # Get employees count
     local employees=$(curl -s -X GET "$BASE_URL/api/employees" \
         -H "Cookie: auth-token=$AUTH_TOKEN" | \
-        grep -o '"id":[0-9]*' | wc -l)
+        grep -o '"id":[^,]*' | wc -l)
     
     # Get clients count
     local clients=$(curl -s -X GET "$BASE_URL/api/clients" \
         -H "Cookie: auth-token=$AUTH_TOKEN" | \
-        grep -o '"id":[0-9]*' | wc -l)
+        grep -o '"id":[^,]*' | wc -l)
     
     # Get invoices count
     local invoices=$(curl -s -X GET "$BASE_URL/api/invoices" \
         -H "Cookie: auth-token=$AUTH_TOKEN" | \
-        grep -o '"id":[0-9]*' | wc -l)
+        grep -o '"id":[^,]*' | wc -l)
     
     # Get payments count
     local payments=$(curl -s -X GET "$BASE_URL/api/payments" \
         -H "Cookie: auth-token=$AUTH_TOKEN" | \
-        grep -o '"id":[0-9]*' | wc -l)
+        grep -o '"id":[^,]*' | wc -l)
     
     echo ""
     echo "📊 $prefix Data Counts:"
@@ -132,62 +132,107 @@ get_data_counts() {
     fi
 }
 
+# Check if item is test data
+is_test_data() {
+    local name="$1"
+    local email="$2"
+    local description="$3"
+    
+    # Check for test patterns
+    if echo "$name" | grep -iq "test\|TEST_"; then
+        return 0
+    fi
+    if echo "$email" | grep -iq "test\|\.test@"; then
+        return 0
+    fi
+    if echo "$description" | grep -iq "test\|TEST_"; then
+        return 0
+    fi
+    
+    # Additional test patterns
+    if echo "$name" | grep -q "Bulk Test\|Memory Test\|Upload Test\|Security Test\|<script>"; then
+        return 0
+    fi
+    
+    return 1
+}
+
 # Clean up test data via API
 cleanup_via_api() {
-    print_info "Cleaning up via API endpoints..."
+    print_info "Cleaning up test data via API endpoints..."
     
     local total_deleted=0
     
     # Clean payments first (dependencies)
+    print_info "Cleaning payments..."
     local payments_response=$(curl -s -X GET "$BASE_URL/api/payments" \
         -H "Cookie: auth-token=$AUTH_TOKEN")
     
-    local payment_ids=$(echo "$payments_response" | \
-        grep -o '"id":[0-9]*' | cut -d':' -f2)
-    
-    for payment_id in $payment_ids; do
-        curl -s -X DELETE "$BASE_URL/api/payments/$payment_id" \
-            -H "Cookie: auth-token=$AUTH_TOKEN" >/dev/null 2>&1
-        total_deleted=$((total_deleted + 1))
+    # Extract payment data and check if it's test data
+    echo "$payments_response" | grep -o '"id":"[^"]*"[^}]*"description":"[^"]*"' | while read payment_line; do
+        local payment_id=$(echo "$payment_line" | grep -o '"id":"[^"]*"' | cut -d'"' -f4)
+        local description=$(echo "$payment_line" | grep -o '"description":"[^"]*"' | cut -d'"' -f4)
+        
+        if is_test_data "" "" "$description"; then
+            curl -s -X DELETE "$BASE_URL/api/payments/$payment_id" \
+                -H "Cookie: auth-token=$AUTH_TOKEN" >/dev/null 2>&1
+            total_deleted=$((total_deleted + 1))
+        fi
     done
     
     # Clean invoices
+    print_info "Cleaning invoices..."
     local invoices_response=$(curl -s -X GET "$BASE_URL/api/invoices" \
         -H "Cookie: auth-token=$AUTH_TOKEN")
     
-    local invoice_ids=$(echo "$invoices_response" | \
-        grep -o '"id":[0-9]*' | cut -d':' -f2)
-    
-    for invoice_id in $invoice_ids; do
-        curl -s -X DELETE "$BASE_URL/api/invoices/$invoice_id" \
-            -H "Cookie: auth-token=$AUTH_TOKEN" >/dev/null 2>&1
-        total_deleted=$((total_deleted + 1))
+    echo "$invoices_response" | grep -o '"id":"[^"]*"[^}]*"description":"[^"]*"' | while read invoice_line; do
+        local invoice_id=$(echo "$invoice_line" | grep -o '"id":"[^"]*"' | cut -d'"' -f4)
+        local description=$(echo "$invoice_line" | grep -o '"description":"[^"]*"' | cut -d'"' -f4)
+        
+        if is_test_data "" "" "$description"; then
+            curl -s -X DELETE "$BASE_URL/api/invoices/$invoice_id" \
+                -H "Cookie: auth-token=$AUTH_TOKEN" >/dev/null 2>&1
+            total_deleted=$((total_deleted + 1))
+        fi
     done
     
     # Clean clients
+    print_info "Cleaning clients..."
     local clients_response=$(curl -s -X GET "$BASE_URL/api/clients" \
         -H "Cookie: auth-token=$AUTH_TOKEN")
     
-    local client_ids=$(echo "$clients_response" | \
-        grep -o '"id":[0-9]*' | cut -d':' -f2)
-    
-    for client_id in $client_ids; do
-        curl -s -X DELETE "$BASE_URL/api/clients?id=$client_id" \
-            -H "Cookie: auth-token=$AUTH_TOKEN" >/dev/null 2>&1
-        total_deleted=$((total_deleted + 1))
+    echo "$clients_response" | grep -o '"id":"[^"]*"[^}]*"name":"[^"]*"[^}]*"email":"[^"]*"' | while read client_line; do
+        local client_id=$(echo "$client_line" | grep -o '"id":"[^"]*"' | cut -d'"' -f4)
+        local name=$(echo "$client_line" | grep -o '"name":"[^"]*"' | cut -d'"' -f4)
+        local email=$(echo "$client_line" | grep -o '"email":"[^"]*"' | cut -d'"' -f4)
+        
+        if is_test_data "$name" "$email" ""; then
+            curl -s -X DELETE "$BASE_URL/api/clients?id=$client_id" \
+                -H "Cookie: auth-token=$AUTH_TOKEN" >/dev/null 2>&1
+            total_deleted=$((total_deleted + 1))
+        fi
     done
     
-    # Clean employees
+    # Clean employees (keep admin users)
+    print_info "Cleaning employees..."
     local employees_response=$(curl -s -X GET "$BASE_URL/api/employees" \
         -H "Cookie: auth-token=$AUTH_TOKEN")
     
-    local employee_ids=$(echo "$employees_response" | \
-        grep -o '"id":[0-9]*' | cut -d':' -f2)
-    
-    for employee_id in $employee_ids; do
-        curl -s -X DELETE "$BASE_URL/api/employees/$employee_id" \
-            -H "Cookie: auth-token=$AUTH_TOKEN" >/dev/null 2>&1
-        total_deleted=$((total_deleted + 1))
+    echo "$employees_response" | grep -o '"id":"[^"]*"[^}]*"name":"[^"]*"[^}]*"email":"[^"]*"' | while read employee_line; do
+        local employee_id=$(echo "$employee_line" | grep -o '"id":"[^"]*"' | cut -d'"' -f4)
+        local name=$(echo "$employee_line" | grep -o '"name":"[^"]*"' | cut -d'"' -f4)
+        local email=$(echo "$employee_line" | grep -o '"email":"[^"]*"' | cut -d'"' -f4)
+        
+        # Skip admin users
+        if echo "$email" | grep -q "admin@apexsolar.net\|accountant@apexsolar.net"; then
+            continue
+        fi
+        
+        if is_test_data "$name" "$email" ""; then
+            curl -s -X DELETE "$BASE_URL/api/employees/$employee_id" \
+                -H "Cookie: auth-token=$AUTH_TOKEN" >/dev/null 2>&1
+            total_deleted=$((total_deleted + 1))
+        fi
     done
     
     print_success "API cleanup completed - processed $total_deleted items"
@@ -203,11 +248,12 @@ cleanup_files() {
     for dir in uploads/employees uploads/challans uploads/invoices; do
         if [ -d "$dir" ]; then
             # Count files before deletion
-            local file_count=$(find "$dir" -type f | wc -l)
+            local file_count=$(find "$dir" -type f 2>/dev/null | wc -l)
             
-            # Remove test files
+            # Remove test files and clean empty directories
             find "$dir" -name "*test*" -type f -delete 2>/dev/null || true
             find "$dir" -name "*.tmp" -type f -delete 2>/dev/null || true
+            find "$dir" -type d -empty -delete 2>/dev/null || true
             
             deleted_files=$((deleted_files + file_count))
         fi
@@ -222,18 +268,44 @@ database_cleanup() {
     
     # Create temporary SQL cleanup file
     cat > /tmp/cleanup.sql << 'SQL'
--- Clean test data from database
-DELETE FROM payments WHERE description LIKE '%test%' OR description LIKE '%Test%';
-DELETE FROM invoices WHERE description LIKE '%test%' OR description LIKE '%Test%';
-DELETE FROM employees WHERE name LIKE '%test%' OR name LIKE '%Test%' OR email LIKE '%test%';
-DELETE FROM clients WHERE name LIKE '%test%' OR name LIKE '%Test%' OR email LIKE '%test%';
-DELETE FROM attendance WHERE notes LIKE '%test%' OR notes LIKE '%Test%';
-DELETE FROM challans WHERE file_name LIKE '%test%' OR file_name LIKE '%Test%';
+-- Clean test data from database (correct column names)
+DELETE FROM employees WHERE 
+    name LIKE 'Memory Test%' OR 
+    name LIKE 'Upload Test%' OR 
+    name LIKE 'Bulk Test%' OR 
+    name LIKE 'Security Test%' OR 
+    name LIKE 'TEST_EMPLOYEE_%' OR 
+    name LIKE 'Updated Test%' OR 
+    name = 'Test' OR 
+    name LIKE '%<script>%' OR
+    email LIKE '%test%@%' OR
+    email LIKE '%.test@%';
+
+DELETE FROM payments WHERE 
+    description LIKE '%test%' OR 
+    description LIKE '%Test%' OR 
+    description LIKE '%TEST_%';
+
+DELETE FROM clients WHERE 
+    "companyName" LIKE '%test%' OR 
+    "companyName" LIKE '%Test%' OR 
+    email LIKE '%test%' OR 
+    email LIKE '%.test@%';
+
+DELETE FROM invoices WHERE 
+    "clientName" LIKE '%test%' OR 
+    "clientName" LIKE '%Test%' OR 
+    "clientName" LIKE '%TEST_%';
+
+DELETE FROM client_payments WHERE 
+    description LIKE '%test%' OR 
+    description LIKE '%Test%' OR 
+    description LIKE '%TEST_%';
 SQL
     
     # Execute cleanup
     if command -v npx >/dev/null 2>&1; then
-        npx prisma db execute --file /tmp/cleanup.sql 2>/dev/null || true
+        npx prisma db execute --file /tmp/cleanup.sql --schema prisma/schema.prisma 2>/dev/null || true
         print_success "Database cleanup completed"
     else
         print_warning "Prisma not available for database cleanup"
@@ -266,9 +338,11 @@ main() {
     print_header "Starting Cleanup Process"
     
     # Multiple cleanup methods for thoroughness
-    cleanup_via_api
     database_cleanup
     cleanup_files
+    
+    # Wait a moment for database changes to propagate
+    sleep 2
     
     get_data_counts "Final"
     
