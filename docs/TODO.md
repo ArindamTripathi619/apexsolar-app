@@ -22,6 +22,13 @@
   - Added "Back to Dashboard" buttons to all document pages
   - All pages now have consistent navigation back to respective dashboards
 
+- [x] **Route Consolidation - COMPLETED**
+  - Removed redundant `/attendance` route that duplicated `/accountant` functionality
+  - Simplified main page from 3-portal to 2-portal layout (Admin + Accountant)
+  - Reduced build size by 40K and 3 static pages (47 → 44 pages)
+  - Improved user experience with clear role-to-portal mapping
+  - Preserved all functionality - attendance features accessible via `/accountant/dashboard`
+
 ## 📋 Current Status: ALL MAJOR FEATURES WORKING
 
 The ApexSolar Employee Management System is now **100% operational** with all core features functioning correctly:
