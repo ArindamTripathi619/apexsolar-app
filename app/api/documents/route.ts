@@ -149,6 +149,13 @@ export async function POST(request: NextRequest) {
     }
 
     const uploadResult = await uploadFile(file, 'documents')
+    if (!uploadResult.success || !uploadResult.fileName || !uploadResult.fileUrl) {
+      return NextResponse.json(
+        { success: false, error: uploadResult.error || "Upload failed" },
+        { status: 500 }
+      )
+    }
+
     const tagArray = tags ? tags.split(',').map(tag => tag.trim()).filter(Boolean) : []
 
     const document = await prisma.document.create({
@@ -156,7 +163,7 @@ export async function POST(request: NextRequest) {
         title,
         description,
         fileName: uploadResult.fileName,
-        fileUrl: uploadResult.url,
+        fileUrl: uploadResult.fileUrl,
         fileSize: file.size,
         mimeType: file.type,
         category: category || DocumentCategory.GENERAL,

@@ -603,13 +603,11 @@ export default function AdminDashboard() {
             setShowDocumentUpload(false)
             setSelectedEmployee(null)
           }}
-          onSuccess={() => {
+          onDocumentUploaded={() => {
             setShowDocumentUpload(false)
             setSelectedEmployee(null)
             fetchStats() // Refresh stats after document upload
           }}
-          employeeId={selectedEmployee.id}
-          employeeName={selectedEmployee.name}
         />
       )}
 
