@@ -377,19 +377,23 @@ test_payment_api_response_format() {
 
 # Cleanup test data
 cleanup_test_data() {
-    local token=$(get_auth_token "$ADMIN_EMAIL" "$ADMIN_PASSWORD")
-    [ -n "$token" ] || return 0
-    
-    # Delete created invoice first
-    if [ -n "$CREATED_INVOICE_ID" ]; then
-        curl -s -X DELETE "$BASE_URL/api/invoices/$CREATED_INVOICE_ID" \
-            -H "Cookie: auth-token=$token" >/dev/null 2>&1
-    fi
-    
-    # Delete created client (should work now that invoice is deleted)
-    if [ -n "$CREATED_CLIENT_ID" ]; then
-        curl -s -X DELETE "$BASE_URL/api/clients?id=$CREATED_CLIENT_ID" \
-            -H "Cookie: auth-token=$token" >/dev/null 2>&1
+    # Use the comprehensive cleanup script
+    if [ -f "scripts/cleanup-test-data.sh" ]; then
+        echo "y" | ./scripts/cleanup-test-data.sh >/dev/null 2>&1 || true
+    else
+        # Fallback basic cleanup
+        local token=$(get_auth_token "$ADMIN_EMAIL" "$ADMIN_PASSWORD")
+        [ -n "$token" ] || return 0
+        
+        if [ -n "$CREATED_INVOICE_ID" ]; then
+            curl -s -X DELETE "$BASE_URL/api/invoices/$CREATED_INVOICE_ID" \
+                -H "Cookie: auth-token=$token" >/dev/null 2>&1
+        fi
+        
+        if [ -n "$CREATED_CLIENT_ID" ]; then
+            curl -s -X DELETE "$BASE_URL/api/clients?id=$CREATED_CLIENT_ID" \
+                -H "Cookie: auth-token=$token" >/dev/null 2>&1
+        fi
     fi
 }
 
@@ -496,3 +500,12 @@ trap cleanup_test_data EXIT
 
 # Run the test suite
 main "$@"
+
+# Final cleanup after all tests
+echo ""
+echo "🧹 Running final test data cleanup..."
+if [ -f "scripts/quick-cleanup.sh" ]; then
+    ./scripts/quick-cleanup.sh >/dev/null 2>&1 || true
+fi
+
+echo "✅ Test cleanup completed!"

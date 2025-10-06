@@ -129,6 +129,15 @@ main() {
     
     # Summary
     print_header "Overall Test Results"
+
+# Automatic cleanup after all tests
+echo ""
+echo "🧹 Running automatic test data cleanup..."
+if [ -f "scripts/quick-cleanup.sh" ]; then
+    ./scripts/quick-cleanup.sh
+else
+    echo "⚠️  Cleanup script not found. Run manually: ./scripts/cleanup-test-data.sh"
+fi
     echo -e "${BLUE}Total Test Suites: $total_suites${NC}"
     echo -e "${GREEN}Passed Suites: $passed_suites${NC}"
     echo -e "${RED}Failed Suites: $((total_suites - passed_suites))${NC}"
