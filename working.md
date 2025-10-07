@@ -46,6 +46,24 @@
 - Invoice deletion with confirmation
 - Bulk invoice operations
 - Invoice filtering by client name and date range
+- **NEW: Professional invoice generation with PDF creation**
+- **NEW: Real-time invoice generation with jsPDF integration**
+- **NEW: Client synchronization during invoice creation**
+
+### ✅ Invoice Generation System (NEW)
+- Complete invoice generation form with customer selection
+- Real-time calculation of amounts, taxes, and totals
+- Auto-generated invoice numbers (AS/25-26/XXX format)
+- Financial year calculations (April-March cycle)
+- GST-compliant invoices with CGST/SGST calculations
+- Indian number formatting and amount in words conversion
+- Professional PDF generation with company branding
+- Dynamic line items with various units (kWp, kW, Nos, etc.)
+- Work order reference integration
+- Company letterhead with logo and stamp/signature
+- Automatic PDF storage and download
+- Integration with existing client management
+- Company settings management for bank details and branding
 
 ### ✅ Client Payments
 - Payment recording from clients
