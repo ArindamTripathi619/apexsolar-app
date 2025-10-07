@@ -44,6 +44,41 @@ export async function PUT(request: NextRequest) {
       companyLogoUrl 
     } = body
 
+    // Validate required fields
+    if (!accountName || !bankName || !ifscCode || !accountNumber || !gstNumber) {
+      return NextResponse.json(
+        { success: false, error: 'Missing required fields' },
+        { status: 400 }
+      )
+    }
+
+    // Validate file sizes (base64 strings can be very large)
+    if (stampSignatureUrl && stampSignatureUrl.length > 10 * 1024 * 1024) { // 10MB limit
+      return NextResponse.json(
+        { success: false, error: 'Stamp/signature image is too large (max 10MB)' },
+        { status: 400 }
+      )
+    }
+
+    if (companyLogoUrl && companyLogoUrl.length > 10 * 1024 * 1024) { // 10MB limit
+      return NextResponse.json(
+        { success: false, error: 'Company logo is too large (max 10MB)' },
+        { status: 400 }
+      )
+    }
+
+    console.log('Updating company settings with data:', {
+      accountName,
+      bankName,
+      ifscCode,
+      accountNumber,
+      gstNumber,
+      hasStampSignature: !!stampSignatureUrl,
+      hasCompanyLogo: !!companyLogoUrl,
+      stampSignatureSize: stampSignatureUrl ? stampSignatureUrl.length : 0,
+      companyLogoSize: companyLogoUrl ? companyLogoUrl.length : 0
+    })
+
     // Get existing settings or create new ones
     let settings = await prisma.companySettings.findFirst()
     

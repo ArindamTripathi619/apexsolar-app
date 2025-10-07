@@ -76,19 +76,51 @@ export default function CompanySettingsPage() {
     const file = event.target.files?.[0]
     if (!file) return
 
-    // Convert to base64
-    const reader = new FileReader()
-    reader.onload = () => {
-      const base64 = reader.result as string
-      handleInputChange(field, base64)
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      alert('Please select an image file')
+      return
     }
-    reader.readAsDataURL(file)
+
+    // Validate file size (2MB limit)
+    const maxSize = 2 * 1024 * 1024 // 2MB
+    if (file.size > maxSize) {
+      alert('File size must be less than 2MB')
+      return
+    }
+
+    try {
+      // Convert to base64
+      const reader = new FileReader()
+      reader.onload = () => {
+        const base64 = reader.result as string
+        // Additional check for base64 size
+        if (base64.length > 3 * 1024 * 1024) { // ~2.25MB after base64 encoding
+          alert('Image is too large after encoding. Please use a smaller image.')
+          return
+        }
+        handleInputChange(field, base64)
+      }
+      reader.onerror = () => {
+        alert('Error reading file')
+      }
+      reader.readAsDataURL(file)
+    } catch (error) {
+      console.error('Error processing file:', error)
+      alert('Error processing file')
+    }
   }
 
   const handleSave = async () => {
     setSaving(true)
 
     try {
+      console.log('Saving settings:', {
+        ...settings,
+        stampSignatureUrl: settings.stampSignatureUrl ? `[${settings.stampSignatureUrl.length} chars]` : 'none',
+        companyLogoUrl: settings.companyLogoUrl ? `[${settings.companyLogoUrl.length} chars]` : 'none'
+      })
+
       const response = await fetch('/api/company-settings', {
         method: 'PUT',
         headers: {
@@ -98,20 +130,18 @@ export default function CompanySettingsPage() {
         body: JSON.stringify(settings)
       })
 
-      if (response.ok) {
-        const data = await response.json()
-        if (data.success) {
-          setSettings(data.data)
-          alert('Settings saved successfully!')
-        } else {
-          alert('Failed to save settings: ' + data.error)
-        }
+      const data = await response.json()
+      
+      if (response.ok && data.success) {
+        setSettings(data.data)
+        alert('Settings saved successfully!')
       } else {
-        alert('Failed to save settings')
+        console.error('Save error:', data)
+        alert(`Failed to save settings: ${data.error || 'Unknown error'}`)
       }
     } catch (error) {
       console.error('Error saving settings:', error)
-      alert('Failed to save settings')
+      alert(`Failed to save settings: ${error instanceof Error ? error.message : 'Network error'}`)
     } finally {
       setSaving(false)
     }
@@ -249,6 +279,9 @@ export default function CompanySettingsPage() {
                   onChange={(e) => handleFileUpload(e, 'stampSignatureUrl')}
                   className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
+                <p className="text-xs text-gray-500 mt-1">
+                  Max size: 2MB. Supported formats: JPG, PNG, GIF
+                </p>
                 {settings.stampSignatureUrl && (
                   <div className="mt-3">
                     <img
@@ -270,6 +303,9 @@ export default function CompanySettingsPage() {
                   onChange={(e) => handleFileUpload(e, 'companyLogoUrl')}
                   className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
+                <p className="text-xs text-gray-500 mt-1">
+                  Max size: 2MB. Supported formats: JPG, PNG, GIF
+                </p>
                 {settings.companyLogoUrl && (
                   <div className="mt-3">
                     <img
