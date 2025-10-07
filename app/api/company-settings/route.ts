@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/app/lib/prisma'
+import { adminOnly } from '@/app/lib/middleware'
 
 export async function GET() {
   try {
@@ -31,7 +32,7 @@ export async function GET() {
   }
 }
 
-export async function PUT(request: NextRequest) {
+export const PUT = adminOnly(async (request: NextRequest) => {
   try {
     const body = await request.json()
     const { 
@@ -120,4 +121,4 @@ export async function PUT(request: NextRequest) {
       { status: 500 }
     )
   }
-}
+})

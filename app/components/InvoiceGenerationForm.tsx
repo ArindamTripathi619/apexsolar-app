@@ -74,12 +74,19 @@ export default function InvoiceGenerationForm() {
       });
       if (response.ok) {
         const data = await response.json();
-        if (data.success) {
-          setClients(data.data);
+        if (data.success && Array.isArray(data.clients)) {
+          setClients(data.clients);
+        } else {
+          console.warn('Invalid clients data received:', data);
+          setClients([]); // Ensure it remains an array
         }
+      } else {
+        console.error('Failed to fetch clients - HTTP status:', response.status);
+        setClients([]); // Ensure it remains an array
       }
     } catch (error) {
       console.error('Failed to fetch clients:', error);
+      setClients([]); // Ensure it remains an array
     }
   };
 
@@ -117,7 +124,7 @@ export default function InvoiceGenerationForm() {
 
   const handleClientSelect = (clientId: string) => {
     setSelectedClientId(clientId);
-    const client = clients.find(c => c.id === clientId);
+    const client = clients && clients.find(c => c.id === clientId);
     if (client) {
       setCompanyName(client.companyName);
       setAddressLine1(client.addressLine1);
@@ -417,11 +424,13 @@ export default function InvoiceGenerationForm() {
                 className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Select a customer or enter new details below</option>
-                {clients.map((client) => (
+                {clients && clients.length > 0 ? clients.map((client) => (
                   <option key={client.id} value={client.id}>
                     {client.companyName}
                   </option>
-                ))}
+                )) : (
+                  <option value="" disabled>Loading customers...</option>
+                )}
               </select>
             </div>
 

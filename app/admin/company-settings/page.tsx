@@ -132,12 +132,16 @@ export default function CompanySettingsPage() {
 
       const data = await response.json()
       
+      console.log('Response status:', response.status)
+      console.log('Response data:', data)
+      
       if (response.ok && data.success) {
         setSettings(data.data)
         alert('Settings saved successfully!')
       } else {
-        console.error('Save error:', data)
-        alert(`Failed to save settings: ${data.error || 'Unknown error'}`)
+        const errorMessage = data.error || data.message || `HTTP ${response.status} - ${response.statusText}`
+        console.error('Save error:', { response, data, errorMessage })
+        alert(`Failed to save settings: ${errorMessage}`)
       }
     } catch (error) {
       console.error('Error saving settings:', error)
