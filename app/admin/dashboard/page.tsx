@@ -556,8 +556,14 @@ export default function AdminDashboard() {
           <div className="bg-white overflow-hidden shadow rounded-lg">
             <div className="p-5">
               <h3 className="text-lg font-medium text-gray-900 mb-2">Invoice Management</h3>
-              <p className="text-sm text-gray-500 mb-4">Upload and manage invoices</p>
-              <div className="flex space-x-2">
+              <p className="text-sm text-gray-500 mb-4">Create, upload and manage invoices</p>
+              <div className="flex flex-wrap gap-2">
+                <button 
+                  onClick={() => router.push('/admin/generate-invoice')}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+                >
+                  Generate Invoice
+                </button>
                 <button 
                   onClick={() => setShowInvoiceModal(true)}
                   className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-medium"
@@ -566,7 +572,7 @@ export default function AdminDashboard() {
                 </button>
                 <button 
                   onClick={() => router.push('/admin/invoices')}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+                  className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md text-sm font-medium"
                 >
                   View All Invoices
                 </button>
@@ -596,6 +602,19 @@ export default function AdminDashboard() {
                 className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium"
               >
                 Manage Documents →
+              </button>
+            </div>
+          </div>
+
+          <div className="bg-white overflow-hidden shadow rounded-lg">
+            <div className="p-5">
+              <h3 className="text-lg font-medium text-gray-900 mb-2">Company Settings</h3>
+              <p className="text-sm text-gray-500 mb-4">Manage bank details and company information</p>
+              <button 
+                onClick={() => router.push('/admin/company-settings')}
+                className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+              >
+                Company Settings →
               </button>
             </div>
           </div>

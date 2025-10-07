@@ -49,7 +49,6 @@ The ApexSolar Employee Management System is now **100% operational** with all co
 
 ### 📱 Mobile App Development
 - Consider developing React Native or Flutter mobile app
-- Reference: Comprehensive mobile app plan available in `docs/MOBILE_APP_PLAN.md`
 
 ### 🔍 Advanced Features
 - [ ] Advanced search and filtering across all modules
