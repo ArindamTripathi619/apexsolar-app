@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/app/lib/prisma'
 import { InvoiceGeneration } from '@/app/types/invoice-generation'
 import { numberToWordsIndian, generateInvoiceNumber } from '@/app/lib/numberToWords'
-import { formatIndianDate } from '@/app/lib/indianLocalization'
 
 export async function POST(request: NextRequest) {
   try {

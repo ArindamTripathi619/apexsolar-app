@@ -19,8 +19,11 @@ export default function CompanySettingsPage() {
   })
 
   useEffect(() => {
-    checkAuth()
-    fetchSettings()
+    const initializePage = async () => {
+      await checkAuth()
+      await fetchSettings()
+    }
+    initializePage()
   }, [])
 
   const checkAuth = async () => {

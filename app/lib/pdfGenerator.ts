@@ -1,7 +1,6 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { InvoiceGeneration, CompanySettings } from '@/app/types/invoice-generation';
-import { numberToWordsIndian } from '@/app/lib/numberToWords';
 
 // Extend jsPDF interface
 declare module 'jspdf' {

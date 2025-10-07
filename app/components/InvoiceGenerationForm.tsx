@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Plus, Trash2, Download, Save, FileText, Calendar } from 'lucide-react';
+import { Plus, Trash2, FileText } from 'lucide-react';
 import { InvoiceGeneration, InvoiceLineItem, CustomerForInvoice, CompanySettings } from '@/app/types/invoice-generation';
 import { numberToWordsIndian, getCurrentFinancialYear } from '@/app/lib/numberToWords';
 import { generateInvoicePDF, downloadPDF } from '@/app/lib/pdfGenerator';
@@ -65,7 +65,7 @@ export default function InvoiceGenerationForm() {
     fetchClients();
     fetchCompanySettings();
     fetchNextInvoiceNumber();
-  }, []);
+  }, [financialYear]); // Add financialYear as dependency since fetchNextInvoiceNumber uses it
 
   const fetchClients = async () => {
     try {
@@ -131,7 +131,7 @@ export default function InvoiceGenerationForm() {
     }
   };
 
-  const handleLineItemChange = (index: number, field: keyof InvoiceLineItem, value: any) => {
+  const handleLineItemChange = (index: number, field: keyof InvoiceLineItem, value: string | number) => {
     const updatedItems = [...lineItems];
     updatedItems[index] = { ...updatedItems[index], [field]: value };
     
