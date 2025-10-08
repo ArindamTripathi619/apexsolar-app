@@ -601,7 +601,7 @@ export default function InvoiceGenerationForm() {
                     )}
                   </div>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-3">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-3 overflow-hidden">
                     <div className="lg:col-span-2">
                       <label className="block text-xs font-medium text-gray-700 mb-1">
                         Description *
@@ -642,19 +642,19 @@ export default function InvoiceGenerationForm() {
                       <label className="block text-xs font-medium text-gray-700 mb-1">
                         Quantity *
                       </label>
-                      <div className="flex">
+                      <div className="flex w-full">
                         <input
                           type="number"
                           value={item.quantity || ''}
                           onChange={(e) => handleLineItemChange(index, 'quantity', parseFloat(e.target.value) || 0)}
-                          className="flex-1 border border-gray-300 rounded-l px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                          className="flex-1 border border-gray-300 rounded-l px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 min-w-0"
                           min="0"
                           step="0.01"
                         />
                         <select
                           value={item.unit}
                           onChange={(e) => handleLineItemChange(index, 'unit', e.target.value)}
-                          className="border-l-0 border border-gray-300 rounded-r px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                          className="border-l-0 border border-gray-300 rounded-r px-1 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 w-16 flex-shrink-0"
                         >
                           <option value="kWp">kWp</option>
                           <option value="kW">kW</option>
