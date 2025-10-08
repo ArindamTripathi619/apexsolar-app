@@ -1,62 +1,107 @@
 import Link from 'next/link'
-import ButtonComponent from '@/app/components/ui/ButtonComponent';
+import ButtonComponent from '@/app/components/ui/ButtonComponent'
+import ThemeToggle from '@/app/components/ui/ThemeToggle'
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
-        <div className="text-center">
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 sm:mb-6">
-            ApexSolar
-          </h1>
-          <p className="text-base sm:text-lg lg:text-xl text-gray-600 mb-8 sm:mb-12 max-w-2xl mx-auto px-4">
-            Advanced Employee Management System - Secure, Scalable, and Responsive
-          </p>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 max-w-4xl mx-auto mb-12 sm:mb-16">
-            <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6 mx-2 sm:mx-0">
-              <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-blue-600">
-                Admin Portal
-              </h3>
-              <p className="text-sm sm:text-base text-gray-600 mb-4 leading-relaxed">
-                Comprehensive employee management, document storage, payment tracking, attendance monitoring, and invoice management.
-              </p>
-              <Link 
-                href="/admin/login" 
-                className="inline-block w-full sm:w-auto text-center"
-              >
-                <ButtonComponent
-                  variant="primary"
-                  size="lg"
-                  fullWidth={true}
-                  className="sm:w-auto"
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800 transition-all duration-300">
+      {/* Header with Theme Toggle */}
+      <header className="absolute top-0 right-0 p-6">
+        <ThemeToggle showLabel />
+      </header>
+
+      {/* Main Content */}
+      <div className="flex items-center justify-center min-h-screen px-4">
+        <div className="w-full max-w-4xl mx-auto">
+          {/* Hero Section */}
+          <div className="text-center mb-12">
+            <h1 className="text-5xl sm:text-6xl font-bold text-slate-900 dark:text-slate-100 mb-4 bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
+              ApexSolar
+            </h1>
+            <p className="text-xl sm:text-2xl text-slate-600 dark:text-slate-300 mb-8 max-w-2xl mx-auto">
+              Employee Management System
+            </p>
+            <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-cyan-500 mx-auto rounded-full"></div>
+          </div>
+
+          {/* Portal Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            {/* Admin Portal Card */}
+            <div className="group bg-white dark:bg-slate-800 rounded-2xl shadow-lg dark:shadow-slate-700/30 p-8 border border-slate-200 dark:border-slate-700 hover:shadow-xl dark:hover:shadow-slate-700/50 transition-all duration-300 transform hover:-translate-y-1">
+              <div className="text-center">
+                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+                </div>
+                
+                <h3 className="text-2xl font-bold mb-4 text-slate-900 dark:text-slate-100">
+                  Admin Portal
+                </h3>
+                <p className="text-slate-600 dark:text-slate-300 mb-8 leading-relaxed">
+                  Comprehensive employee management, document storage, payment tracking, attendance monitoring, and invoice management.
+                </p>
+                
+                <Link 
+                  href="/admin/login" 
+                  className="inline-block w-full"
                 >
-                  Access Admin Portal
-                </ButtonComponent>
-              </Link>
+                  <ButtonComponent
+                    variant="primary"
+                    size="lg"
+                    fullWidth={true}
+                    className="group-hover:shadow-lg transition-shadow duration-300"
+                  >
+                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                    </svg>
+                    Access Admin Portal
+                  </ButtonComponent>
+                </Link>
+              </div>
             </div>
             
-            <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6 mx-2 sm:mx-0">
-              <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-green-600">
-                Accountant Portal
-              </h3>
-              <p className="text-sm sm:text-base text-gray-600 mb-4 leading-relaxed">
-                Financial management including challan uploads, attendance tracking, PF/ESI management, invoicing, and document access.
-              </p>
-              <Link 
-                href="/accountant/login" 
-                className="inline-block w-full sm:w-auto text-center"
-              >
-                <ButtonComponent
-                  variant="success"
-                  size="lg"
-                  fullWidth={true}
-                  className="sm:w-auto"
+            {/* Accountant Portal Card */}
+            <div className="group bg-white dark:bg-slate-800 rounded-2xl shadow-lg dark:shadow-slate-700/30 p-8 border border-slate-200 dark:border-slate-700 hover:shadow-xl dark:hover:shadow-slate-700/50 transition-all duration-300 transform hover:-translate-y-1">
+              <div className="text-center">
+                <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                
+                <h3 className="text-2xl font-bold mb-4 text-slate-900 dark:text-slate-100">
+                  Accountant Portal
+                </h3>
+                <p className="text-slate-600 dark:text-slate-300 mb-8 leading-relaxed">
+                  Financial management including challan uploads, attendance tracking, PF/ESI management, invoicing, and document access.
+                </p>
+                
+                <Link 
+                  href="/accountant/login" 
+                  className="inline-block w-full"
                 >
-                  Access Accountant Portal
-                </ButtonComponent>
-              </Link>
+                  <ButtonComponent
+                    variant="success"
+                    size="lg"
+                    fullWidth={true}
+                    className="group-hover:shadow-lg transition-shadow duration-300"
+                  >
+                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                    </svg>
+                    Access Accountant Portal
+                  </ButtonComponent>
+                </Link>
+              </div>
             </div>
+          </div>
+
+          {/* Footer */}
+          <div className="text-center mt-16">
+            <p className="text-slate-500 dark:text-slate-400 text-sm">
+              Secure employee management system for ApexSolar
+            </p>
           </div>
         </div>
       </div>
