@@ -8,6 +8,7 @@ import InvoiceModal from '@/app/components/InvoiceModal'
 import AttendanceModal from '@/app/components/AttendanceModal'
 import PaymentModal from '@/app/components/PaymentModal'
 import { formatIndianDate } from '@/app/lib/indianLocalization'
+import ButtonComponent from '@/app/components/ui/ButtonComponent'
 
 interface User {
   id: string
@@ -223,12 +224,14 @@ export default function AdminDashboard() {
               <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">ApexSolar Admin Dashboard</h1>
               <p className="text-sm sm:text-base text-gray-600 mt-1">Welcome back, {user?.email}</p>
             </div>
-            <button
+            <ButtonComponent
               onClick={handleLogout}
-              className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium w-full sm:w-auto"
+              variant="danger"
+              size="sm"
+              className="w-full sm:w-auto"
             >
               Logout
-            </button>
+            </ButtonComponent>
           </div>
         </div>
       </header>
@@ -470,39 +473,51 @@ export default function AdminDashboard() {
                     </div>
                     
                     <div className="grid grid-cols-2 gap-2">
-                      <button
+                      <ButtonComponent
                         onClick={() => {
                           setSelectedEmployee(employee)
                           setShowDocumentUpload(true)
                         }}
-                        className="w-full text-center bg-green-600 hover:bg-green-700 text-white text-xs px-3 py-2 rounded font-medium"
+                        variant="success"
+                        size="xs"
+                        fullWidth
+                        className="text-xs"
                       >
                         📄 Documents
-                      </button>
-                      <button
+                      </ButtonComponent>
+                      <ButtonComponent
                         onClick={() => {
                           setSelectedEmployee(employee)
                           setShowPaymentModal(true)
                         }}
-                        className="w-full text-center bg-yellow-600 hover:bg-yellow-700 text-white text-xs px-3 py-2 rounded font-medium"
+                        variant="warning"
+                        size="xs"
+                        fullWidth
+                        className="text-xs"
                       >
                         💰 Payment
-                      </button>
-                      <button
+                      </ButtonComponent>
+                      <ButtonComponent
                         onClick={() => {
                           setSelectedEmployee(employee)
                           setShowAttendanceModal(true)
                         }}
-                        className="w-full text-center bg-purple-600 hover:bg-purple-700 text-white text-xs px-3 py-2 rounded font-medium"
+                        variant="info"
+                        size="xs"
+                        fullWidth
+                        className="text-xs"
                       >
                         📊 Attendance
-                      </button>
-                      <button
+                      </ButtonComponent>
+                      <ButtonComponent
                         onClick={() => handleDeleteEmployee(employee.id, employee.name)}
-                        className="w-full text-center bg-red-600 hover:bg-red-700 text-white text-xs px-3 py-2 rounded font-medium"
+                        variant="danger"
+                        size="xs"
+                        fullWidth
+                        className="text-xs"
                       >
                         🗑️ Delete
-                      </button>
+                      </ButtonComponent>
                     </div>
                   </div>
                 ))}
@@ -558,24 +573,27 @@ export default function AdminDashboard() {
               <h3 className="text-lg font-medium text-gray-900 mb-2">Invoice Management</h3>
               <p className="text-sm text-gray-500 mb-4">Create, upload and manage invoices</p>
               <div className="flex flex-wrap gap-2">
-                <button 
+                <ButtonComponent 
                   onClick={() => router.push('/admin/generate-invoice')}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+                  variant="primary"
+                  size="sm"
                 >
                   Generate Invoice
-                </button>
-                <button 
+                </ButtonComponent>
+                <ButtonComponent 
                   onClick={() => setShowInvoiceModal(true)}
-                  className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+                  variant="success"
+                  size="sm"
                 >
                   Upload Invoice
-                </button>
-                <button 
+                </ButtonComponent>
+                <ButtonComponent 
                   onClick={() => router.push('/admin/invoices')}
-                  className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+                  variant="secondary"
+                  size="sm"
                 >
                   View All Invoices
-                </button>
+                </ButtonComponent>
               </div>
             </div>
           </div>

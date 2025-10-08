@@ -1,4 +1,5 @@
-import Link from "next/link";
+import Link from 'next/link'
+import ButtonComponent from '@/app/components/ui/ButtonComponent';
 
 export default function Home() {
   return (
@@ -22,9 +23,16 @@ export default function Home() {
               </p>
               <Link 
                 href="/admin/login" 
-                className="inline-block w-full sm:w-auto text-center bg-blue-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg hover:bg-blue-700 transition-colors text-sm sm:text-base font-medium"
+                className="inline-block w-full sm:w-auto text-center"
               >
-                Access Admin Portal
+                <ButtonComponent
+                  variant="primary"
+                  size="lg"
+                  fullWidth={true}
+                  className="sm:w-auto"
+                >
+                  Access Admin Portal
+                </ButtonComponent>
               </Link>
             </div>
             
@@ -37,9 +45,16 @@ export default function Home() {
               </p>
               <Link 
                 href="/accountant/login" 
-                className="inline-block w-full sm:w-auto text-center bg-green-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg hover:bg-green-700 transition-colors text-sm sm:text-base font-medium"
+                className="inline-block w-full sm:w-auto text-center"
               >
-                Access Accountant Portal
+                <ButtonComponent
+                  variant="success"
+                  size="lg"
+                  fullWidth={true}
+                  className="sm:w-auto"
+                >
+                  Access Accountant Portal
+                </ButtonComponent>
               </Link>
             </div>
           </div>

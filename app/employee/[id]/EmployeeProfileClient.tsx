@@ -6,16 +6,15 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { formatIndianDate, formatIndianCurrency } from '@/app/lib/indianLocalization'
+import { formatIndianDate } from '@/app/lib/indianLocalization'
+import ButtonComponent from '@/app/components/ui/ButtonComponent'
 import { 
   MapPin, 
   Phone, 
   Mail, 
   Calendar, 
   User, 
-  FileText, 
-  CreditCard, 
-  Clock,
+  FileText,
   Eye,
   EyeOff,
   Download
@@ -77,20 +76,8 @@ export default function EmployeeProfileClient({ employee }: EmployeeProfileClien
     return phone.replace(/(\d{3})\d{3}(\d{4})/, '$1***$2')
   }
 
-  const formatCurrency = (amount: number) => {
-    return formatIndianCurrency(amount)
-  }
-
   const formatDate = (date: Date) => {
     return formatIndianDate(date)
-  }
-
-  const formatTime = (date: Date) => {
-    return new Intl.DateTimeFormat('en-IN', {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true
-    }).format(new Date(date))
   }
 
   return (
@@ -139,7 +126,7 @@ export default function EmployeeProfileClient({ employee }: EmployeeProfileClien
 
         {/* Tabbed Content */}
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 gap-1 sm:gap-0">
+          <TabsList className="grid w-full grid-cols-2 gap-1 sm:gap-0">
             <TabsTrigger value="overview" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3 text-gray-700 data-[state=active]:text-white data-[state=active]:bg-gray-900">
               <User className="h-3 w-3 sm:h-4 sm:w-4" />
               <span className="hidden xs:inline">Overview</span>
@@ -149,16 +136,6 @@ export default function EmployeeProfileClient({ employee }: EmployeeProfileClien
               <FileText className="h-3 w-3 sm:h-4 sm:w-4" />
               <span className="hidden xs:inline">Documents</span>
               <span className="xs:hidden">Docs</span>
-            </TabsTrigger>
-            <TabsTrigger value="payments" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3 text-gray-700 data-[state=active]:text-white data-[state=active]:bg-gray-900">
-              <CreditCard className="h-3 w-3 sm:h-4 sm:w-4" />
-              <span className="hidden xs:inline">Payments</span>
-              <span className="xs:hidden">Pay</span>
-            </TabsTrigger>
-            <TabsTrigger value="attendance" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3 text-gray-700 data-[state=active]:text-white data-[state=active]:bg-gray-900">
-              <Clock className="h-3 w-3 sm:h-4 sm:w-4" />
-              <span className="hidden xs:inline">Attendance</span>
-              <span className="xs:hidden">Att</span>
             </TabsTrigger>
           </TabsList>
 
@@ -210,12 +187,6 @@ export default function EmployeeProfileClient({ employee }: EmployeeProfileClien
                     <label className="text-sm font-medium text-gray-700">Status</label>
                     <p className="text-lg text-gray-800 capitalize">{employee.status}</p>
                   </div>
-                  {employee.salary && showSensitiveInfo && (
-                    <div>
-                      <label className="text-sm font-medium text-gray-700">Salary</label>
-                      <p className="text-lg text-gray-800">{formatCurrency(employee.salary)}</p>
-                    </div>
-                  )}
                 </CardContent>
               </Card>
             </div>
@@ -243,87 +214,29 @@ export default function EmployeeProfileClient({ employee }: EmployeeProfileClien
                             </p>
                           </div>
                         </div>
-                        <Button variant="outline" size="sm" asChild>
-                          <a href={doc.fileUrl} target="_blank" rel="noopener noreferrer">
-                            <Download className="h-4 w-4" />
+                        <div className="flex gap-2">
+                          <ButtonComponent
+                            variant="outline"
+                            size="sm"
+                            onClick={() => window.open(doc.fileUrl, '_blank')}
+                            icon={<Eye className="h-4 w-4" />}
+                          >
+                            View
+                          </ButtonComponent>
+                          <ButtonComponent
+                            variant="primary"
+                            size="sm"
+                            onClick={() => {
+                              const link = document.createElement('a');
+                              link.href = doc.fileUrl;
+                              link.download = doc.name;
+                              link.click();
+                            }}
+                            icon={<Download className="h-4 w-4" />}
+                          >
                             Download
-                          </a>
-                        </Button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Payments Tab */}
-          <TabsContent value="payments">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-gray-800">Payment History</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {employee.payments.length === 0 ? (
-                  <p className="text-gray-600 text-center py-8">No payment records available</p>
-                ) : (
-                  <div className="space-y-4">
-                    {employee.payments.map((payment) => (
-                      <div key={payment.id} className="flex items-center justify-between p-4 border rounded-lg">
-                        <div className="flex items-center gap-3">
-                          <CreditCard className="h-5 w-5 text-gray-600" />
-                          <div>
-                            <p className="font-medium text-gray-800">{formatCurrency(payment.amount)}</p>
-                            <p className="text-sm text-gray-600">
-                              {payment.type} • {formatDate(payment.date)}
-                              {payment.description && ` • ${payment.description}`}
-                            </p>
-                          </div>
+                          </ButtonComponent>
                         </div>
-                        <Badge 
-                          variant={payment.status === 'completed' ? 'default' : 'secondary'}
-                          className="capitalize"
-                        >
-                          {payment.status}
-                        </Badge>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Attendance Tab */}
-          <TabsContent value="attendance">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-gray-800">Attendance Records</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {employee.attendanceRecords.length === 0 ? (
-                  <p className="text-gray-600 text-center py-8">No attendance records available</p>
-                ) : (
-                  <div className="space-y-4">
-                    {employee.attendanceRecords.map((record) => (
-                      <div key={record.id} className="flex items-center justify-between p-4 border rounded-lg">
-                        <div className="flex items-center gap-3">
-                          <Clock className="h-5 w-5 text-gray-600" />
-                          <div>
-                            <p className="font-medium text-gray-800">{formatDate(record.date)}</p>
-                            <p className="text-sm text-gray-600">
-                              {record.checkIn && `In: ${formatTime(record.checkIn)}`}
-                              {record.checkOut && ` • Out: ${formatTime(record.checkOut)}`}
-                              {record.hoursWorked && ` • ${record.hoursWorked}h worked`}
-                            </p>
-                          </div>
-                        </div>
-                        <Badge 
-                          variant={record.status === 'present' ? 'default' : 'secondary'}
-                          className="capitalize"
-                        >
-                          {record.status}
-                        </Badge>
                       </div>
                     ))}
                   </div>
