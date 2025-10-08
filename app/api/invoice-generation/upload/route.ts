@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
     console.log('📄 File received:', file?.name, 'Size:', file?.size, 'Type:', file?.type)
     console.log('🆔 Invoice ID:', invoiceId)
 
-    if (file app/admin/clients/page.tsx || !invoiceId) {
+    if (!file || !invoiceId) {
       console.error('❌ Missing file or invoice ID')
       return NextResponse.json(
         { success: false, error: 'File and invoice ID are required' },
