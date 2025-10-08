@@ -121,12 +121,34 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    // Log environment info for debugging
-    console.log('POST /api/clients - Environment:', {
+    console.log('🚀 Starting POST /api/clients request')
+    
+    // Debug environment
+    console.log('🌍 POST Environment debug:', {
       NODE_ENV: process.env.NODE_ENV,
-      DATABASE_URL: process.env.DATABASE_URL ? 'Connected' : 'Not set',
+      DATABASE_URL: process.env.DATABASE_URL ? 'Set (length: ' + process.env.DATABASE_URL.length + ')' : 'NOT SET',
+      JWT_SECRET: process.env.JWT_SECRET ? 'Set' : 'NOT SET',
       timestamp: new Date().toISOString()
     })
+    
+    // Test database connection first
+    console.log('🔌 Testing database connection...')
+    try {
+      await prisma.$queryRaw`SELECT 1 as test`
+      console.log('✅ Database connection successful')
+    } catch (dbError) {
+      console.error('❌ Database connection failed:', {
+        message: dbError instanceof Error ? dbError.message : 'Unknown error',
+        stack: dbError instanceof Error ? dbError.stack : undefined,
+        code: (dbError as any)?.code,
+        errno: (dbError as any)?.errno
+      })
+      return NextResponse.json({ 
+        error: 'Database connection failed', 
+        details: dbError instanceof Error ? dbError.message : 'Unknown database error',
+        type: 'DATABASE_ERROR'
+      }, { status: 500 })
+    }
     
     const body = await request.json()
     console.log('📥 Received client data:', body)
@@ -134,14 +156,14 @@ export async function POST(request: NextRequest) {
     // Debug authentication
     const cookieToken = request.cookies.get('auth-token')?.value
     const authHeader = request.headers.get('authorization')
-    console.log('🔐 Auth debug:', {
+    console.log('🔐 POST Auth debug:', {
       hasCookieToken: !!cookieToken,
       hasAuthHeader: !!authHeader,
       timestamp: new Date().toISOString()
     })
 
     // TEMPORARILY DISABLE AUTH FOR DEBUGGING
-    console.log('⚠️ WARNING: Authentication temporarily disabled for debugging')
+    console.log('⚠️ WARNING: POST Authentication temporarily disabled for debugging')
     // const user = await authenticateRequest(request)
     // if (!user) {
     //   console.log('❌ Authentication failed')
@@ -202,9 +224,17 @@ export async function POST(request: NextRequest) {
       message: error instanceof Error ? error.message : "Unknown error",
       stack: error instanceof Error ? error.stack : undefined,
       name: error instanceof Error ? error.name : "Unknown",
+      code: (error as any)?.code,
+      errno: (error as any)?.errno,
       timestamp: new Date().toISOString()
     })
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    
+    return NextResponse.json({ 
+      error: 'Internal server error',
+      details: error instanceof Error ? error.message : 'Unknown error',
+      type: 'POST_ERROR',
+      timestamp: new Date().toISOString()
+    }, { status: 500 })
   }
 }
 

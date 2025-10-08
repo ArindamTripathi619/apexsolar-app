@@ -27,7 +27,11 @@ export default function AddClient() {
     setLoading(true)
     setError('')
 
+    console.log('🚀 Starting client creation form submission')
+    console.log('📤 Form data being sent:', formData)
+
     try {
+      console.log('📡 Making POST request to /api/clients')
       const response = await fetch('/api/clients', {
         method: 'POST',
         headers: {
@@ -37,19 +41,28 @@ export default function AddClient() {
         body: JSON.stringify(formData)
       })
 
+      console.log('📨 Response status:', response.status)
+      console.log('📨 Response headers:', Object.fromEntries(response.headers.entries()))
+
       if (response.status === 401) {
+        console.log('🔐 Authentication failed, redirecting to login')
         router.push('/admin/login')
         return
       }
 
+      const responseData = await response.json()
+      console.log('📥 Response data:', responseData)
+
       if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || 'Failed to create client')
+        console.error('❌ Request failed:', responseData)
+        throw new Error(responseData.error || 'Failed to create client')
       }
 
+      console.log('✅ Client created successfully, redirecting to clients page')
       // Success - redirect to clients page
       router.push('/admin/clients')
     } catch (err: any) {
+      console.error('❌ Error in form submission:', err)
       setError(err.message)
     } finally {
       setLoading(false)
