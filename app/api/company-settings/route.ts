@@ -105,13 +105,34 @@ export async function PUT(request: NextRequest) {
     console.log('Attempting to find existing company settings...')
     let settings: any
     try {
+      // Test database connection first
+      await prisma.$connect()
+      console.log('Database connected successfully')
+      
+      // Try to find existing settings with more specific error handling
+      console.log('Executing SELECT query on company_settings...')
       const existingSettings = await prisma.$queryRaw`SELECT * FROM company_settings LIMIT 1`
+      console.log('SELECT query result:', existingSettings)
+      
       settings = Array.isArray(existingSettings) && existingSettings.length > 0 ? existingSettings[0] : null
       console.log('Existing settings found:', !!settings)
     } catch (findError) {
-      console.error('Error finding settings:', findError)
+      console.error('Error finding settings - Full details:', {
+        message: findError instanceof Error ? findError.message : 'Unknown error',
+        stack: findError instanceof Error ? findError.stack : undefined,
+        code: (findError as any)?.code,
+        errno: (findError as any)?.errno,
+        sqlMessage: (findError as any)?.sqlMessage,
+        sqlState: (findError as any)?.sqlState,
+        timestamp: new Date().toISOString()
+      })
       return NextResponse.json(
-        { success: false, error: 'Database query failed', details: findError instanceof Error ? findError.message : 'Unknown error' },
+        { 
+          success: false, 
+          error: 'Database query failed', 
+          details: findError instanceof Error ? findError.message : 'Unknown error',
+          code: (findError as any)?.code 
+        },
         { status: 500 }
       )
     }
