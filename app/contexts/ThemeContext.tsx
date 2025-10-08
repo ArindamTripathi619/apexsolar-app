@@ -51,7 +51,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   // Set theme with persistence
   const setTheme = (newTheme: Theme) => {
     setThemeState(newTheme)
-    localStorage.setItem('theme', newTheme)
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('theme', newTheme)
+    }
     
     const resolved = resolveTheme(newTheme)
     setResolvedTheme(resolved)
@@ -67,7 +69,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   // Initialize theme on mount
   useEffect(() => {
     // Get stored theme or default to system
-    const storedTheme = localStorage.getItem('theme') as Theme || 'system'
+    const storedTheme = (typeof window !== 'undefined' ? localStorage.getItem('theme') : null) as Theme || 'system'
     setThemeState(storedTheme)
     
     const resolved = resolveTheme(storedTheme)
@@ -77,6 +79,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   // Listen for system theme changes
   useEffect(() => {
+    if (typeof window === 'undefined') return
+    
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
     
     const handleChange = () => {

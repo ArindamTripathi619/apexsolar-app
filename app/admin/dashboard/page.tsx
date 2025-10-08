@@ -9,6 +9,7 @@ import AttendanceModal from '@/app/components/AttendanceModal'
 import PaymentModal from '@/app/components/PaymentModal'
 import { formatIndianDate } from '@/app/lib/indianLocalization'
 import ButtonComponent from '@/app/components/ui/ButtonComponent'
+import ThemeToggle from '@/app/components/ui/ThemeToggle'
 
 interface User {
   id: string
@@ -208,30 +209,40 @@ export default function AdminDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex items-center justify-center transition-colors duration-300">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 transition-colors duration-300">
       {/* Header */}
-      <header className="bg-white shadow">
+      <header className="bg-white dark:bg-slate-800 shadow-lg dark:shadow-slate-700/30 border-b border-slate-200 dark:border-slate-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-4 sm:py-6 gap-4 sm:gap-0">
             <div className="flex-1">
-              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">ApexSolar Admin Dashboard</h1>
-              <p className="text-sm sm:text-base text-gray-600 mt-1">Welcome back, {user?.email}</p>
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-slate-900 dark:text-slate-100">
+                ApexSolar Admin Dashboard
+              </h1>
+              <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 mt-1">
+                Welcome back, {user?.email}
+              </p>
             </div>
-            <ButtonComponent
-              onClick={handleLogout}
-              variant="danger"
-              size="sm"
-              className="w-full sm:w-auto"
-            >
-              Logout
-            </ButtonComponent>
+            <div className="flex items-center gap-3">
+              <ThemeToggle />
+              <ButtonComponent
+                onClick={handleLogout}
+                variant="danger"
+                size="sm"
+                className="w-full sm:w-auto"
+              >
+                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+                Logout
+              </ButtonComponent>
+            </div>
           </div>
         </div>
       </header>
@@ -240,72 +251,80 @@ export default function AdminDashboard() {
       <main className="max-w-7xl mx-auto py-4 px-4 sm:py-6 sm:px-6 lg:px-8">
         {/* Stats Cards */}
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-6 sm:mb-8">
-          <div className="bg-white overflow-hidden shadow rounded-lg">
-            <div className="p-5">
+          <div className="bg-white dark:bg-slate-800 overflow-hidden shadow-lg dark:shadow-slate-700/30 rounded-xl border border-slate-200 dark:border-slate-700 transition-colors duration-300">
+            <div className="p-6">
               <div className="flex items-center">
                 <div className="flex-shrink-0">
-                  <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-                    <span className="text-white font-bold">👥</span>
+                  <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
+                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+                    </svg>
                   </div>
                 </div>
                 <div className="ml-5 w-0 flex-1">
                   <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">Total Employees</dt>
-                    <dd className="text-lg font-medium text-gray-900">{employees.length}</dd>
+                    <dt className="text-sm font-medium text-slate-500 dark:text-slate-400 truncate">Total Employees</dt>
+                    <dd className="text-2xl font-bold text-slate-900 dark:text-slate-100">{employees.length}</dd>
                   </dl>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="bg-white overflow-hidden shadow rounded-lg">
-            <div className="p-5">
+          <div className="bg-white dark:bg-slate-800 overflow-hidden shadow-lg dark:shadow-slate-700/30 rounded-xl border border-slate-200 dark:border-slate-700 transition-colors duration-300">
+            <div className="p-6">
               <div className="flex items-center">
                 <div className="flex-shrink-0">
-                  <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-                    <span className="text-white font-bold">📄</span>
+                  <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center">
+                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
                   </div>
                 </div>
                 <div className="ml-5 w-0 flex-1">
                   <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">Documents</dt>
-                    <dd className="text-lg font-medium text-gray-900">{stats?.totalDocuments || 0}</dd>
+                    <dt className="text-sm font-medium text-slate-500 dark:text-slate-400 truncate">Documents</dt>
+                    <dd className="text-2xl font-bold text-slate-900 dark:text-slate-100">{stats?.totalDocuments || 0}</dd>
                   </dl>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="bg-white overflow-hidden shadow rounded-lg">
-            <div className="p-5">
+          <div className="bg-white dark:bg-slate-800 overflow-hidden shadow-lg dark:shadow-slate-700/30 rounded-xl border border-slate-200 dark:border-slate-700 transition-colors duration-300">
+            <div className="p-6">
               <div className="flex items-center">
                 <div className="flex-shrink-0">
-                  <div className="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center">
-                    <span className="text-white font-bold">💰</span>
+                  <div className="w-12 h-12 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl flex items-center justify-center">
+                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
                   </div>
                 </div>
                 <div className="ml-5 w-0 flex-1">
                   <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">Payments</dt>
-                    <dd className="text-lg font-medium text-gray-900">{stats?.totalPayments || 0}</dd>
+                    <dt className="text-sm font-medium text-slate-500 dark:text-slate-400 truncate">Payments</dt>
+                    <dd className="text-2xl font-bold text-slate-900 dark:text-slate-100">{stats?.totalPayments || 0}</dd>
                   </dl>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="bg-white overflow-hidden shadow rounded-lg">
-            <div className="p-5">
+          <div className="bg-white dark:bg-slate-800 overflow-hidden shadow-lg dark:shadow-slate-700/30 rounded-xl border border-slate-200 dark:border-slate-700 transition-colors duration-300">
+            <div className="p-6">
               <div className="flex items-center">
                 <div className="flex-shrink-0">
-                  <div className="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center">
-                    <span className="text-white font-bold">📊</span>
+                  <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center">
+                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
                   </div>
                 </div>
                 <div className="ml-5 w-0 flex-1">
                   <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">Invoices</dt>
-                    <dd className="text-lg font-medium text-gray-900">{stats?.totalInvoices || 0}</dd>
+                    <dt className="text-sm font-medium text-slate-500 dark:text-slate-400 truncate">Invoices</dt>
+                    <dd className="text-2xl font-bold text-slate-900 dark:text-slate-100">{stats?.totalInvoices || 0}</dd>
                   </dl>
                 </div>
               </div>
@@ -314,88 +333,99 @@ export default function AdminDashboard() {
         </div>
 
         {/* Employees Section */}
-        <div className="bg-white shadow rounded-lg">
+        <div className="bg-white dark:bg-slate-800 shadow-lg dark:shadow-slate-700/30 rounded-xl border border-slate-200 dark:border-slate-700 transition-colors duration-300">
           <div className="px-4 py-5 sm:p-6">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3 sm:gap-0">
               <div>
-                <h3 className="text-lg leading-6 font-medium text-gray-900">Employee Management</h3>
+                <h3 className="text-lg leading-6 font-medium text-slate-900 dark:text-slate-100">Employee Management</h3>
                 {selectedEmployees.length > 0 && (
-                  <p className="text-sm text-gray-500 mt-1">{selectedEmployees.length} employees selected</p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">{selectedEmployees.length} employees selected</p>
                 )}
               </div>
               <div className="flex flex-col sm:flex-row gap-2">
                 {selectedEmployees.length > 0 && (
                   <>
-                    <button
+                    <ButtonComponent
                       onClick={handleBulkDeleteEmployees}
-                      className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+                      variant="danger"
+                      size="sm"
                     >
                       🗑️ Delete Selected ({selectedEmployees.length})
-                    </button>
-                    <button
+                    </ButtonComponent>
+                    <ButtonComponent
                       onClick={() => setSelectedEmployees([])}
-                      className="bg-gray-500 hover:bg-gray-600 text-white px-3 py-2 rounded-md text-sm font-medium"
+                      variant="secondary"
+                      size="sm"
                     >
                       Clear
-                    </button>
+                    </ButtonComponent>
                   </>
                 )}
-                <button
+                <ButtonComponent
                   onClick={() => setShowAddEmployee(true)}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium w-full sm:w-auto"
+                  variant="primary"
+                  size="sm"
+                  className="w-full sm:w-auto"
                 >
+                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                  </svg>
                   Add Employee
-                </button>
+                </ButtonComponent>
               </div>
             </div>
 
             {employees.length === 0 ? (
-              <div className="text-center py-8">
-                <p className="text-gray-500">No employees found. Add your first employee to get started.</p>
+              <div className="text-center py-12">
+                <svg className="w-16 h-16 text-slate-400 dark:text-slate-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+                </svg>
+                <p className="text-slate-500 dark:text-slate-400 text-lg">No employees found</p>
+                <p className="text-slate-400 dark:text-slate-500 text-sm mt-1">Add your first employee to get started</p>
               </div>
             ) : (
               <>
                 {/* Desktop Table View */}
                 <div className="hidden lg:block overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
+                  <table className="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
+                    <thead className="bg-slate-50 dark:bg-slate-700/50">
                       <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                           <input
                             type="checkbox"
                             checked={selectedEmployees.length === employees.length && employees.length > 0}
                             onChange={handleSelectAllEmployees}
-                            className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                            className="rounded border-slate-300 dark:border-slate-600 text-blue-600 focus:ring-blue-500 dark:bg-slate-700"
                           />
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Joined</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Name</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Email</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Phone</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Joined</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Actions</th>
                       </tr>
                     </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
+                    <tbody className="bg-white dark:bg-slate-800 divide-y divide-slate-200 dark:divide-slate-700">
                     {employees.map((employee) => (
-                      <tr key={employee.id} className={selectedEmployees.includes(employee.id) ? 'bg-blue-50' : ''}>
+                      <tr key={employee.id} className={`transition-colors duration-200 hover:bg-slate-50 dark:hover:bg-slate-700/50 ${selectedEmployees.includes(employee.id) ? 'bg-blue-50 dark:bg-blue-900/20' : ''}`}>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                           <input
                             type="checkbox"
                             checked={selectedEmployees.includes(employee.id)}
                             onChange={() => handleSelectEmployee(employee.id)}
-                            className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                            className="rounded border-slate-300 dark:border-slate-600 text-blue-600 focus:ring-blue-500 dark:bg-slate-700"
                           />
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900 dark:text-slate-100">
                           {employee.name}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
                           {employee.email || 'N/A'}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
                           {employee.phone || 'N/A'}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
                           {employee.dateOfJoining ? formatIndianDate(employee.dateOfJoining) : 'N/A'}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -404,7 +434,7 @@ export default function AdminDashboard() {
                               href={`/employee/${employee.uniqueSlug}`}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-blue-600 hover:text-blue-900 text-xs px-2 py-1 border border-blue-200 rounded"
+                              className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 text-xs px-3 py-1 border border-blue-200 dark:border-blue-600 rounded-md hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors duration-200"
                             >
                               View
                             </a>
@@ -413,7 +443,7 @@ export default function AdminDashboard() {
                                 setSelectedEmployee(employee)
                                 setShowDocumentUpload(true)
                               }}
-                              className="text-green-600 hover:text-green-900 text-xs px-2 py-1 border border-green-200 rounded"
+                              className="text-emerald-600 dark:text-emerald-400 hover:text-emerald-900 dark:hover:text-emerald-300 text-xs px-3 py-1 border border-emerald-200 dark:border-emerald-600 rounded-md hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors duration-200"
                             >
                               Docs
                             </button>
@@ -422,7 +452,7 @@ export default function AdminDashboard() {
                                 setSelectedEmployee(employee)
                                 setShowPaymentModal(true)
                               }}
-                              className="text-yellow-600 hover:text-yellow-900 text-xs px-2 py-1 border border-yellow-200 rounded"
+                              className="text-yellow-600 dark:text-yellow-400 hover:text-yellow-900 dark:hover:text-yellow-300 text-xs px-3 py-1 border border-yellow-200 dark:border-yellow-600 rounded-md hover:bg-yellow-50 dark:hover:bg-yellow-900/20 transition-colors duration-200"
                             >
                               Payment
                             </button>
@@ -431,13 +461,13 @@ export default function AdminDashboard() {
                                 setSelectedEmployee(employee)
                                 setShowAttendanceModal(true)
                               }}
-                              className="text-purple-600 hover:text-purple-900 text-xs px-2 py-1 border border-purple-200 rounded"
+                              className="text-purple-600 dark:text-purple-400 hover:text-purple-900 dark:hover:text-purple-300 text-xs px-3 py-1 border border-purple-200 dark:border-purple-600 rounded-md hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors duration-200"
                             >
                               Attend
                             </button>
                             <button
                               onClick={() => handleDeleteEmployee(employee.id, employee.name)}
-                              className="text-red-600 hover:text-red-900 text-xs px-2 py-1 border border-red-200 rounded"
+                              className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 text-xs px-3 py-1 border border-red-200 dark:border-red-600 rounded-md hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-200"
                             >
                               Delete
                             </button>
@@ -452,13 +482,13 @@ export default function AdminDashboard() {
               {/* Mobile Card View */}
               <div className="lg:hidden space-y-4">
                 {employees.map((employee) => (
-                  <div key={employee.id} className="bg-gray-50 rounded-lg p-4 border">
+                  <div key={employee.id} className="bg-slate-50 dark:bg-slate-700/50 rounded-xl p-4 border border-slate-200 dark:border-slate-600 transition-colors duration-300">
                     <div className="flex justify-between items-start mb-3">
                       <div className="flex-1">
-                        <h4 className="text-lg font-medium text-gray-900 mb-1">{employee.name}</h4>
-                        <p className="text-sm text-gray-600">{employee.email || 'No email'}</p>
-                        <p className="text-sm text-gray-600">{employee.phone || 'No phone'}</p>
-                        <p className="text-xs text-gray-500 mt-1">
+                        <h4 className="text-lg font-medium text-slate-900 dark:text-slate-100 mb-1">{employee.name}</h4>
+                        <p className="text-sm text-slate-600 dark:text-slate-300">{employee.email || 'No email'}</p>
+                        <p className="text-sm text-slate-600 dark:text-slate-300">{employee.phone || 'No phone'}</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
                           Joined: {employee.dateOfJoining ? formatIndianDate(employee.dateOfJoining) : 'N/A'}
                         </p>
                       </div>
@@ -466,7 +496,7 @@ export default function AdminDashboard() {
                         href={`/employee/${employee.uniqueSlug}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-blue-600 hover:text-blue-900 text-xs px-2 py-1 border border-blue-200 rounded bg-white"
+                        className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 text-xs px-3 py-1 border border-blue-200 dark:border-blue-600 rounded-md bg-white dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors duration-200"
                       >
                         View Profile
                       </a>
@@ -529,54 +559,89 @@ export default function AdminDashboard() {
 
         {/* Quick Actions */}
         <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          <div className="bg-white overflow-hidden shadow rounded-lg">
-            <div className="p-5">
-              <h3 className="text-lg font-medium text-gray-900 mb-2">Client Management</h3>
-              <p className="text-sm text-gray-500 mb-4">Manage clients and track payments</p>
-              <button 
+          <div className="bg-white dark:bg-slate-800 overflow-hidden shadow-lg dark:shadow-slate-700/30 rounded-xl border border-slate-200 dark:border-slate-700 transition-colors duration-300">
+            <div className="p-6">
+              <div className="flex items-center mb-4">
+                <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center mr-3">
+                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-medium text-slate-900 dark:text-slate-100">Client Management</h3>
+              </div>
+              <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">Manage clients and track payments</p>
+              <ButtonComponent 
                 onClick={() => router.push('/admin/clients')}
-                className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+                variant="info"
+                size="sm"
+                fullWidth
               >
                 Manage Clients →
-              </button>
+              </ButtonComponent>
             </div>
           </div>
 
-          <div className="bg-white overflow-hidden shadow rounded-lg">
-            <div className="p-5">
-              <h3 className="text-lg font-medium text-gray-900 mb-2">Attendance Tracking</h3>
-              <p className="text-sm text-gray-500 mb-4">Manage employee attendance records</p>
-              <button 
+          <div className="bg-white dark:bg-slate-800 overflow-hidden shadow-lg dark:shadow-slate-700/30 rounded-xl border border-slate-200 dark:border-slate-700 transition-colors duration-300">
+            <div className="p-6">
+              <div className="flex items-center mb-4">
+                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center mr-3">
+                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-medium text-slate-900 dark:text-slate-100">Attendance Tracking</h3>
+              </div>
+              <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">Manage employee attendance records</p>
+              <ButtonComponent 
                 onClick={() => router.push('/admin/attendance')}
-                className="text-blue-600 hover:text-blue-900 text-sm font-medium"
+                variant="primary"
+                size="sm"
+                fullWidth
               >
                 Manage Attendance →
-              </button>
+              </ButtonComponent>
             </div>
           </div>
 
-          <div className="bg-white overflow-hidden shadow rounded-lg">
-            <div className="p-5">
-              <h3 className="text-lg font-medium text-gray-900 mb-2">Payment Management</h3>
-              <p className="text-sm text-gray-500 mb-4">Track dues and advances</p>
-              <button 
+          <div className="bg-white dark:bg-slate-800 overflow-hidden shadow-lg dark:shadow-slate-700/30 rounded-xl border border-slate-200 dark:border-slate-700 transition-colors duration-300">
+            <div className="p-6">
+              <div className="flex items-center mb-4">
+                <div className="w-10 h-10 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-lg flex items-center justify-center mr-3">
+                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-medium text-slate-900 dark:text-slate-100">Payment Management</h3>
+              </div>
+              <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">Track dues and advances</p>
+              <ButtonComponent 
                 onClick={() => router.push('/admin/payments')}
-                className="text-blue-600 hover:text-blue-900 text-sm font-medium"
+                variant="warning"
+                size="sm"
+                fullWidth
               >
                 Manage Payments →
-              </button>
+              </ButtonComponent>
             </div>
           </div>
 
-          <div className="bg-white overflow-hidden shadow rounded-lg">
-            <div className="p-5">
-              <h3 className="text-lg font-medium text-gray-900 mb-2">Invoice Management</h3>
-              <p className="text-sm text-gray-500 mb-4">Create, upload and manage invoices</p>
-              <div className="flex flex-wrap gap-2">
+          <div className="bg-white dark:bg-slate-800 overflow-hidden shadow-lg dark:shadow-slate-700/30 rounded-xl border border-slate-200 dark:border-slate-700 transition-colors duration-300">
+            <div className="p-6">
+              <div className="flex items-center mb-4">
+                <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-lg flex items-center justify-center mr-3">
+                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-medium text-slate-900 dark:text-slate-100">Invoice Management</h3>
+              </div>
+              <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">Create, upload and manage invoices</p>
+              <div className="flex flex-col gap-2">
                 <ButtonComponent 
                   onClick={() => router.push('/admin/generate-invoice')}
                   variant="primary"
                   size="sm"
+                  fullWidth
                 >
                   Generate Invoice
                 </ButtonComponent>
@@ -584,6 +649,7 @@ export default function AdminDashboard() {
                   onClick={() => setShowInvoiceModal(true)}
                   variant="success"
                   size="sm"
+                  fullWidth
                 >
                   Upload Invoice
                 </ButtonComponent>
@@ -591,6 +657,7 @@ export default function AdminDashboard() {
                   onClick={() => router.push('/admin/invoices')}
                   variant="secondary"
                   size="sm"
+                  fullWidth
                 >
                   View All Invoices
                 </ButtonComponent>
@@ -598,42 +665,70 @@ export default function AdminDashboard() {
             </div>
           </div>
 
-          <div className="bg-white overflow-hidden shadow rounded-lg">
-            <div className="p-5">
-              <h3 className="text-lg font-medium text-gray-900 mb-2">PF/ESI Challans</h3>
-              <p className="text-sm text-gray-500 mb-4">View challans uploaded by accountant</p>
-              <button 
+          <div className="bg-white dark:bg-slate-800 overflow-hidden shadow-lg dark:shadow-slate-700/30 rounded-xl border border-slate-200 dark:border-slate-700 transition-colors duration-300">
+            <div className="p-6">
+              <div className="flex items-center mb-4">
+                <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center mr-3">
+                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-medium text-slate-900 dark:text-slate-100">PF/ESI Challans</h3>
+              </div>
+              <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">View challans uploaded by accountant</p>
+              <ButtonComponent 
                 onClick={() => router.push('/admin/challans')}
-                className="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+                variant="warning"
+                size="sm"
+                fullWidth
               >
                 View PF/ESI Challans →
-              </button>
+              </ButtonComponent>
             </div>
           </div>
 
-          <div className="bg-white overflow-hidden shadow rounded-lg">
-            <div className="p-5">
-              <h3 className="text-lg font-medium text-gray-900 mb-2">Document Management</h3>
-              <p className="text-sm text-gray-500 mb-4">Upload and manage all documents</p>
-              <button 
+          <div className="bg-white dark:bg-slate-800 overflow-hidden shadow-lg dark:shadow-slate-700/30 rounded-xl border border-slate-200 dark:border-slate-700 transition-colors duration-300">
+            <div className="p-6">
+              <div className="flex items-center mb-4">
+                <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-lg flex items-center justify-center mr-3">
+                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-medium text-slate-900 dark:text-slate-100">Document Management</h3>
+              </div>
+              <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">Upload and manage all documents</p>
+              <ButtonComponent 
                 onClick={() => router.push('/admin/documents')}
-                className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+                variant="info"
+                size="sm"
+                fullWidth
               >
                 Manage Documents →
-              </button>
+              </ButtonComponent>
             </div>
           </div>
 
-          <div className="bg-white overflow-hidden shadow rounded-lg">
-            <div className="p-5">
-              <h3 className="text-lg font-medium text-gray-900 mb-2">Company Settings</h3>
-              <p className="text-sm text-gray-500 mb-4">Manage bank details and company information</p>
-              <button 
+          <div className="bg-white dark:bg-slate-800 overflow-hidden shadow-lg dark:shadow-slate-700/30 rounded-xl border border-slate-200 dark:border-slate-700 transition-colors duration-300">
+            <div className="p-6">
+              <div className="flex items-center mb-4">
+                <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center mr-3">
+                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-medium text-slate-900 dark:text-slate-100">Company Settings</h3>
+              </div>
+              <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">Manage bank details and company information</p>
+              <ButtonComponent 
                 onClick={() => router.push('/admin/company-settings')}
-                className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+                variant="info"
+                size="sm"
+                fullWidth
               >
                 Company Settings →
-              </button>
+              </ButtonComponent>
             </div>
           </div>
         </div>
