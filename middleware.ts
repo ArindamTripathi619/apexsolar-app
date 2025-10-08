@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { verifyToken } from '@/app/lib/auth'
+import { jwtVerify } from 'jose'
 
-export function middleware(request: NextRequest) {
+const JWT_SECRET = new TextEncoder().encode(
+  process.env.JWT_SECRET || 'fallback-secret'
+)
+
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // Skip middleware for API routes, static files, and public routes
@@ -28,7 +32,10 @@ export function middleware(request: NextRequest) {
     }
 
     try {
-      const user = verifyToken(token)
+      // Use jose for Edge Runtime compatibility
+      const { payload } = await jwtVerify(token, JWT_SECRET)
+      const user = payload as { id: string; email: string; role: string }
+      
       if (!user || user.role !== 'ADMIN') {
         console.log('🚫 Invalid token or insufficient permissions, redirecting to login:', pathname)
         return NextResponse.redirect(new URL('/admin/login', request.url))
@@ -49,7 +56,10 @@ export function middleware(request: NextRequest) {
     }
 
     try {
-      const user = verifyToken(token)
+      // Use jose for Edge Runtime compatibility
+      const { payload } = await jwtVerify(token, JWT_SECRET)
+      const user = payload as { id: string; email: string; role: string }
+      
       if (!user || (user.role !== 'ADMIN' && user.role !== 'ACCOUNTANT')) {
         console.log('🚫 Invalid token or insufficient permissions, redirecting to login:', pathname)
         return NextResponse.redirect(new URL('/accountant/login', request.url))
