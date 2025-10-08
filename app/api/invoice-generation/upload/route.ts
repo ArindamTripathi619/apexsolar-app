@@ -1,14 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/app/lib/prisma'
-import { writeFile, mkdir, access } from 'fs/promises'
-import path from 'path'
-import { constants } from 'fs'
+import { uploadToGCS, getPublicUrl } from '@/app/lib/gcs'
 
 export async function POST(request: NextRequest) {
   try {
-    console.log('📤 Starting PDF upload process...')
+    console.log('📤 Starting PDF upload process with GCS...')
     console.log('🌍 Environment:', process.env.NODE_ENV)
-    console.log('📁 Working directory:', process.cwd())
+    console.log('☁️ GCS Project:', process.env.GOOGLE_CLOUD_PROJECT_ID)
+    console.log('🪣 GCS Bucket:', process.env.GCS_BUCKET_NAME)
     
     const formData = await request.formData()
     const file = formData.get('file') as File
@@ -17,7 +16,7 @@ export async function POST(request: NextRequest) {
     console.log('📄 File received:', file?.name, 'Size:', file?.size, 'Type:', file?.type)
     console.log('🆔 Invoice ID:', invoiceId)
 
-    if (!file || !invoiceId) {
+    if (file app/admin/clients/page.tsx || !invoiceId) {
       console.error('❌ Missing file or invoice ID')
       return NextResponse.json(
         { success: false, error: 'File and invoice ID are required' },
@@ -50,82 +49,55 @@ export async function POST(request: NextRequest) {
 
     console.log('✅ Invoice found:', invoice.id)
 
-    // Create filename based on invoice number or ID
-    const fileExtension = path.extname(file.name)
-    const fileName = `invoice_${invoice.id}${fileExtension}`
+    // Create filename for GCS storage
+    const fileExtension = file.name.split('.').pop() || 'pdf'
+    const fileName = `invoices/invoice_${invoice.id}.${fileExtension}`
 
-    // Save file to uploads directory
+    // Convert file to buffer
     const bytes = await file.arrayBuffer()
     const buffer = Buffer.from(bytes)
 
-    const uploadsDir = path.join(process.cwd(), 'uploads', 'invoices')
-    const filePath = path.join(uploadsDir, fileName)
+    console.log('☁️ Uploading to GCS...')
+    console.log('📁 GCS file path:', fileName)
 
-    console.log('📁 Upload directory:', uploadsDir)
-    console.log('📄 File path:', filePath)
-
-    // Check if uploads directory exists, if not create it
     try {
-      await access(uploadsDir, constants.F_OK)
-      console.log('✅ Upload directory exists')
-    } catch {
-      console.log('🏗️ Creating upload directory...')
-      await mkdir(uploadsDir, { recursive: true })
-      console.log('✅ Upload directory created')
-    }
+      // Upload to Google Cloud Storage
+      await uploadToGCS(buffer, fileName, file.type || 'application/pdf')
+      console.log('✅ File uploaded to GCS successfully')
 
-    // Check write permissions
-    try {
-      await access(uploadsDir, constants.W_OK)
-      console.log('✅ Upload directory is writable')
-    } catch (error) {
-      console.error('❌ Upload directory is not writable:', error)
+      // Get public URL
+      const publicUrl = getPublicUrl(fileName)
+      console.log('🔗 Public URL:', publicUrl)
+
+      // Update invoice with file path
+      console.log('🔄 Updating invoice record...')
+      await prisma.invoice.update({
+        where: { id: invoiceId },
+        data: {
+          fileName: fileName.split('/').pop() || fileName,
+          fileUrl: publicUrl
+        }
+      })
+
+      console.log('✅ Upload completed successfully')
+      return NextResponse.json({
+        success: true,
+        data: {
+          fileName: fileName.split('/').pop() || fileName,
+          fileUrl: publicUrl
+        }
+      })
+    } catch (gcsError) {
+      console.error('☁️ GCS upload failed:', gcsError)
+      
       return NextResponse.json(
-        { success: false, error: 'Upload directory is not writable' },
+        { success: false, error: `Failed to upload to cloud storage: ${gcsError instanceof Error ? gcsError.message : 'Unknown GCS error'}` },
         { status: 500 }
       )
     }
-    
-    console.log('💾 Writing file to disk...')
-    await writeFile(filePath, buffer)
-    console.log('✅ File written successfully')
-
-    // Verify file was written
-    try {
-      await access(filePath, constants.F_OK)
-      console.log('✅ File exists after write')
-    } catch (error) {
-      console.error('❌ File does not exist after write:', error)
-      return NextResponse.json(
-        { success: false, error: 'Failed to verify file write' },
-        { status: 500 }
-      )
-    }
-
-    // Update invoice with file path
-    const fileUrl = `/uploads/invoices/${fileName}`
-    
-    console.log('🔄 Updating invoice record...')
-    await prisma.invoice.update({
-      where: { id: invoiceId },
-      data: {
-        fileName,
-        fileUrl
-      }
-    })
-
-    console.log('✅ Upload completed successfully')
-    return NextResponse.json({
-      success: true,
-      data: {
-        fileName,
-        fileUrl
-      }
-    })
   } catch (error) {
     console.error('💥 Error uploading invoice PDF:', error)
     
-    // Log more detailed error information
     if (error instanceof Error) {
       console.error('Error name:', error.name)
       console.error('Error message:', error.message)
