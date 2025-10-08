@@ -97,23 +97,33 @@ ApexSolar App is a comprehensive Next.js 15 full-stack application designed for 
 
 ## Recent Enhancements
 
+### Critical Security Fixes (January 2025)
+- **Authentication Bypass Fix**: Resolved critical vulnerability where admin routes were accessible without login
+- **Next.js Middleware**: Implemented comprehensive route protection with role-based access control
+- **API Security**: Re-enabled authentication that was temporarily disabled for production testing
+- **Client-side Protection**: Added authentication checks to all admin pages with automatic redirects
+
+### UI/UX Improvements (January 2025)
+- **Dropdown Overflow Fix**: Fixed kWp quantity selector overflow in Services/Products section
+- **Responsive Design**: Enhanced mobile layouts and flexbox constraints
+- **Professional Styling**: Improved form layouts and dropdown positioning
+
 ### Indian Localization (Completed)
 - **Date Format**: DD/MM/YYYY format throughout the application
 - **Currency**: ₹ (Indian Rupee) symbol in all financial displays
 - **Custom Components**: IndianDateInput for proper date input handling
 - **Utilities**: indianLocalization.ts for consistent formatting
 
-### UI Improvements
-- Modern, responsive design using Tailwind CSS
-- Mobile-responsive layouts
-- Professional dashboard interfaces
-- Consistent component styling
+### Documentation Organization (January 2025)
+- **Consolidated Structure**: Moved all project documentation to docs/ directory
+- **Updated Workflows**: Streamlined documentation maintenance and updates
+- **Comprehensive Coverage**: Complete project context, working features, and TODO tracking
 
 ## Current State
 - ✅ Fully functional employee management system
 - ✅ Complete client and invoice management
 - ✅ Indian localization implementation
-- ✅ Secure authentication and role management
+- ✅ Secure authentication and role management (CRITICAL SECURITY FIXES APPLIED)
 - ✅ File upload and storage system
 - ✅ Attendance and payment tracking
 - ✅ Dashboard with statistics and overview
@@ -121,6 +131,9 @@ ApexSolar App is a comprehensive Next.js 15 full-stack application designed for 
 - ✅ **GST-compliant PDF invoice creation**
 - ✅ **Automated client and financial data synchronization**
 - ✅ **Company branding and settings management**
+- ✅ **Next.js middleware-based route protection**
+- ✅ **Enhanced UI with fixed dropdown overflow issues**
+- ✅ **Organized documentation structure in docs/ directory**
 
 ### Invoice Generator Integration (COMPLETED)
 - ✅ **Complete Integration**: Successfully integrated standalone invoice generator into main app
