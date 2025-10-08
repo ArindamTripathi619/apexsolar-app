@@ -64,11 +64,45 @@ export async function GET(request: NextRequest) {
     }
 
     console.log('📋 Fetching clients from database...')
-    // Fetch clients with invoices and payments to calculate due amounts
+    // First, try a simple query without includes to test basic connectivity
+    console.log('🔍 Testing simple client query...')
+    const simpleClients = await prisma.client.findMany({
+      orderBy: {
+        createdAt: 'desc'
+      }
+    })
+    console.log(`✅ Simple query successful: ${simpleClients.length} clients`)
+
+    // Now try with invoices only
+    console.log('🔍 Testing with invoices...')
+    const clientsWithInvoices = await prisma.client.findMany({
+      include: {
+        invoices: true
+      },
+      orderBy: {
+        createdAt: 'desc'
+      }
+    })
+    console.log(`✅ Invoices query successful: ${clientsWithInvoices.length} clients`)
+
+    // Now try with payments (ClientPayment) only
+    console.log('🔍 Testing with payments...')
+    const clientsWithPayments = await prisma.client.findMany({
+      include: {
+        payments: true  // This refers to ClientPayment[]
+      },
+      orderBy: {
+        createdAt: 'desc'
+      }
+    })
+    console.log(`✅ Payments query successful: ${clientsWithPayments.length} clients`)
+
+    // Finally, try with both
+    console.log('🔍 Testing with both invoices and payments...')
     const clients = await prisma.client.findMany({
       include: {
         invoices: true,
-        payments: true
+        payments: true  // This refers to ClientPayment[]
       },
       orderBy: {
         createdAt: 'desc'

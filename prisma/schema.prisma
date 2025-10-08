@@ -9,12 +9,12 @@ datasource db {
 }
 
 model User {
-  id          String    @id @default(cuid())
-  email       String    @unique
+  id          String     @id @default(cuid())
+  email       String     @unique
   password    String
-  role        UserRole  @default(ADMIN)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  role        UserRole   @default(ADMIN)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
   lastLogin   DateTime?
   lastLoginIp String?
   documents   Document[]
@@ -106,47 +106,45 @@ model Client {
 }
 
 model Invoice {
-  id                String        @id @default(cuid())
-  clientName        String
-  amount            Float
-  date              DateTime
-  fileName          String
-  fileUrl           String
-  uploadedAt        DateTime      @default(now())
-  createdAt         DateTime      @default(now())
-  updatedAt         DateTime      @updatedAt
-  clientId          String?
-  client            Client?       @relation(fields: [clientId], references: [id], onDelete: Cascade)
-  
-  // Invoice generation specific fields
-  invoiceNumber     String?       // Generated invoice number (e.g., AS/25-26/022)
-  financialYear     String?       // Financial year (e.g., 25-26)
-  workOrderReference String?      // Work order reference
-  workOrderDate     DateTime?     // Work order date
-  lineItems         InvoiceLineItem[]
-  totalBasicAmount  Float?        // Total before taxes
-  cgstPercentage    Float?        // CGST percentage
-  cgstAmount        Float?        // CGST amount
-  sgstPercentage    Float?        // SGST percentage  
-  sgstAmount        Float?        // SGST amount
-  grandTotal        Float?        // Final total amount
-  amountInWords     String?       // Amount in words
-  isGenerated       Boolean       @default(false) // True if generated internally, false if uploaded
+  id                 String            @id @default(cuid())
+  clientName         String
+  amount             Float
+  date               DateTime
+  fileName           String
+  fileUrl            String
+  uploadedAt         DateTime          @default(now())
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
+  clientId           String?
+  invoiceNumber      String?
+  financialYear      String?
+  workOrderReference String?
+  workOrderDate      DateTime?
+  totalBasicAmount   Float?
+  cgstPercentage     Float?
+  cgstAmount         Float?
+  sgstPercentage     Float?
+  sgstAmount         Float?
+  grandTotal         Float?
+  amountInWords      String?
+  isGenerated        Boolean           @default(false)
+  lineItems          InvoiceLineItem[]
+  client             Client?           @relation(fields: [clientId], references: [id], onDelete: Cascade)
 
   @@map("invoices")
 }
 
 model InvoiceLineItem {
-  id            String  @id @default(cuid())
-  invoiceId     String
-  serialNumber  Int
-  description   String
-  hsnSacCode    String?
-  rate          Float
-  quantity      Float
-  unit          String  @default("kWp")
-  amount        Float
-  invoice       Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  id           String  @id @default(cuid())
+  invoiceId    String
+  serialNumber Int
+  description  String
+  hsnSacCode   String?
+  rate         Float
+  quantity     Float
+  unit         String  @default("kWp")
+  amount       Float
+  invoice      Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
 
   @@map("invoice_line_items")
 }
@@ -179,6 +177,41 @@ model PfEsiChallan {
   @@map("pf_esi_challans")
 }
 
+model Document {
+  id          String           @id @default(cuid())
+  title       String
+  description String?
+  fileName    String
+  fileUrl     String
+  fileSize    Int?
+  mimeType    String?
+  category    DocumentCategory @default(GENERAL)
+  uploadedBy  String
+  uploadedFor String?
+  tags        String[]
+  isPublic    Boolean          @default(false)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  uploader    User             @relation(fields: [uploadedBy], references: [id], onDelete: Cascade)
+
+  @@map("documents")
+}
+
+model CompanySettings {
+  id                String   @id @default(cuid())
+  accountName       String   @default("APEX SOLAR")
+  bankName          String   @default("STATE BANK OF INDIA")
+  ifscCode          String   @default("SBIN0007679")
+  accountNumber     String   @default("40423372674")
+  gstNumber         String   @default("19AFZPT2526E1ZV")
+  stampSignatureUrl String?
+  companyLogoUrl    String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@map("company_settings")
+}
+
 enum UserRole {
   ADMIN
   ACCOUNTANT
@@ -204,26 +237,6 @@ enum ChallanType {
   ESI
 }
 
-model Document {
-  id          String       @id @default(cuid())
-  title       String
-  description String?
-  fileName    String
-  fileUrl     String
-  fileSize    Int?
-  mimeType    String?
-  category    DocumentCategory @default(GENERAL)
-  uploadedBy  String
-  uploadedFor String?      // Optional: specific user/employee this document is for
-  tags        String[]     // Array of tags for categorization
-  isPublic    Boolean      @default(false) // Public documents visible to all users
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  uploader    User         @relation(fields: [uploadedBy], references: [id], onDelete: Cascade)
-
-  @@map("documents")
-}
-
 enum DocumentCategory {
   GENERAL
   FINANCIAL
@@ -235,19 +248,4 @@ enum DocumentCategory {
   REPORTS
   POLICIES
   CERTIFICATES
-}
-
-model CompanySettings {
-  id                   String   @id @default(cuid())
-  accountName          String   @default("APEX SOLAR")
-  bankName             String   @default("STATE BANK OF INDIA")
-  ifscCode             String   @default("SBIN0007679")
-  accountNumber        String   @default("40423372674")
-  gstNumber            String   @default("19AFZPT2526E1ZV")
-  stampSignatureUrl    String?  // Base64 or URL to stamp/signature image
-  companyLogoUrl       String?  // Company logo URL
-  createdAt            DateTime @default(now())
-  updatedAt            DateTime @updatedAt
-
-  @@map("company_settings")
 }
