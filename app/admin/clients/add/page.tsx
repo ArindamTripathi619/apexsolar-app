@@ -112,7 +112,7 @@ export default function AddClient() {
                       onChange={handleChange}
                       className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="15-digit GST number"
-                      pattern="[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}[Z]{1}[0-9A-Z]{1}"
+                      pattern="[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z0-9]{3}"
                       title="Please enter a valid GST number (e.g., 19AACN8612L1Z5)"
                       required
                     />
