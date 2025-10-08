@@ -101,40 +101,68 @@ export async function PUT(request: NextRequest) {
       companyLogoSize: companyLogoUrl ? companyLogoUrl.length : 0
     })
 
-    // Get existing settings or create new ones
+    // Get existing settings or create new ones using raw queries to bypass TypeScript issues
     console.log('Attempting to find existing company settings...')
-    let settings = await prisma.companySettings.findFirst()
-    console.log('Existing settings found:', !!settings)
+    let settings: any
+    try {
+      const existingSettings = await prisma.$queryRaw`SELECT * FROM company_settings LIMIT 1`
+      settings = Array.isArray(existingSettings) && existingSettings.length > 0 ? existingSettings[0] : null
+      console.log('Existing settings found:', !!settings)
+    } catch (findError) {
+      console.error('Error finding settings:', findError)
+      return NextResponse.json(
+        { success: false, error: 'Database query failed', details: findError instanceof Error ? findError.message : 'Unknown error' },
+        { status: 500 }
+      )
+    }
     
     if (settings) {
       console.log('Updating existing settings...')
-      settings = await prisma.companySettings.update({
-        where: { id: settings.id },
-        data: {
-          accountName,
-          bankName,
-          ifscCode,
-          accountNumber,
-          gstNumber,
-          stampSignatureUrl,
-          companyLogoUrl
-        }
-      })
-      console.log('Settings updated successfully')
+      try {
+        await prisma.$executeRaw`
+          UPDATE company_settings 
+          SET 
+            "accountName" = ${accountName},
+            "bankName" = ${bankName},
+            "ifscCode" = ${ifscCode},
+            "accountNumber" = ${accountNumber},
+            "gstNumber" = ${gstNumber},
+            "stampSignatureUrl" = ${stampSignatureUrl || null},
+            "companyLogoUrl" = ${companyLogoUrl || null},
+            "updatedAt" = NOW()
+          WHERE id = ${settings.id}
+        `
+        
+        // Fetch updated settings
+        const updatedSettings = await prisma.$queryRaw`SELECT * FROM company_settings WHERE id = ${settings.id}`
+        settings = Array.isArray(updatedSettings) && updatedSettings.length > 0 ? updatedSettings[0] : settings
+        console.log('Settings updated successfully')
+      } catch (updateError) {
+        console.error('Error updating settings:', updateError)
+        return NextResponse.json(
+          { success: false, error: 'Failed to update settings', details: updateError instanceof Error ? updateError.message : 'Unknown error' },
+          { status: 500 }
+        )
+      }
     } else {
       console.log('Creating new settings...')
-      settings = await prisma.companySettings.create({
-        data: {
-          accountName,
-          bankName,
-          ifscCode,
-          accountNumber,
-          gstNumber,
-          stampSignatureUrl,
-          companyLogoUrl
-        }
-      })
-      console.log('Settings created successfully')
+      try {
+        await prisma.$executeRaw`
+          INSERT INTO company_settings ("accountName", "bankName", "ifscCode", "accountNumber", "gstNumber", "stampSignatureUrl", "companyLogoUrl", "createdAt", "updatedAt")
+          VALUES (${accountName}, ${bankName}, ${ifscCode}, ${accountNumber}, ${gstNumber}, ${stampSignatureUrl || null}, ${companyLogoUrl || null}, NOW(), NOW())
+        `
+        
+        // Fetch created settings
+        const newSettings = await prisma.$queryRaw`SELECT * FROM company_settings ORDER BY "createdAt" DESC LIMIT 1`
+        settings = Array.isArray(newSettings) && newSettings.length > 0 ? newSettings[0] : null
+        console.log('Settings created successfully')
+      } catch (createError) {
+        console.error('Error creating settings:', createError)
+        return NextResponse.json(
+          { success: false, error: 'Failed to create settings', details: createError instanceof Error ? createError.message : 'Unknown error' },
+          { status: 500 }
+        )
+      }
     }
 
     console.log('Company settings operation completed successfully')
