@@ -141,5 +141,11 @@ scratch/
 temp/
 tmp/
 
+# Debug files
+debug-*.js
+debug-*.ts
+*debug*.json
+test_*.json
+
 # GitHub directory and documentation
 .github/*.md

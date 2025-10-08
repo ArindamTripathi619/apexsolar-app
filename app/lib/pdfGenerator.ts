@@ -2,16 +2,6 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { InvoiceGeneration, CompanySettings } from '@/app/types/invoice-generation';
 
-// Extend jsPDF interface
-declare module 'jspdf' {
-  interface jsPDF {
-    autoTable: (options: any) => void;
-    lastAutoTable: {
-      finalY: number;
-    };
-  }
-}
-
 export async function generateInvoicePDF(
   invoice: InvoiceGeneration,
   companySettings: CompanySettings,
@@ -19,342 +9,407 @@ export async function generateInvoicePDF(
   companyLogoDataUrl?: string
 ): Promise<Blob> {
   const doc = new jsPDF('p', 'mm', 'a4');
-  
-  // Initialize autoTable
-  (doc as any).autoTable = autoTable;
-  
   const pageWidth = doc.internal.pageSize.getWidth();
   const margin = 10;
 
-  let currentY = 8;
+  let currentY = 8; // Start closer to top
 
   // Create letterhead
   if (companyLogoDataUrl) {
     try {
-      doc.addImage(companyLogoDataUrl, 'PNG', margin, currentY, 40, 35);
+      // Add company logo - better aspect ratio for 832x1162 pixels
+      doc.addImage(companyLogoDataUrl, 'PNG', margin, currentY, 40, 35); // Increased height from 25 to 35
     } catch (error) {
       console.error('Error adding company logo:', error);
     }
   }
 
-  // Company name with special styling
-  doc.setFont('times', 'bold');
+  // Company name with special styling - matching original letterhead
+  doc.setFont('times', 'bold'); // Use Times font to match original
   doc.setTextColor(41, 98, 184); // Blue color for APEX SOLAR
   
-  doc.setFontSize(36);
+  // Draw "A" in APEX - larger size
+  doc.setFontSize(36); // Larger for the "A"
   doc.text('A', 55, currentY + 12);
   
+  // Draw "PEX" - normal size, closer to A
   doc.setFontSize(30);
-  doc.text('PEX', 64, currentY + 12);
+  doc.text('PEX', 64, currentY + 12); // Brought closer to A
   
-  doc.setFontSize(36);
-  doc.text('S', 92, currentY + 12);
+  // Add minimal space and draw "S" in SOLAR - larger size, with proper spacing
+  doc.setFontSize(36); // Larger for the "S"
+  doc.text('S', 92, currentY + 12); // Slightly more space from APEX
   
+  // Draw "OLAR" - normal size, closer to S
   doc.setFontSize(30);
-  doc.text('OLAR', 99, currentY + 12);
+  doc.text('OLAR', 99, currentY + 12); // Brought even closer to S
   
   doc.setFont('helvetica', 'italic');
   doc.setFontSize(12);
-  doc.setTextColor(0, 128, 0);
-  doc.text('for green energy', 55, currentY + 21);
+  doc.setTextColor(0, 128, 0); // Green color for "for green energy"
+  doc.text('for green energy', 55, currentY + 21); // Adjusted for taller logo
 
-  // Service description on right
+  // Service description on right - enhanced styling
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(12);
-  doc.setTextColor(51, 51, 51);
-  doc.text('Solar Power Plant Installation', pageWidth - 75, currentY + 10, { align: 'left' });
-  doc.text('and Commissioning', pageWidth - 75, currentY + 18, { align: 'left' });
+  doc.setTextColor(51, 51, 51); // Dark gray for better contrast
+  doc.text('Solar Power Plant Installation', pageWidth - 75, currentY + 10, { align: 'left' }); // Back to original position
+  doc.text('and Commissioning', pageWidth - 75, currentY + 18, { align: 'left' }); // Back to original position
 
-  // Address and contact info
+  // Address and contact info - enhanced styling
   doc.setFont('helvetica', 'normal');
-  doc.setFontSize(9);
-  doc.setTextColor(51, 51, 51);
-  doc.text('Ramkrishna Nagar, Paschimpara, P.O.- Panchpota, P.S.- Narendrapur, Kolkata - 700 152', margin, currentY + 40);
+  doc.setFontSize(9); // Slightly larger for better readability
+  doc.setTextColor(51, 51, 51); // Dark gray
+  doc.text('Ramkrishna Nagar, Paschimpara, P.O.- Panchpota, P.S.- Narendrapur, Kolkata - 700 152', margin, currentY + 40); // Changed P.S. to Narendrapur
   
-  doc.setFont('helvetica', 'bold');
-  doc.setTextColor(0, 0, 0);
+  // Contact info with enhanced formatting
+  doc.setFont('helvetica', 'bold'); // Make Ph: bold and black
+  doc.setTextColor(0, 0, 0); // Black color for labels
   doc.text('Ph : ', margin, currentY + 44);
   doc.setFont('helvetica', 'normal');
   doc.setTextColor(51, 51, 51);
   doc.text('+91-97327 33031', margin + 12, currentY + 44);
   
-  doc.setFont('helvetica', 'bold');
-  doc.setTextColor(0, 0, 0);
+  doc.setFont('helvetica', 'bold'); // Make E-mail: bold and black
+  doc.setTextColor(0, 0, 0); // Black color for email label
   doc.text('E-mail : ', margin + 50, currentY + 44);
   doc.setFont('helvetica', 'normal');
   doc.setTextColor(51, 51, 51);
   doc.text('partha.apexsolar@gmail.com', margin + 66, currentY + 44);
 
-  // Line separator
-  doc.setDrawColor(139, 69, 19);
-  doc.setLineWidth(2);
-  doc.line(margin, currentY + 49, pageWidth - margin, currentY + 49);
+  // Enhanced brown/red line separator with gradient effect
+  doc.setDrawColor(139, 69, 19); // Brown color
+  doc.setLineWidth(2); // Thicker line
+  doc.line(margin, currentY + 49, pageWidth - margin, currentY + 49); // Moved down
   
-  doc.setDrawColor(41, 98, 184);
+  // Add a subtle second line for depth
+  doc.setDrawColor(41, 98, 184); // Blue accent line
   doc.setLineWidth(0.5);
   doc.line(margin, currentY + 50.5, pageWidth - margin, currentY + 50.5);
 
-  currentY += 58;
+  currentY += 58; // Adjusted for enhanced letterhead
 
-  // Tax Invoice header
+  // Tax Invoice header - enhanced styling
   doc.setFont('helvetica', 'bold');
-  doc.setFontSize(22);
-  doc.setTextColor(0, 0, 0);
+  doc.setFontSize(22); // Larger and more prominent
+  doc.setTextColor(0, 0, 0); // Black color instead of blue
   doc.text('Tax Invoice', pageWidth / 2, currentY, { align: 'center' });
+  
+  // Add underline for Tax Invoice
+  doc.setDrawColor(0, 0, 0); // Black underline
+  doc.setLineWidth(0.8);
+  doc.line(pageWidth / 2 - 25, currentY + 2, pageWidth / 2 + 25, currentY + 2);
 
-  currentY += 15;
+  currentY += 10; // Increased spacing for prominence
 
-  // Customer and Invoice details section
-  const customerDetailsX = margin;
-  const invoiceDetailsX = pageWidth - 90;
+  doc.setFontSize(9);
+  doc.setFont('helvetica', 'normal');
+  doc.setTextColor(0, 0, 0); // Reset to black
 
-  // Customer Details (Left)
+  const leftColumnX = margin;
+  const rightColumnX = pageWidth - margin - 70;
+
+  // Customer company name - enhanced
   doc.setFont('helvetica', 'bold');
-  doc.setFontSize(12);
-  doc.setTextColor(0, 0, 0);
-  doc.text('Bill To:', customerDetailsX, currentY);
-
-  currentY += 5;
-
+  doc.setFontSize(11); // Slightly larger
+  doc.setTextColor(51, 51, 51); // Dark gray
+  doc.text(invoice.customer.companyName.toUpperCase(), leftColumnX, currentY);
+  
+  // Position date aligned with customer name
+  const customerNameY = currentY;
   doc.setFont('helvetica', 'bold');
-  doc.setFontSize(11);
-  doc.text(invoice.customer.companyName, customerDetailsX, currentY);
+  doc.setFontSize(9);
+  doc.setTextColor(0, 0, 0); // Black for labels
+  doc.text('Date:- ', rightColumnX, customerNameY);
+  doc.setFont('helvetica', 'normal');
+  doc.setTextColor(51, 51, 51); // Dark gray for values
+  const invoiceDateFormatted = new Date(invoice.invoiceDate).toLocaleDateString('en-GB').replace(/\//g, '.');
+  doc.text(invoiceDateFormatted, rightColumnX + 12, customerNameY);
 
-  currentY += 5;
+  // Position Tax Invoice Ref. No. below the date
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(0, 0, 0); // Black for labels
+  doc.text('Tax Invoice Ref. No: - ', rightColumnX, customerNameY + 5);
+  doc.setFont('helvetica', 'normal');
+  doc.setTextColor(51, 51, 51); // Dark gray for values
+  const formattedInvoiceNumber = `AS/${invoice.financialYear}/${invoice.invoiceNumber}`;
+  doc.text(formattedInvoiceNumber, rightColumnX + 35, customerNameY + 5);
+
+  currentY += 6; // Increased spacing
 
   doc.setFont('helvetica', 'normal');
-  doc.setFontSize(10);
-  
-  if (invoice.customer.addressLine1) {
-    doc.text(invoice.customer.addressLine1, customerDetailsX, currentY);
-    currentY += 4;
-  }
-  
-  if (invoice.customer.addressLine2) {
-    doc.text(invoice.customer.addressLine2, customerDetailsX, currentY);
-    currentY += 4;
-  }
-  
-  if (invoice.customer.addressLine3) {
-    doc.text(invoice.customer.addressLine3, customerDetailsX, currentY);
-    currentY += 4;
-  }
+  doc.setFontSize(9);
+  doc.setTextColor(51, 51, 51); // Dark gray for address
+  const addressLines = [
+    invoice.customer.addressLine1,
+    invoice.customer.addressLine2,
+    invoice.customer.addressLine3,
+    `${invoice.customer.city || ''} ${invoice.customer.state || ''} ${invoice.customer.pinCode || ''}`.trim(),
+  ].filter(line => line && line.trim() !== '');
 
-  if (invoice.customer.city || invoice.customer.state || invoice.customer.pinCode) {
-    const cityStatePin = [
-      invoice.customer.city,
-      invoice.customer.state,
-      invoice.customer.pinCode
-    ].filter(Boolean).join(', ');
-    
-    if (cityStatePin) {
-      doc.text(cityStatePin, customerDetailsX, currentY);
-      currentY += 4;
+  addressLines.forEach(line => {
+    if (line) {
+      const splitLines = doc.splitTextToSize(line, 100);
+      splitLines.forEach((splitLine: string) => {
+        doc.text(splitLine, leftColumnX, currentY);
+        currentY += 4;
+      });
     }
-  }
+  });
 
   if (invoice.customer.gstNumber) {
-    doc.text(`GST No.: ${invoice.customer.gstNumber}`, customerDetailsX, currentY);
-    currentY += 4;
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9);
+    doc.setTextColor(0, 0, 0); // Black for labels
+    doc.text('G.S.T. No: ', leftColumnX, currentY);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(51, 51, 51); // Dark gray for values
+    doc.text(invoice.customer.gstNumber, leftColumnX + 18, currentY);
+    currentY += 5;
   }
 
   if (invoice.customer.panNumber) {
-    doc.text(`PAN No.: ${invoice.customer.panNumber}`, customerDetailsX, currentY);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9);
+    doc.setTextColor(0, 0, 0); // Black for labels
+    doc.text('PAN NO: ', leftColumnX, currentY);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(51, 51, 51); // Dark gray for values
+    doc.text(invoice.customer.panNumber, leftColumnX + 18, currentY);
   }
 
-  // Invoice Details (Right)
-  let rightColumnY = currentY - (customerDetailsX === margin ? 35 : 20); // Reset to start of customer details
+  currentY = Math.max(currentY, customerNameY + 10) + 10; // Increased spacing for more gap
 
+  // Work Order section - centered
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(10);
-  doc.setTextColor(0, 0, 0);
+  doc.setTextColor(0, 0, 0); // Black for labels
+  const workOrderLabel = 'Ref. Work Order No: - ';
+  const workOrderValue = invoice.workOrderDate
+    ? `${invoice.workOrderReference} Dated- ${new Date(invoice.workOrderDate).toLocaleDateString('en-GB').replace(/\//g, '.')}`
+    : invoice.workOrderReference;
+  
+  // Combine label and value for centering
+  const fullWorkOrderText = `${workOrderLabel}${workOrderValue}`;
+  doc.text(fullWorkOrderText, pageWidth / 2, currentY, { align: 'center' });
 
-  doc.text('Invoice No.:', invoiceDetailsX, rightColumnY);
-  doc.setFont('helvetica', 'normal');
-  doc.text(invoice.invoiceNumber, invoiceDetailsX + 25, rightColumnY);
+  currentY += 10; // Increased spacing before table
 
-  rightColumnY += 5;
-
-  doc.setFont('helvetica', 'bold');
-  doc.text('Invoice Date:', invoiceDetailsX, rightColumnY);
-  doc.setFont('helvetica', 'normal');
-  const formattedDate = new Date(invoice.invoiceDate).toLocaleDateString('en-GB', {
-    day: '2-digit',
-    month: '2-digit', 
-    year: 'numeric'
-  }).replace(/\//g, '.');
-  doc.text(formattedDate, invoiceDetailsX + 25, rightColumnY);
-
-  currentY = Math.max(currentY, rightColumnY) + 10;
-
-  // Work Order Section
-  if (invoice.workOrderReference) {
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(10);
-    doc.setTextColor(0, 0, 0);
-    
-    let workOrderText = `Work Order Ref.: ${invoice.workOrderReference}`;
-    if (invoice.workOrderDate) {
-      const workOrderDateFormatted = new Date(invoice.workOrderDate).toLocaleDateString('en-GB', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric'
-      }).replace(/\//g, '.');
-      workOrderText += ` dated ${workOrderDateFormatted}`;
-    }
-    
-    doc.text(workOrderText, margin, currentY);
-    currentY += 8;
-  }
-
-  // Service Table
   const tableData = invoice.lineItems.map((item, index) => [
     (index + 1).toString(),
     item.description,
     item.hsnSacCode || '',
-    item.rate.toFixed(2),
-    `${item.quantity} ${item.unit}`,
-    item.amount.toFixed(2)
+    `${item.rate.toFixed(2)}`,
+    `${item.quantity.toFixed(2)}\n(${item.unit})`,
+    `${item.amount.toFixed(2)}`, // Amount is already calculated with 1000x in the form
   ]);
 
-  doc.autoTable({
+  autoTable(doc as any, {
     startY: currentY,
-    head: [['S.No.', 'Description of Services', 'HSN/SAC', 'Rate', 'Qty', 'Amount (₹)']],
+    head: [['SL.\nNO', 'DESCRIPTION', 'HSN/SAC', 'Rate\n(In Rs.)', 'Qty.\n(in Kwp)', 'Amount\n(In Rs.)']],
     body: tableData,
     theme: 'grid',
+    margin: { left: (pageWidth - 183) / 2 }, // Center the table (total width 183mm)
     styles: {
-      fontSize: 9,
-      cellPadding: 3,
-      textColor: [0, 0, 0],
+      fontSize: 8.5, // Slightly smaller font
+      cellPadding: 2, // Reduced padding
       lineColor: [0, 0, 0],
-      lineWidth: 0.5
+      lineWidth: 0.5,
+      textColor: [0, 0, 0], // Make text black for better printing
     },
     headStyles: {
-      fillColor: [240, 240, 240],
+      fillColor: [255, 255, 255], // Back to white background
+      textColor: [0, 0, 0], // Black text
       fontStyle: 'bold',
       halign: 'center',
-      textColor: [0, 0, 0]
-    },
-    bodyStyles: {
-      halign: 'left'
+      valign: 'middle',
+      fontSize: 9,
     },
     columnStyles: {
-      0: { halign: 'center', cellWidth: 15 },
-      1: { halign: 'left', cellWidth: 80 },
-      2: { halign: 'center', cellWidth: 20 },
-      3: { halign: 'right', cellWidth: 25 },
-      4: { halign: 'center', cellWidth: 20 },
-      5: { halign: 'right', cellWidth: 25 }
-    }
+      0: { cellWidth: 16, halign: 'center' }, // Reduced width
+      1: { cellWidth: 80, halign: 'left' }, // Reduced width
+      2: { cellWidth: 18, halign: 'center' }, // Reduced width
+      3: { cellWidth: 23, halign: 'center' }, // Changed to center alignment
+      4: { cellWidth: 23, halign: 'center' }, // Reduced width
+      5: { cellWidth: 23, halign: 'center' }, // Changed to center alignment
+    },
   });
 
-  currentY = doc.lastAutoTable.finalY + 5;
+  currentY = (doc as any).lastAutoTable.finalY;
 
-  // Financial Summary
-  const summaryX = pageWidth - 80;
-  
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(10);
-  doc.setTextColor(0, 0, 0);
-
-  doc.text('Total Basic Amount:', summaryX, currentY);
-  doc.text(`₹ ${invoice.totalBasicAmount.toFixed(2)}`, summaryX + 50, currentY, { align: 'right' });
-
-  currentY += 5;
-
-  doc.text(`CGST @ ${invoice.cgstPercentage}%:`, summaryX, currentY);
-  doc.text(`₹ ${invoice.cgstAmount.toFixed(2)}`, summaryX + 50, currentY, { align: 'right' });
-
-  currentY += 5;
-
-  doc.text(`SGST @ ${invoice.sgstPercentage}%:`, summaryX, currentY);
-  doc.text(`₹ ${invoice.sgstAmount.toFixed(2)}`, summaryX + 50, currentY, { align: 'right' });
-
-  currentY += 8;
-
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(12);
-  doc.text('Grand Total:', summaryX, currentY);
-  doc.text(`₹ ${invoice.grandTotal.toFixed(2)}`, summaryX + 50, currentY, { align: 'right' });
-
-  currentY += 10;
-
-  // Amount in words
-  doc.setFont('helvetica', 'italic');
-  doc.setFontSize(10);
-  doc.setTextColor(0, 0, 0);
-  
-  const amountInWords = `Amount in Words: ${invoice.amountInWords}`;
-  const splitWords = doc.splitTextToSize(amountInWords, pageWidth - 2 * margin);
-  doc.text(splitWords, margin, currentY);
-  
-  currentY += splitWords.length * 4 + 5;
-
-  // Tax Summary Table
-  const taxTableData = [
-    ['Total Basic Amount', `₹ ${invoice.totalBasicAmount.toFixed(2)}`],
-    [`CGST @ ${invoice.cgstPercentage}%`, `₹ ${invoice.cgstAmount.toFixed(2)}`],
-    [`SGST @ ${invoice.sgstPercentage}%`, `₹ ${invoice.sgstAmount.toFixed(2)}`],
-    ['Grand Total', `₹ ${invoice.grandTotal.toFixed(2)}`]
+  const summaryData = [
+    ['', '', '', '', 'Total Basic', invoice.totalBasicAmount.toFixed(2)],
+    ['', '', '', '', `C.G.S.T. (${invoice.cgstPercentage}%)`, invoice.cgstAmount.toFixed(2)],
+    ['', '', '', '', `S.G.S.T. (${invoice.sgstPercentage}%)`, invoice.sgstAmount.toFixed(2)],
+    ['', '', '', '', 'Grand Total', invoice.grandTotal.toFixed(2)],
   ];
 
-  doc.autoTable({
+  autoTable(doc as any, {
     startY: currentY,
-    body: taxTableData,
+    body: summaryData,
     theme: 'grid',
+    margin: { left: (pageWidth - 183) / 2 }, // Center the table (total width 183mm)
     styles: {
-      fontSize: 9,
-      cellPadding: 2,
-      textColor: [0, 0, 0],
+      fontSize: 8.5, // Slightly smaller font
+      cellPadding: 2, // Reduced padding
       lineColor: [0, 0, 0],
-      lineWidth: 0.5
+      lineWidth: 0.5,
+      textColor: [0, 0, 0], // Make text black for better printing
     },
     columnStyles: {
-      0: { halign: 'left', cellWidth: 40 },
-      1: { halign: 'right', cellWidth: 30 }
+      0: { cellWidth: 16 },
+      1: { cellWidth: 80 },
+      2: { cellWidth: 18 },
+      3: { cellWidth: 23 },
+      4: { cellWidth: 23, fontStyle: 'bold', halign: 'center' }, // Changed to center
+      5: { cellWidth: 23, halign: 'center', fontStyle: 'bold' }, // Changed to center
     },
-    margin: { left: margin, right: pageWidth - 80 }
   });
 
-  currentY = doc.lastAutoTable.finalY + 10;
+  currentY = (doc as any).lastAutoTable.finalY + 3; // Reduced spacing
 
-  // Bank Details
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(10);
-  doc.setTextColor(0, 0, 0);
-  doc.text('Bank Details:', margin, currentY);
-
-  currentY += 5;
-
-  doc.setFont('helvetica', 'normal');
   doc.setFontSize(9);
-  doc.text(`Account Name: ${companySettings.accountName}`, margin, currentY);
-  
-  currentY += 4;
-  doc.text(`Bank Name: ${companySettings.bankName}`, margin, currentY);
-  
-  currentY += 4;
-  doc.text(`IFSC Code: ${companySettings.ifscCode}`, margin, currentY);
-  
-  currentY += 4;
-  doc.text(`Account Number: ${companySettings.accountNumber}`, margin, currentY);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(51, 51, 51); // Dark gray
+  doc.text(`In words:- ${invoice.amountInWords}`, leftColumnX, currentY);
 
-  // Stamp and Signature
+  currentY += 7; // Reduced spacing
+
+  const taxTableData = [
+    [`C.G.S.T. (${invoice.cgstPercentage}%)`, `S.G.S.T. (${invoice.sgstPercentage}%)`, 'Total'],
+    [invoice.cgstAmount.toFixed(2), invoice.sgstAmount.toFixed(2), (invoice.cgstAmount + invoice.sgstAmount).toFixed(2)],
+  ];
+
+  autoTable(doc as any, {
+    startY: currentY,
+    head: [taxTableData[0]],
+    body: [taxTableData[1]],
+    theme: 'grid',
+    margin: { left: (pageWidth - 183) / 2 }, // Center the table (total width 183mm)
+    styles: {
+      fontSize: 8.5, // Slightly smaller font
+      cellPadding: 2, // Reduced padding
+      lineColor: [0, 0, 0],
+      lineWidth: 0.5,
+      halign: 'center',
+      textColor: [0, 0, 0], // Make text black for better printing
+    },
+    headStyles: {
+      fillColor: [255, 255, 255], // Back to white background
+      textColor: [0, 0, 0], // Black text
+      fontStyle: 'bold',
+    },
+    columnStyles: {
+      0: { cellWidth: 61 },
+      1: { cellWidth: 61 },
+      2: { cellWidth: 61 },
+    },
+  });
+
+  currentY = (doc as any).lastAutoTable.finalY + 3; // Reduced spacing
+
+  // Total Tax amount in words using a custom number to words function
+  const totalTaxAmount = invoice.cgstAmount + invoice.sgstAmount;
+  // Simple number to words conversion for tax amount
+  const numberToWordsIndian = (num: number): string => {
+    const a = [
+      '', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine',
+      'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen',
+      'Seventeen', 'Eighteen', 'Nineteen'
+    ];
+    const b = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+    
+    if (num === 0) return 'Zero';
+    
+    const convert = (n: number): string => {
+      if (n < 20) return a[n];
+      if (n < 100) return b[Math.floor(n / 10)] + (n % 10 !== 0 ? ' ' + a[n % 10] : '');
+      if (n < 1000) return a[Math.floor(n / 100)] + ' Hundred' + (n % 100 !== 0 ? ' ' + convert(n % 100) : '');
+      if (n < 100000) return convert(Math.floor(n / 1000)) + ' Thousand' + (n % 1000 !== 0 ? ' ' + convert(n % 1000) : '');
+      if (n < 10000000) return convert(Math.floor(n / 100000)) + ' Lakh' + (n % 100000 !== 0 ? ' ' + convert(n % 100000) : '');
+      return convert(Math.floor(n / 10000000)) + ' Crore' + (n % 10000000 !== 0 ? ' ' + convert(n % 10000000) : '');
+    };
+    
+    return convert(Math.floor(num)) + ' Rupees Only';
+  };
+  
+  const totalTaxInWords = numberToWordsIndian(totalTaxAmount);
+  doc.setFont('helvetica', 'bold'); // Make it bold
+  doc.setFontSize(9);
+  doc.setTextColor(51, 51, 51); // Dark gray
+  doc.text(`Total Tax amount in words: - ${totalTaxInWords}`, leftColumnX, currentY);
+
+  currentY += 8; // Reduced spacing
+
+  // Account Details in table format
+  const accountDetailsData = [
+    [`Name- ${companySettings.accountName}`],
+    [`Bank Name- ${companySettings.bankName}`],
+    [`IFS CODE- ${companySettings.ifscCode}`],
+    [`A/C NO.- ${companySettings.accountNumber}`],
+  ];
+
+  const accountTableY = currentY;
+  
+  autoTable(doc as any, {
+    startY: accountTableY,
+    head: [['Account Details']],
+    body: accountDetailsData,
+    theme: 'grid',
+    styles: {
+      fontSize: 8.5, // Slightly smaller font
+      cellPadding: 2, // Reduced padding
+      lineColor: [0, 0, 0],
+      lineWidth: 0.5,
+      textColor: [0, 0, 0], // Make text black for better printing
+    },
+    headStyles: {
+      fillColor: [255, 255, 255], // Back to white background
+      textColor: [0, 0, 0], // Black text
+      fontStyle: 'bold',
+      halign: 'center',
+    },
+    columnStyles: {
+      0: { cellWidth: 90, halign: 'left' }, // Reduced width
+    },
+  });
+
+  // Align signature section with account details table
+  const signatureY = accountTableY;
+  const signatureCenterX = rightColumnX + 22.5; // Center point for text elements (keep original)
+  
+  // PROPRIETOR - center aligned
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(8.5);
+  doc.text('PROPRIETOR', signatureCenterX, signatureY, { align: 'center' });
+  
+  // (PARTHA TRIPATHI) - center aligned below PROPRIETOR
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(7.5);
+  doc.text('(PARTHA TRIPATHI)', signatureCenterX, signatureY + 4, { align: 'center' });
+  
+  doc.setFontSize(8.5);
+
   if (stampSignatureDataUrl) {
     try {
-      doc.addImage(stampSignatureDataUrl, 'PNG', pageWidth - 80, currentY - 10, 60, 30);
+      // Move only the image right and make it wider, text stays centered on original position
+      doc.addImage(stampSignatureDataUrl, 'PNG', rightColumnX + 2, signatureY + 6, 55, 22); // Even wider signature
+      // APEX SOLAR - center aligned below stamp/signature, stays with original text alignment
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(7.5);
+      doc.text('APEX SOLAR', signatureCenterX, signatureY + 32, { align: 'center' });
+      doc.setFontSize(8.5);
     } catch (error) {
-      console.error('Error adding stamp/signature:', error);
+      console.error('Error adding stamp/signature image:', error);
     }
   }
 
-  currentY += 25;
+  currentY = Math.max((doc as any).lastAutoTable.finalY, signatureY + 35) + 5; // Added more space
 
-  // GST Number at bottom
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(10);
-  doc.setTextColor(0, 0, 0);
-  doc.text(`GST No.: ${companySettings.gstNumber}`, pageWidth / 2, currentY, { align: 'center' });
+  doc.setTextColor(0, 0, 0); // Black color for GST number
+  doc.text(`GST No: ${companySettings.gstNumber}`, pageWidth / 2, currentY + 3, { align: 'center' }); // Moved closer to content
 
   return doc.output('blob');
 }

@@ -1,4 +1,6 @@
 declare module 'jspdf-autotable' {
+  import { jsPDF } from 'jspdf';
+
   interface UserOptions {
     head?: (string | number)[][];
     body?: (string | number)[][];
@@ -71,7 +73,7 @@ declare module 'jspdf-autotable' {
     };
   }
 
-  function autoTable(options: UserOptions): void;
+  function autoTable(doc: jsPDF, options: UserOptions): void;
   
   export default autoTable;
 }
