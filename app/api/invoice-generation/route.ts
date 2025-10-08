@@ -75,11 +75,11 @@ export async function POST(request: NextRequest) {
 
     // Create line items
     await Promise.all(
-      body.lineItems.map((item) =>
+      body.lineItems.map((item, index) =>
         prisma.invoiceLineItem.create({
           data: {
             invoiceId: invoice.id,
-            serialNumber: item.serialNumber,
+            serialNumber: item.serialNumber || (index + 1),
             description: item.description,
             hsnSacCode: item.hsnSacCode,
             rate: item.rate,
