@@ -41,13 +41,11 @@ export async function GET(request: NextRequest) {
       timestamp: new Date().toISOString()
     })
 
-    // TEMPORARILY DISABLE AUTH FOR PRODUCTION TESTING
-    console.log('⚠️ WARNING: GET Authentication temporarily disabled for production testing')
-    // const user = await authenticateRequest(request)
-    // if (!user) {
-    //   console.log('❌ Authentication failed')
-    //   return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    // }
+    const user = await authenticateRequest(request)
+    if (!user) {
+      console.log('❌ Authentication failed')
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
     
     // Test database connection first
     console.log('🔌 Testing database connection...')

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 
 export default function AddClient() {
@@ -20,7 +20,48 @@ export default function AddClient() {
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [authLoading, setAuthLoading] = useState(true)
   const router = useRouter()
+
+  // Authentication check on page load
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const response = await fetch('/api/auth/me', {
+          credentials: 'include'
+        })
+        
+        if (!response.ok) {
+          router.push('/admin/login')
+          return
+        }
+
+        const data = await response.json()
+        if (!data.success || data.data.role !== 'ADMIN') {
+          router.push('/admin/login')
+          return
+        }
+      } catch {
+        router.push('/admin/login')
+      } finally {
+        setAuthLoading(false)
+      }
+    }
+
+    checkAuth()
+  }, [router])
+
+  // Show loading while checking authentication
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Verifying authentication...</p>
+        </div>
+      </div>
+    )
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
