@@ -32,9 +32,10 @@ export async function GET() {
   }
 }
 
-export const PUT = adminOnly(async (request: NextRequest) => {
+export async function PUT(request: NextRequest) {
+  console.log('Company settings PUT request started - TEMPORARY DEBUG MODE')
+  
   try {
-    console.log('Company settings PUT request started')
     console.log('Environment check:', {
       NODE_ENV: process.env.NODE_ENV,
       DATABASE_URL: process.env.DATABASE_URL ? 'Set' : 'Not set',
@@ -153,4 +154,4 @@ export const PUT = adminOnly(async (request: NextRequest) => {
       { status: 500 }
     )
   }
-})
+}
