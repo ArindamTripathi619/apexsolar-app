@@ -111,11 +111,7 @@ export default function AddClient() {
                       value={formData.gstNumber}
                       onChange={handleChange}
                       className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="15-digit GST number"
-                      pattern="[0-9A-Z]{15}"
-                      title="Please enter a valid 15-character GST number (e.g., 19AACN8612L1Z5)"
-                      maxLength={15}
-                      minLength={15}
+                      placeholder="GST number"
                       style={{ textTransform: 'uppercase' }}
                       required
                     />
