@@ -8,6 +8,10 @@ echo "Node version: $(node --version)"
 if [ ! -z "$DATABASE_URL" ]; then
     echo "Running database migrations..."
     
+    # Generate Prisma client first
+    echo "Generating Prisma client..."
+    npx prisma generate || echo "Prisma generate failed, continuing..."
+    
     # Try to resolve the initial migration as applied (for existing databases)
     npx prisma migrate resolve --applied 20250126_init 2>/dev/null || echo "Initial migration resolution skipped"
     

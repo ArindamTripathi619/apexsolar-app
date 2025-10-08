@@ -35,12 +35,14 @@ jobs:
     - name: TypeScript check (quick validation)
       run: npx tsc --noEmit
 
-    - name: Run database migrations
+    - name: Run database migrations and generate Prisma client
       env:
         DATABASE_URL: ${{ secrets.DATABASE_URL }}
       run: |
         echo "Running database migrations..."
         npx prisma migrate deploy || npx prisma migrate resolve --applied 20250126_init || npx prisma db push --accept-data-loss || echo "Migration failed, continuing deployment"
+        echo "Generating Prisma client..."
+        npx prisma generate
 
     - name: Build application
       run: npm run build
