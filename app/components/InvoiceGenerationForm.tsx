@@ -144,7 +144,21 @@ export default function InvoiceGenerationForm() {
     
     // Auto-calculate amount when rate or quantity changes
     if (field === 'rate' || field === 'quantity') {
-      updatedItems[index].amount = updatedItems[index].rate * updatedItems[index].quantity;
+      // Rate is in ₹ per Wp, quantity is in kWp (1 kWp = 1000 Wp)
+      // So: Amount = rate (₹/Wp) × quantity (kWp) × 1000 (Wp/kWp)
+      const rate = updatedItems[index].rate;
+      const quantity = updatedItems[index].quantity;
+      const calculatedAmount = rate * quantity * 1000;
+      
+      console.log('Calculation Debug:', {
+        rate,
+        quantity,
+        calculatedAmount,
+        field,
+        value
+      });
+      
+      updatedItems[index].amount = calculatedAmount;
     }
     
     setLineItems(updatedItems);
@@ -212,7 +226,10 @@ export default function InvoiceGenerationForm() {
   };
 
   const handleGenerateInvoice = async () => {
+    console.log('🚀 Starting invoice generation...');
+    
     if (!validateForm() || !companySettings) {
+      console.log('❌ Validation failed or no company settings');
       return;
     }
 
@@ -220,6 +237,7 @@ export default function InvoiceGenerationForm() {
 
     try {
       const totals = calculateTotals();
+      console.log('📊 Calculated totals:', totals);
       
       const customer: CustomerForInvoice = {
         companyName,
@@ -250,7 +268,10 @@ export default function InvoiceGenerationForm() {
         amountInWords: totals.amountInWords
       };
 
+      console.log('📝 Invoice data to send:', invoiceData);
+
       // Create invoice record in database
+      console.log('🌐 Sending request to API...');
       const response = await fetch('/api/invoice-generation', {
         method: 'POST',
         headers: {
@@ -260,15 +281,22 @@ export default function InvoiceGenerationForm() {
         body: JSON.stringify(invoiceData)
       });
 
+      console.log('📡 API Response status:', response.status);
+      
       if (!response.ok) {
-        throw new Error('Failed to create invoice record');
+        const errorText = await response.text();
+        console.error('❌ API Response error:', errorText);
+        throw new Error(`API request failed: ${response.status} - ${errorText}`);
       }
 
       const result = await response.json();
+      console.log('✅ API Response data:', result);
+      
       if (!result.success) {
         throw new Error(result.error || 'Failed to create invoice');
       }
 
+      console.log('📄 Generating PDF...');
       // Generate PDF
       const pdfBlob = await generateInvoicePDF(
         result.data,
@@ -277,6 +305,7 @@ export default function InvoiceGenerationForm() {
         companySettings.companyLogoUrl
       );
 
+      console.log('📁 PDF generated, uploading...');
       // Upload PDF to server
       const formData = new FormData();
       formData.append('file', pdfBlob, `${invoiceNumber.replace(/\//g, '_')}.pdf`);
@@ -288,7 +317,10 @@ export default function InvoiceGenerationForm() {
         body: formData
       });
 
+      console.log('📤 Upload response status:', uploadResponse.status);
+
       if (uploadResponse.ok) {
+        console.log('🎉 Invoice generated and saved successfully!');
         alert('Invoice generated and saved successfully!');
         
         // Download PDF for user
@@ -298,14 +330,16 @@ export default function InvoiceGenerationForm() {
         resetForm();
         fetchNextInvoiceNumber();
       } else {
+        const uploadError = await uploadResponse.text();
+        console.warn('⚠️ Upload failed:', uploadError);
         // Even if upload fails, still download the PDF
         downloadPDF(pdfBlob, `${invoiceNumber.replace(/\//g, '_')}.pdf`);
         alert('Invoice generated and downloaded, but failed to save to server. Please upload manually if needed.');
       }
 
     } catch (error) {
-      console.error('Error generating invoice:', error);
-      alert('Failed to generate invoice. Please try again.');
+      console.error('💥 Error generating invoice:', error);
+      alert(`Failed to generate invoice: ${error instanceof Error ? error.message : 'Unknown error'}. Please try again.`);
     } finally {
       setIsGenerating(false);
     }
