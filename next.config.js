@@ -3,14 +3,6 @@ const nextConfig = {
   serverExternalPackages: ['bcryptjs'],
   output: 'standalone',
   
-  // API configuration
-  api: {
-    bodyParser: {
-      sizeLimit: '10mb',
-    },
-    responseLimit: '10mb',
-  },
-  
   // File serving configuration
   async rewrites() {
     return [
