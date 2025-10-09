@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { TrendingDown, TrendingUp } from 'lucide-react'
 import PaymentModal from '@/app/components/PaymentModal'
 import { formatIndianDate, formatIndianCurrency } from '@/app/lib/indianLocalization'
 import ThemeToggle from '@/app/components/ui/ThemeToggle'
@@ -246,7 +247,7 @@ export default function PaymentManagement() {
                 <p className="text-xs text-foreground/50 mt-1">{formatIndianCurrency(totalDuesCleared)} cleared</p>
               </div>
               <div className="w-12 h-12 bg-red-500/10 rounded-xl flex items-center justify-center">
-                <span className="text-2xl">�</span>
+                <TrendingDown className="w-6 h-6 text-red-500" />
               </div>
             </div>
           </div>
@@ -259,7 +260,7 @@ export default function PaymentManagement() {
                 <p className="text-xs text-foreground/50 mt-1">{formatIndianCurrency(totalAdvancesRepaid)} repaid</p>
               </div>
               <div className="w-12 h-12 bg-green-500/10 rounded-xl flex items-center justify-center">
-                <span className="text-2xl">�</span>
+                <TrendingUp className="w-6 h-6 text-green-500" />
               </div>
             </div>
           </div>

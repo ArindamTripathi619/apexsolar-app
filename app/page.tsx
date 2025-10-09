@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import ButtonComponent from '@/app/components/ui/ButtonComponent'
 import ThemeToggle from '@/app/components/ui/ThemeToggle'
 
@@ -15,6 +16,18 @@ export default function Home() {
         <div className="w-full max-w-4xl mx-auto">
           {/* Hero Section */}
           <div className="text-center mb-12">
+            {/* Company Logo */}
+            <div className="mb-8">
+              <Image
+                src="/logo.png"
+                alt="Apex Solar Logo"
+                width={120}
+                height={120}
+                className="mx-auto rounded-full shadow-lg ring-4 ring-primary/20"
+                priority
+              />
+            </div>
+            
             <h1 className="text-5xl sm:text-6xl font-bold text-foreground mb-4 bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
               ApexSolar
             </h1>

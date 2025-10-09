@@ -149,3 +149,6 @@ test_*.json
 
 # GitHub directory and documentation
 .github/*.md
+
+# VS Code Workspace File
+*.code-workspace
