@@ -756,7 +756,7 @@ export default function InvoiceGenerationForm() {
               <button
                 onClick={handleGenerateInvoice}
                 disabled={isGenerating || !companySettings}
-                className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white px-4 py-3 rounded-md font-medium flex items-center justify-center space-x-2"
+                className="w-full bg-primary hover:bg-primary/90 disabled:bg-muted text-primary-foreground px-4 py-3 rounded-md font-medium flex items-center justify-center space-x-2"
               >
                 {isGenerating ? (
                   <>
@@ -773,7 +773,7 @@ export default function InvoiceGenerationForm() {
               
               <button
                 onClick={resetForm}
-                className="w-full bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md font-medium flex items-center justify-center space-x-2"
+                className="w-full bg-secondary hover:bg-secondary/80 text-secondary-foreground px-4 py-2 rounded-md font-medium flex items-center justify-center space-x-2"
               >
                 <span>Reset Form</span>
               </button>

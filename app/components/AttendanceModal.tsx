@@ -100,16 +100,16 @@ export default function AttendanceModal({
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-      <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+    <div className="fixed inset-0 bg-background/80 backdrop-blur-sm overflow-y-auto h-full w-full z-50">
+      <div className="relative top-20 mx-auto p-5 border border-border w-96 shadow-lg rounded-md bg-card">
         <div className="mt-3">
           <div className="flex justify-between items-center mb-4">
-            <h3 className="text-lg font-medium text-gray-900">
+            <h3 className="text-lg font-medium text-foreground">
               Record Attendance for {employeeName}
             </h3>
             <button
               onClick={handleClose}
-              className="text-gray-400 hover:text-gray-600"
+              className="text-muted-foreground hover:text-foreground"
             >
               <span className="sr-only">Close</span>
               <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -121,7 +121,7 @@ export default function AttendanceModal({
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label htmlFor="month" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="month" className="block text-sm font-medium text-foreground">
                   Month *
                 </label>
                 <select
@@ -129,7 +129,7 @@ export default function AttendanceModal({
                   name="month"
                   value={formData.month}
                   onChange={handleChange}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  className="mt-1 block w-full border border-border rounded-md shadow-sm py-2 px-3 bg-background text-foreground focus:outline-none focus:ring-primary focus:border-primary"
                   required
                 >
                   {Array.from({ length: 12 }, (_, i) => (
@@ -141,7 +141,7 @@ export default function AttendanceModal({
               </div>
 
               <div>
-                <label htmlFor="year" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="year" className="block text-sm font-medium text-foreground">
                   Year *
                 </label>
                 <select
@@ -149,7 +149,7 @@ export default function AttendanceModal({
                   name="year"
                   value={formData.year}
                   onChange={handleChange}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  className="mt-1 block w-full border border-border rounded-md shadow-sm py-2 px-3 bg-background text-foreground focus:outline-none focus:ring-primary focus:border-primary"
                   required
                 >
                   {Array.from({ length: 5 }, (_, i) => {
@@ -165,7 +165,7 @@ export default function AttendanceModal({
             </div>
 
             <div>
-              <label htmlFor="daysWorked" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="daysWorked" className="block text-sm font-medium text-foreground">
                 Days Worked *
               </label>
               <input
@@ -175,19 +175,19 @@ export default function AttendanceModal({
                 min="0"
                 max={maxDays}
                 required
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                className="mt-1 block w-full border border-border rounded-md shadow-sm py-2 px-3 bg-background text-foreground focus:outline-none focus:ring-primary focus:border-primary"
                 placeholder={`0 - ${maxDays} days`}
                 value={formData.daysWorked}
                 onChange={handleChange}
               />
-              <p className="mt-1 text-xs text-gray-500">
+              <p className="mt-1 text-xs text-muted-foreground">
                 Maximum {maxDays} days in {new Date(0, formData.month - 1).toLocaleString('default', { month: 'long' })} {formData.year}
               </p>
             </div>
 
             {error && (
-              <div className="rounded-md bg-red-50 p-4">
-                <div className="text-sm text-red-800">{error}</div>
+              <div className="rounded-md bg-destructive/15 p-4">
+                <div className="text-sm text-destructive">{error}</div>
               </div>
             )}
 
@@ -195,14 +195,14 @@ export default function AttendanceModal({
               <button
                 type="button"
                 onClick={handleClose}
-                className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
+                className="px-4 py-2 border border-border rounded-md text-sm font-medium text-foreground bg-card hover:bg-muted"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={loading}
-                className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+                className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-primary-foreground bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50"
               >
                 {loading ? 'Recording...' : 'Record Attendance'}
               </button>

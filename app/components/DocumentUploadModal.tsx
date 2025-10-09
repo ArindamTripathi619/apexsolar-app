@@ -102,7 +102,7 @@ export default function DocumentUploadModal({
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+    <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
       <div className="bg-card rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto border border-border">
         <div className="p-6 border-b border-border">
           <h2 className="text-xl font-semibold text-foreground">Upload Document</h2>

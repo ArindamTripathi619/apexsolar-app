@@ -72,13 +72,13 @@ export default function PaymentModal({ isOpen, onClose, onSuccess, employeeId, e
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+    <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50">
+      <div className="bg-card border border-border rounded-lg p-6 w-full max-w-md mx-4">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold text-gray-900">Record Employee Payment</h2>
+          <h2 className="text-xl font-bold text-foreground">Record Employee Payment</h2>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600"
+            className="text-muted-foreground hover:text-foreground"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -86,20 +86,20 @@ export default function PaymentModal({ isOpen, onClose, onSuccess, employeeId, e
           </button>
         </div>
 
-        <div className="mb-4 p-3 bg-gray-50 rounded-lg">
-          <p className="text-sm text-gray-600">Employee: <span className="font-medium">{employeeName}</span></p>
+        <div className="mb-4 p-3 bg-muted rounded-lg">
+          <p className="text-sm text-muted-foreground">Employee: <span className="font-medium text-foreground">{employeeName}</span></p>
         </div>
 
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label htmlFor="type" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="type" className="block text-sm font-medium text-foreground mb-2">
               Payment Type *
             </label>
             <select
               id="type"
               value={type}
               onChange={(e) => setType(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border border-border rounded-md shadow-sm bg-background text-foreground focus:outline-none focus:ring-primary focus:border-primary"
               required
             >
               <option value="DUE">Due Payment</option>
@@ -110,11 +110,11 @@ export default function PaymentModal({ isOpen, onClose, onSuccess, employeeId, e
           </div>
 
           <div className="mb-4">
-            <label htmlFor="amount" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="amount" className="block text-sm font-medium text-foreground mb-2">
               Payment Amount (₹) *
             </label>
             <div className="relative">
-              <span className="absolute left-3 top-2 text-gray-500">₹</span>
+              <span className="absolute left-3 top-2 text-muted-foreground">₹</span>
               <input
                 type="number"
                 id="amount"
@@ -122,13 +122,13 @@ export default function PaymentModal({ isOpen, onClose, onSuccess, employeeId, e
                 min="0.01"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
-                className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                className="w-full pl-8 pr-3 py-2 border border-border rounded-md shadow-sm bg-background text-foreground focus:outline-none focus:ring-primary focus:border-primary"
                 placeholder="Enter amount in rupees"
                 required
               />
             </div>
             {amount && parseFloat(amount) > 0 && (
-              <p className="mt-1 text-sm text-gray-600">
+              <p className="mt-1 text-sm text-muted-foreground">
                 Amount: {formatIndianCurrency(parseFloat(amount))}
               </p>
             )}
@@ -154,7 +154,7 @@ export default function PaymentModal({ isOpen, onClose, onSuccess, employeeId, e
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={3}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border border-border rounded-md shadow-sm bg-background text-foreground focus:outline-none focus:ring-primary focus:border-primary"
               placeholder="Payment description or notes..."
             />
           </div>
@@ -163,14 +163,14 @@ export default function PaymentModal({ isOpen, onClose, onSuccess, employeeId, e
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 border border-gray-300 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500"
+              className="px-4 py-2 text-sm font-medium text-foreground bg-secondary border border-border rounded-md hover:bg-secondary/80 focus:outline-none focus:ring-2 focus:ring-ring"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="px-4 py-2 text-sm font-medium text-white bg-green-600 border border-transparent rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 disabled:opacity-50"
+              className="px-4 py-2 text-sm font-medium text-primary-foreground bg-primary border border-transparent rounded-md hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-50"
             >
               {loading ? 'Recording...' : 'Record Payment'}
             </button>

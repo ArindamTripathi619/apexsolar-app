@@ -365,55 +365,55 @@ export default function PaymentManagement() {
               <>
                 {/* Desktop Table View */}
                 <div className="hidden sm:block overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
+                  <table className="min-w-full divide-y divide-border">
+                    <thead className="bg-muted">
                       <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                           Employee
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                           Type
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                           Amount
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                           Description
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                           Date
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                           Actions
                         </th>
                       </tr>
                     </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
+                    <tbody className="bg-card divide-y divide-border">
                       {filteredPayments.map((payment) => (
                         <tr key={payment.id}>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">
                             {payment.employee.name}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
                               payment.type === 'DUE' 
-                                ? 'bg-red-100 text-red-800' 
+                                ? 'bg-destructive/15 text-destructive' 
                                 : payment.type === 'ADVANCE'
-                                ? 'bg-green-100 text-green-800'
+                                ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
                                 : payment.type === 'DUE_CLEARED'
-                                ? 'bg-purple-100 text-purple-800'
-                                : 'bg-blue-100 text-blue-800'
+                                ? 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400'
+                                : 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
                             }`}>
                               {payment.type.replace('_', ' ')}
                             </span>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
                             {formatIndianCurrency(payment.amount)}
                           </td>
-                          <td className="px-6 py-4 text-sm text-gray-500">
+                          <td className="px-6 py-4 text-sm text-muted-foreground">
                             {payment.description || 'No description'}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                             {formatIndianDate(payment.date)}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -421,14 +421,14 @@ export default function PaymentManagement() {
                               {(!payment.isCleared && (payment.type === 'DUE' || payment.type === 'ADVANCE')) && (
                                 <button
                                   onClick={() => handleClearPayment(payment.id, payment.employee.name, payment.amount, payment.type)}
-                                  className="text-blue-600 hover:text-blue-900 bg-blue-50 hover:bg-blue-100 px-3 py-1 rounded-md text-xs font-medium transition-colors"
+                                  className="text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 dark:text-blue-400 dark:bg-blue-900/30 dark:hover:bg-blue-900/50 px-3 py-1 rounded-md text-xs font-medium transition-colors"
                                 >
                                   Clear
                                 </button>
                               )}
                               <button
                                 onClick={() => handleDeletePayment(payment.id, payment.employee.name, payment.amount, payment.type)}
-                                className="text-red-600 hover:text-red-900 bg-red-50 hover:bg-red-100 px-3 py-1 rounded-md text-xs font-medium transition-colors"
+                                className="text-destructive hover:text-destructive/80 bg-destructive/15 hover:bg-destructive/25 px-3 py-1 rounded-md text-xs font-medium transition-colors"
                               >
                                 Delete
                               </button>
@@ -443,39 +443,39 @@ export default function PaymentManagement() {
                 {/* Mobile Card View */}
                 <div className="sm:hidden space-y-3">
                   {filteredPayments.map((payment) => (
-                    <div key={payment.id} className="bg-gray-50 rounded-lg p-4 border">
+                    <div key={payment.id} className="bg-muted rounded-lg p-4 border border-border">
                       <div className="flex justify-between items-start mb-2">
                         <div className="flex-1">
-                          <h4 className="text-base font-medium text-gray-900">{payment.employee.name}</h4>
-                          <p className="text-sm text-gray-600">{payment.description || 'No description'}</p>
+                          <h4 className="text-base font-medium text-foreground">{payment.employee.name}</h4>
+                          <p className="text-sm text-muted-foreground">{payment.description || 'No description'}</p>
                         </div>
                         <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
                           payment.type === 'DUE' 
-                            ? 'bg-red-100 text-red-800' 
+                            ? 'bg-destructive/15 text-destructive' 
                             : payment.type === 'ADVANCE'
-                            ? 'bg-green-100 text-green-800'
+                            ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
                             : payment.type === 'DUE_CLEARED'
-                            ? 'bg-purple-100 text-purple-800'
-                            : 'bg-blue-100 text-blue-800'
+                            ? 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400'
+                            : 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
                         }`}>
                           {payment.type.replace('_', ' ')}
                         </span>
                       </div>
                       <div className="flex justify-between items-center">
-                        <span className="text-lg font-bold text-gray-900">{formatIndianCurrency(payment.amount)}</span>
+                        <span className="text-lg font-bold text-foreground">{formatIndianCurrency(payment.amount)}</span>
                         <div className="flex items-center space-x-2">
-                          <span className="text-sm text-gray-500">{formatIndianDate(payment.date)}</span>
+                          <span className="text-sm text-muted-foreground">{formatIndianDate(payment.date)}</span>
                           {(!payment.isCleared && (payment.type === 'DUE' || payment.type === 'ADVANCE')) && (
                             <button
                               onClick={() => handleClearPayment(payment.id, payment.employee.name, payment.amount, payment.type)}
-                              className="text-blue-600 hover:text-blue-900 bg-blue-50 hover:bg-blue-100 px-2 py-1 rounded-md text-xs font-medium transition-colors"
+                              className="text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 dark:text-blue-400 dark:bg-blue-900/30 dark:hover:bg-blue-900/50 px-2 py-1 rounded-md text-xs font-medium transition-colors"
                             >
                               Clear
                             </button>
                           )}
                           <button
                             onClick={() => handleDeletePayment(payment.id, payment.employee.name, payment.amount, payment.type)}
-                            className="text-red-600 hover:text-red-900 bg-red-50 hover:bg-red-100 px-2 py-1 rounded-md text-xs font-medium transition-colors"
+                            className="text-destructive hover:text-destructive/80 bg-destructive/15 hover:bg-destructive/25 px-2 py-1 rounded-md text-xs font-medium transition-colors"
                           >
                             Delete
                           </button>
