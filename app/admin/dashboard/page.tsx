@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 import AddEmployeeModal from '@/app/components/AddEmployeeModal'
 import DocumentUploadModal from '@/app/components/DocumentUploadModal'
 import InvoiceModal from '@/app/components/InvoiceModal'
@@ -221,13 +222,23 @@ export default function AdminDashboard() {
       <header className="bg-card shadow-card border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-4 sm:py-6 gap-4 sm:gap-0">
-            <div className="flex-1">
-              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground">
-                ApexSolar Admin Dashboard
-              </h1>
-              <p className="text-sm sm:text-base text-muted-foreground mt-1">
-                Welcome back, {user?.email}
-              </p>
+            <div className="flex-1 flex items-center gap-4">
+              <Image
+                src="/logo.webp"
+                alt="Apex Solar Logo"
+                width={50}
+                height={50}
+                className="rounded-full shadow-md ring-2 ring-primary/20"
+                priority
+              />
+              <div>
+                <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground">
+                  ApexSolar Admin Dashboard
+                </h1>
+                <p className="text-sm sm:text-base text-muted-foreground mt-1">
+                  Welcome back, {user?.email}
+                </p>
+              </div>
             </div>
             <div className="flex items-center gap-3">
               <ThemeToggle />

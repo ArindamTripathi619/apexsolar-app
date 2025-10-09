@@ -19,7 +19,7 @@ export default function Home() {
             {/* Company Logo */}
             <div className="mb-8">
               <Image
-                src="/logo.png"
+                src="/logo.webp"
                 alt="Apex Solar Logo"
                 width={120}
                 height={120}
