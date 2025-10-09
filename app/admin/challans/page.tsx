@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { formatIndianDate } from '@/app/lib/indianLocalization'
+import ThemeToggle from '@/app/components/ui/ThemeToggle'
+import ButtonComponent from '@/app/components/ui/ButtonComponent'
 
 interface User {
   id: string
@@ -111,55 +113,63 @@ export default function AdminChallans() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-4 text-foreground/60">Loading challans...</p>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-4 sm:py-6 gap-4 sm:gap-0">
-            <div className="flex-1">
-              <div className="flex items-center space-x-4">
-                <button
-                  onClick={() => router.push('/admin/dashboard')}
-                  className="text-blue-600 hover:text-blue-900 text-sm font-medium"
-                >
-                  ← Back to Dashboard
-                </button>
-              </div>
-              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mt-2">PF/ESI Challans</h1>
-              <p className="text-sm sm:text-base text-gray-600 mt-1">View and download challans uploaded by accountant</p>
+    <div className="min-h-screen bg-background">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header */}
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-8">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-gradient-to-br from-primary to-primary/80 rounded-xl flex items-center justify-center">
+              <span className="text-2xl">📋</span>
             </div>
-            <button
+            <div>
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+                PF/ESI Challans
+              </h1>
+              <p className="text-foreground/60 mt-1">View uploaded PF and ESI challans</p>
+            </div>
+          </div>
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+            <ThemeToggle />
+            <ButtonComponent 
+              variant="outline" 
+              size="md"
+              onClick={() => router.push('/admin/dashboard')}
+            >
+              Back to Dashboard
+            </ButtonComponent>
+            <ButtonComponent 
+              variant="danger" 
+              size="md"
               onClick={handleLogout}
-              className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium w-full sm:w-auto"
             >
               Logout
-            </button>
+            </ButtonComponent>
           </div>
         </div>
-      </header>
 
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         {/* Filters */}
-        <div className="bg-white shadow rounded-lg mb-6">
+        <div className="bg-card shadow-sm rounded-lg mb-6 border border-border">
           <div className="px-4 py-5 sm:p-6">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
               <div>
-                <label htmlFor="month" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="month" className="block text-sm font-medium text-foreground">
                   Month
                 </label>
                 <select
                   id="month"
                   value={selectedMonth}
                   onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  className="mt-1 block w-full border border-border rounded-md shadow-sm py-2 px-3 bg-background text-foreground focus:outline-none focus:ring-primary focus:border-primary"
                 >
                   <option value={0}>All Months</option>
                   {Array.from({ length: 12 }, (_, i) => (
@@ -170,14 +180,14 @@ export default function AdminChallans() {
                 </select>
               </div>
               <div>
-                <label htmlFor="year" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="year" className="block text-sm font-medium text-foreground">
                   Year
                 </label>
                 <select
                   id="year"
                   value={selectedYear}
                   onChange={(e) => setSelectedYear(parseInt(e.target.value))}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  className="mt-1 block w-full border border-border rounded-md shadow-sm py-2 px-3 bg-background text-foreground focus:outline-none focus:ring-primary focus:border-primary"
                 >
                   {Array.from({ length: 5 }, (_, i) => {
                     const year = new Date().getFullYear() - 2 + i
@@ -190,14 +200,14 @@ export default function AdminChallans() {
                 </select>
               </div>
               <div>
-                <label htmlFor="type" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="type" className="block text-sm font-medium text-foreground">
                   Type
                 </label>
                 <select
                   id="type"
                   value={selectedType}
                   onChange={(e) => setSelectedType(e.target.value)}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  className="mt-1 block w-full border border-border rounded-md shadow-sm py-2 px-3 bg-background text-foreground focus:outline-none focus:ring-primary focus:border-primary"
                 >
                   <option value="ALL">All Types</option>
                   <option value="PF">PF Only</option>
@@ -209,65 +219,65 @@ export default function AdminChallans() {
         </div>
 
         {/* Challans Table */}
-        <div className="bg-white shadow rounded-lg">
+        <div className="bg-card shadow-sm rounded-lg border border-border">
           <div className="px-4 py-5 sm:p-6">
-            <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
+            <h3 className="text-lg leading-6 font-medium text-foreground mb-4">
               Uploaded Challans ({filteredChallans.length})
             </h3>
             
             {filteredChallans.length === 0 ? (
               <div className="text-center py-8">
-                <p className="text-gray-500">No challans found for the selected filters.</p>
+                <p className="text-muted-foreground">No challans found for the selected filters.</p>
               </div>
             ) : (
               <>
                 {/* Desktop Table View */}
                 <div className="hidden sm:block overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
+                  <table className="min-w-full divide-y divide-border">
+                    <thead className="bg-muted">
                       <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                           Type
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                           Month/Year
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                           File Name
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                           Uploaded At
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                           Actions
                         </th>
                       </tr>
                     </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
+                    <tbody className="bg-card divide-y divide-border">
                       {filteredChallans.map((challan) => (
                         <tr key={challan.id}>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
                               challan.type === 'PF' 
-                                ? 'bg-blue-100 text-blue-800' 
-                                : 'bg-green-100 text-green-800'
+                                ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' 
+                                : 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
                             }`}>
                               {challan.type}
                             </span>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
                             {getMonthName(challan.month)} {challan.year}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
                             {challan.fileName}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                             {formatIndianDate(new Date(challan.uploadedAt))}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             <button
                               onClick={() => handleDownload(challan.fileUrl, challan.fileName)}
-                              className="text-blue-600 hover:text-blue-900 bg-blue-50 hover:bg-blue-100 px-3 py-1 rounded-md text-xs"
+                              className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/20 dark:hover:bg-blue-900/30 px-3 py-1 rounded-md text-xs"
                             >
                               Download
                             </button>
@@ -281,29 +291,29 @@ export default function AdminChallans() {
                 {/* Mobile Card View */}
                 <div className="sm:hidden space-y-3">
                   {filteredChallans.map((challan) => (
-                    <div key={challan.id} className="bg-gray-50 rounded-lg p-4 border">
+                    <div key={challan.id} className="bg-muted rounded-lg p-4 border border-border">
                       <div className="flex justify-between items-start mb-2">
                         <div className="flex-1">
                           <div className="flex items-center space-x-2 mb-1">
                             <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
                               challan.type === 'PF' 
-                                ? 'bg-blue-100 text-blue-800' 
-                                : 'bg-green-100 text-green-800'
+                                ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' 
+                                : 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
                             }`}>
                               {challan.type}
                             </span>
-                            <span className="text-sm font-medium text-gray-900">
+                            <span className="text-sm font-medium text-foreground">
                               {getMonthName(challan.month)} {challan.year}
                             </span>
                           </div>
-                          <p className="text-sm text-gray-600">{challan.fileName}</p>
-                          <p className="text-xs text-gray-500 mt-1">
+                          <p className="text-sm text-muted-foreground">{challan.fileName}</p>
+                          <p className="text-xs text-muted-foreground mt-1">
                             Uploaded: {formatIndianDate(new Date(challan.uploadedAt))}
                           </p>
                         </div>
                         <button
                           onClick={() => handleDownload(challan.fileUrl, challan.fileName)}
-                          className="text-blue-600 hover:text-blue-900 bg-blue-50 hover:bg-blue-100 px-3 py-2 rounded-md text-xs font-medium"
+                          className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/20 dark:hover:bg-blue-900/30 px-3 py-2 rounded-md text-xs font-medium"
                         >
                           Download
                         </button>
@@ -315,7 +325,7 @@ export default function AdminChallans() {
             )}
           </div>
         </div>
-      </main>
+      </div>
     </div>
   )
 }

@@ -170,11 +170,11 @@ export default function InvoiceModal({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
-        <h2 className="text-xl font-bold mb-4">Upload Invoice</h2>
+      <div className="bg-card rounded-lg p-6 w-full max-w-md mx-4 border border-border">
+        <h2 className="text-xl font-bold mb-4 text-foreground">Upload Invoice</h2>
         
         {error && (
-          <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+          <div className="mb-4 p-3 bg-red-50 border border-red-400 text-red-700 rounded">
             {error}
           </div>
         )}
@@ -182,11 +182,11 @@ export default function InvoiceModal({
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Client Selection */}
           <div>
-            <label htmlFor="clientId" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="clientId" className="block text-sm font-medium text-foreground mb-1">
               Client <span className="text-red-500">*</span>
             </label>
             {loadingClients ? (
-              <div className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50">
+              <div className="w-full px-3 py-2 border border-border rounded-md bg-muted text-muted-foreground">
                 Loading clients...
               </div>
             ) : (
@@ -197,7 +197,7 @@ export default function InvoiceModal({
                   value={formData.clientId}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-border rounded-md shadow-sm bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
                 >
                   <option value="">Select a client</option>
                   {clients.map((client) => (
@@ -211,7 +211,7 @@ export default function InvoiceModal({
                 <button
                   type="button"
                   onClick={handleAddNewClient}
-                  className="w-full px-3 py-2 text-sm text-blue-600 border border-blue-300 rounded-md hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 text-sm text-primary border border-primary/30 rounded-md hover:bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
                 >
                   + Add New Client
                 </button>
@@ -221,7 +221,7 @@ export default function InvoiceModal({
 
           {/* Amount */}
           <div>
-            <label htmlFor="amount" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="amount" className="block text-sm font-medium text-foreground mb-1">
               Amount (₹) <span className="text-red-500">*</span>
             </label>
             <input
@@ -233,7 +233,7 @@ export default function InvoiceModal({
               step="0.01"
               min="0"
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border border-border rounded-md shadow-sm bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
               placeholder="Enter amount"
             />
           </div>
@@ -256,7 +256,7 @@ export default function InvoiceModal({
 
           {/* File Upload */}
           <div>
-            <label htmlFor="file" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="file" className="block text-sm font-medium text-foreground mb-1">
               Invoice File (PDF only) <span className="text-red-500">*</span>
             </label>
             <input
@@ -265,10 +265,10 @@ export default function InvoiceModal({
               accept=".pdf"
               onChange={handleFileSelect}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border border-border rounded-md shadow-sm bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
             />
             {selectedFile && (
-              <p className="mt-1 text-sm text-gray-600">
+              <p className="mt-1 text-sm text-muted-foreground">
                 Selected: {selectedFile.name} ({(selectedFile.size / (1024 * 1024)).toFixed(2)} MB)
               </p>
             )}
@@ -282,14 +282,14 @@ export default function InvoiceModal({
                 resetForm()
                 onClose()
               }}
-              className="flex-1 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              className="flex-1 px-4 py-2 text-sm font-medium text-foreground bg-muted border border-border rounded-md shadow-sm hover:bg-muted/80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+              className="flex-1 px-4 py-2 text-sm font-medium text-white bg-primary border border-transparent rounded-md shadow-sm hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50"
             >
               {loading ? 'Uploading...' : 'Upload Invoice'}
             </button>

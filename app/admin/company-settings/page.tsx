@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { CompanySettings } from '@/app/types/invoice-generation'
+import ThemeToggle from '@/app/components/ui/ThemeToggle'
+import ButtonComponent from '@/app/components/ui/ButtonComponent'
 
 export default function CompanySettingsPage() {
   const router = useRouter()
@@ -165,157 +167,173 @@ export default function CompanySettingsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-4 text-foreground/60">Loading settings...</p>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <div className="flex items-center space-x-4">
-              <button
-                onClick={() => router.push('/admin/dashboard')}
-                className="text-gray-600 hover:text-gray-900 text-sm font-medium"
-              >
-                ← Back to Dashboard
-              </button>
-              <div className="h-6 w-px bg-gray-300"></div>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">Company Settings</h1>
-                <p className="text-sm text-gray-600">Manage bank details and company information</p>
-              </div>
+    <div className="min-h-screen bg-background">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header */}
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-8">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-gradient-to-br from-primary to-primary/80 rounded-xl flex items-center justify-center">
+              <span className="text-2xl">⚙️</span>
             </div>
-            <button
+            <div>
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+                Company Settings
+              </h1>
+              <p className="text-foreground/60 mt-1">Manage bank details and company information</p>
+            </div>
+          </div>
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+            <ThemeToggle />
+            <ButtonComponent 
+              variant="outline" 
+              size="md"
+              onClick={() => router.push('/admin/dashboard')}
+            >
+              ← Back to Dashboard
+            </ButtonComponent>
+            <ButtonComponent 
+              variant="danger" 
+              size="md"
               onClick={handleLogout}
-              className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium"
             >
               Logout
-            </button>
+            </ButtonComponent>
           </div>
         </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="max-w-4xl mx-auto py-6 sm:px-6 lg:px-8">
-        <div className="bg-white shadow rounded-lg">
-          <div className="px-6 py-6">
-            <h2 className="text-lg font-medium text-gray-900 mb-6">Bank Account Details</h2>
-            
+        {/* Bank Account Details */}
+        <div className="bg-card border border-border rounded-xl shadow-sm mb-6">
+          <div className="px-6 py-4 border-b border-border bg-muted/50">
+            <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
+              🏦 Bank Account Details
+            </h2>
+          </div>
+          <div className="p-6">
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-foreground mb-2">
                   Account Name
                 </label>
                 <input
                   type="text"
                   value={settings.accountName}
                   onChange={(e) => handleInputChange('accountName', e.target.value)}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full bg-background border border-border rounded-lg px-4 py-2.5 text-foreground placeholder-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-foreground mb-2">
                   Bank Name
                 </label>
                 <input
                   type="text"
                   value={settings.bankName}
                   onChange={(e) => handleInputChange('bankName', e.target.value)}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full bg-background border border-border rounded-lg px-4 py-2.5 text-foreground placeholder-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-foreground mb-2">
                   IFSC Code
                 </label>
                 <input
                   type="text"
                   value={settings.ifscCode}
                   onChange={(e) => handleInputChange('ifscCode', e.target.value)}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full bg-background border border-border rounded-lg px-4 py-2.5 text-foreground placeholder-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-foreground mb-2">
                   Account Number
                 </label>
                 <input
                   type="text"
                   value={settings.accountNumber}
                   onChange={(e) => handleInputChange('accountNumber', e.target.value)}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full bg-background border border-border rounded-lg px-4 py-2.5 text-foreground placeholder-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors"
                 />
               </div>
 
               <div className="sm:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-foreground mb-2">
                   GST Number
                 </label>
                 <input
                   type="text"
                   value={settings.gstNumber}
                   onChange={(e) => handleInputChange('gstNumber', e.target.value)}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full bg-background border border-border rounded-lg px-4 py-2.5 text-foreground placeholder-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors"
                 />
               </div>
             </div>
           </div>
+        </div>
 
-          <div className="border-t border-gray-200 px-6 py-6">
-            <h3 className="text-lg font-medium text-gray-900 mb-6">Company Images</h3>
-            
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+        {/* Company Images */}
+        <div className="bg-card border border-border rounded-xl shadow-sm">
+          <div className="px-6 py-4 border-b border-border bg-muted/50">
+            <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
+              🖼️ Company Images
+            </h3>
+          </div>
+          <div className="p-6">
+            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-foreground mb-2">
                   Stamp & Signature
                 </label>
                 <input
                   type="file"
                   accept="image/*"
                   onChange={(e) => handleFileUpload(e, 'stampSignatureUrl')}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full bg-background border border-border rounded-lg px-4 py-2.5 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors"
                 />
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-foreground/60 mt-2">
                   Max size: 2MB. Supported formats: JPG, PNG, GIF
                 </p>
                 {settings.stampSignatureUrl && (
-                  <div className="mt-3">
+                  <div className="mt-4 p-4 bg-muted/50 rounded-lg border border-border">
                     <img
                       src={settings.stampSignatureUrl}
                       alt="Stamp & Signature"
-                      className="max-w-full h-32 object-contain border border-gray-300 rounded"
+                      className="max-w-full h-32 object-contain mx-auto"
                     />
                   </div>
                 )}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-foreground mb-2">
                   Company Logo
                 </label>
                 <input
                   type="file"
                   accept="image/*"
                   onChange={(e) => handleFileUpload(e, 'companyLogoUrl')}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full bg-background border border-border rounded-lg px-4 py-2.5 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors"
                 />
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-foreground/60 mt-2">
                   Max size: 2MB. Supported formats: JPG, PNG, GIF
                 </p>
                 {settings.companyLogoUrl && (
-                  <div className="mt-3">
+                  <div className="mt-4 p-4 bg-muted/50 rounded-lg border border-border">
                     <img
                       src={settings.companyLogoUrl}
                       alt="Company Logo"
-                      className="max-w-full h-32 object-contain border border-gray-300 rounded"
+                      className="max-w-full h-32 object-contain mx-auto"
                     />
                   </div>
                 )}
@@ -323,26 +341,28 @@ export default function CompanySettingsPage() {
             </div>
           </div>
 
-          <div className="border-t border-gray-200 px-6 py-4">
-            <div className="flex justify-end space-x-3">
-              <button
+          {/* Action Buttons */}
+          <div className="px-6 py-4 border-t border-border bg-muted/30">
+            <div className="flex flex-col sm:flex-row justify-end gap-3">
+              <ButtonComponent 
+                variant="outline" 
+                size="md"
                 onClick={() => router.push('/admin/dashboard')}
-                className="bg-gray-300 hover:bg-gray-400 text-gray-700 px-4 py-2 rounded-md text-sm font-medium"
               >
                 Cancel
-              </button>
-              <button
+              </ButtonComponent>
+              <ButtonComponent 
+                variant="primary" 
+                size="md"
                 onClick={handleSave}
                 disabled={saving}
-                className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white px-4 py-2 rounded-md text-sm font-medium flex items-center space-x-2"
               >
-                {saving && <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>}
-                <span>{saving ? 'Saving...' : 'Save Settings'}</span>
-              </button>
+                {saving ? 'Saving...' : 'Save Settings'}
+              </ButtonComponent>
             </div>
           </div>
         </div>
-      </main>
+      </div>
     </div>
   )
 }

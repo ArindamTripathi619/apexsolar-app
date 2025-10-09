@@ -99,21 +99,21 @@ export default function AccountantDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex items-center justify-center transition-colors duration-300">
+      <div className="min-h-screen bg-background flex items-center justify-center transition-colors duration-300">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-500"></div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 transition-colors duration-300">
+    <div className="min-h-screen bg-background transition-colors duration-300">
       {/* Header */}
-      <header className="bg-white dark:bg-slate-800 shadow-lg dark:shadow-slate-700/30 border-b border-slate-200 dark:border-slate-700">
+      <header className="bg-card shadow-card border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
             <div>
-              <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100">Accountant Dashboard</h1>
-              <p className="text-slate-600 dark:text-slate-300">Welcome, {_user?.email}</p>
+              <h1 className="text-3xl font-bold text-foreground">Accountant Dashboard</h1>
+              <p className="text-muted-foreground">Welcome, {_user?.email}</p>
             </div>
             <div className="flex items-center gap-3">
               <ThemeToggle />
@@ -135,9 +135,9 @@ export default function AccountantDashboard() {
       {/* Main Content */}
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         {/* Month/Year Filter */}
-        <div className="bg-white dark:bg-slate-800 shadow-lg dark:shadow-slate-700/30 rounded-xl mb-6 border border-slate-200 dark:border-slate-700 transition-colors duration-300">
+        <div className="bg-card shadow-card rounded-xl mb-6 border border-border transition-colors duration-300">
           <div className="px-4 py-5 sm:p-6">
-            <h3 className="text-lg font-medium text-slate-900 dark:text-slate-100 mb-4">Filter Attendance</h3>
+            <h3 className="text-lg font-medium text-foreground mb-4">Filter Attendance</h3>
             <div className="flex flex-col sm:flex-row items-start sm:items-end space-y-4 sm:space-y-0 sm:space-x-4">
               <div className="flex-1">
                 <label htmlFor="month" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
@@ -147,7 +147,7 @@ export default function AccountantDashboard() {
                   id="month"
                   value={selectedMonth}
                   onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
-                  className="w-full border border-slate-300 dark:border-slate-600 rounded-lg shadow-sm py-3 px-4 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-colors duration-200"
+                  className="w-full border border-slate-300 dark:border-slate-600 rounded-lg shadow-sm py-3 px-4 bg-white dark:bg-slate-700 text-foreground focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-colors duration-200"
                 >
                   {Array.from({ length: 12 }, (_, i) => (
                     <option key={i + 1} value={i + 1}>
@@ -164,7 +164,7 @@ export default function AccountantDashboard() {
                   id="year"
                   value={selectedYear}
                   onChange={(e) => setSelectedYear(parseInt(e.target.value))}
-                  className="w-full border border-slate-300 dark:border-slate-600 rounded-lg shadow-sm py-3 px-4 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-colors duration-200"
+                  className="w-full border border-slate-300 dark:border-slate-600 rounded-lg shadow-sm py-3 px-4 bg-white dark:bg-slate-700 text-foreground focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-colors duration-200"
                 >
                   {Array.from({ length: 5 }, (_, i) => {
                     const year = new Date().getFullYear() - 2 + i
@@ -181,7 +181,7 @@ export default function AccountantDashboard() {
         </div>
 
         {/* Attendance Table */}
-        <div className="bg-white dark:bg-slate-800 shadow-lg dark:shadow-slate-700/30 rounded-xl border border-slate-200 dark:border-slate-700 transition-colors duration-300">
+        <div className="bg-card shadow-card rounded-xl border border-border transition-colors duration-300">
           <div className="px-4 py-5 sm:p-6">
             <div className="flex items-center mb-6">
               <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-lg flex items-center justify-center mr-3">
@@ -189,7 +189,7 @@ export default function AccountantDashboard() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                 </svg>
               </div>
-              <h3 className="text-lg leading-6 font-medium text-slate-900 dark:text-slate-100">
+              <h3 className="text-lg leading-6 font-medium text-foreground">
                 Attendance Report - {new Date(0, selectedMonth - 1).toLocaleString('default', { month: 'long' })} {selectedYear}
               </h3>
             </div>
@@ -218,12 +218,12 @@ export default function AccountantDashboard() {
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="bg-white dark:bg-slate-800 divide-y divide-slate-200 dark:divide-slate-700">
+                  <tbody className="bg-card divide-y divide-slate-200 dark:divide-slate-700">
                     {employees.map((employee) => {
                       const daysWorked = getAttendanceForMonth(employee, selectedMonth, selectedYear)
                       return (
                         <tr key={employee.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors duration-200">
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900 dark:text-slate-100">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">
                             {employee.name}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
@@ -254,7 +254,7 @@ export default function AccountantDashboard() {
         </div>
 
         {/* PF/ESI Upload Section */}
-        <div className="mt-8 bg-white dark:bg-slate-800 shadow-lg dark:shadow-slate-700/30 rounded-xl border border-slate-200 dark:border-slate-700 transition-colors duration-300">
+        <div className="mt-8 bg-card shadow-card rounded-xl border border-border transition-colors duration-300">
           <div className="px-4 py-5 sm:p-6">
             <div className="flex items-center mb-6">
               <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center mr-3">
@@ -262,7 +262,7 @@ export default function AccountantDashboard() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                 </svg>
               </div>
-              <h3 className="text-lg leading-6 font-medium text-slate-900 dark:text-slate-100">
+              <h3 className="text-lg leading-6 font-medium text-foreground">
                 PF/ESI Challan Upload
               </h3>
             </div>
@@ -273,7 +273,7 @@ export default function AccountantDashboard() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
                 </div>
-                <h4 className="text-md font-medium text-slate-900 dark:text-slate-100 mb-2">Upload PF Challan</h4>
+                <h4 className="text-md font-medium text-foreground mb-2">Upload PF Challan</h4>
                 <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">Upload monthly PF challan document for employee benefits</p>
                 <ButtonComponent
                   onClick={() => setShowPfModal(true)}
@@ -292,7 +292,7 @@ export default function AccountantDashboard() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
                 </div>
-                <h4 className="text-md font-medium text-slate-900 dark:text-slate-100 mb-2">Upload ESI Challan</h4>
+                <h4 className="text-md font-medium text-foreground mb-2">Upload ESI Challan</h4>
                 <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">Upload monthly ESI challan document for medical benefits</p>
                 <ButtonComponent
                   onClick={() => setShowEsiModal(true)}
@@ -310,7 +310,7 @@ export default function AccountantDashboard() {
         </div>
 
         {/* Quick Actions */}
-        <div className="mt-8 bg-white dark:bg-slate-800 shadow-lg dark:shadow-slate-700/30 rounded-xl border border-slate-200 dark:border-slate-700 transition-colors duration-300">
+        <div className="mt-8 bg-card shadow-card rounded-xl border border-border transition-colors duration-300">
           <div className="px-4 py-5 sm:p-6">
             <div className="flex items-center mb-6">
               <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center mr-3">
@@ -318,7 +318,7 @@ export default function AccountantDashboard() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
               </div>
-              <h3 className="text-lg leading-6 font-medium text-slate-900 dark:text-slate-100">
+              <h3 className="text-lg leading-6 font-medium text-foreground">
                 Quick Actions
               </h3>
             </div>
@@ -334,7 +334,7 @@ export default function AccountantDashboard() {
                   </div>
                   <div className="text-indigo-600 dark:text-indigo-400 font-medium group-hover:text-indigo-700 dark:group-hover:text-indigo-300 transition-colors">Document Management</div>
                 </div>
-                <div className="text-sm text-slate-600 dark:text-slate-300">View and manage all company documents and employee files</div>
+                <div className="text-sm text-muted-foreground">View and manage all company documents and employee files</div>
                 <div className="mt-3 flex items-center text-indigo-600 dark:text-indigo-400 text-sm font-medium group-hover:text-indigo-700 dark:group-hover:text-indigo-300">
                   <span>Manage Documents</span>
                   <svg className="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -353,7 +353,7 @@ export default function AccountantDashboard() {
                   </div>
                   <div className="text-orange-600 dark:text-orange-400 font-medium group-hover:text-orange-700 dark:group-hover:text-orange-300 transition-colors">View Challans</div>
                 </div>
-                <div className="text-sm text-slate-600 dark:text-slate-300">View uploaded PF/ESI challans and compliance documents</div>
+                <div className="text-sm text-muted-foreground">View uploaded PF/ESI challans and compliance documents</div>
                 <div className="mt-3 flex items-center text-orange-600 dark:text-orange-400 text-sm font-medium group-hover:text-orange-700 dark:group-hover:text-orange-300">
                   <span>View Challans</span>
                   <svg className="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">

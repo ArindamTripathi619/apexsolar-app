@@ -142,7 +142,7 @@ export default function DocumentViewer({ userRole, refreshTrigger }: DocumentVie
   if (loading) {
     return (
       <div className="flex justify-center items-center h-32">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       </div>
     )
   }
@@ -150,17 +150,17 @@ export default function DocumentViewer({ userRole, refreshTrigger }: DocumentVie
   return (
     <div className="space-y-6">
       {/* Filters */}
-      <div className="bg-white p-4 rounded-lg shadow border">
-        <h3 className="text-lg font-medium text-gray-900 mb-4">Filter Documents</h3>
+      <div className="bg-card p-4 rounded-lg shadow border border-border">
+        <h3 className="text-lg font-medium text-foreground mb-4">Filter Documents</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-foreground mb-2">
               Category
             </label>
             <select
               value={filters.category}
               onChange={(e) => setFilters(prev => ({ ...prev, category: e.target.value }))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
             >
               <option value="">All Categories</option>
               {Object.entries(CATEGORY_LABELS).map(([value, label]) => (
@@ -170,26 +170,26 @@ export default function DocumentViewer({ userRole, refreshTrigger }: DocumentVie
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-foreground mb-2">
               Tags
             </label>
             <input
               type="text"
               value={filters.tags}
               onChange={(e) => setFilters(prev => ({ ...prev, tags: e.target.value }))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
               placeholder="Search by tags..."
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-foreground mb-2">
               Visibility
             </label>
             <select
               value={filters.isPublic}
               onChange={(e) => setFilters(prev => ({ ...prev, isPublic: e.target.value }))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
             >
               <option value="">All Documents</option>
               <option value="true">Public Documents</option>
@@ -201,16 +201,16 @@ export default function DocumentViewer({ userRole, refreshTrigger }: DocumentVie
 
       {/* Error Message */}
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+        <div className="bg-destructive/15 border border-destructive/20 text-destructive px-4 py-3 rounded">
           {error}
         </div>
       )}
 
       {/* Documents Grid */}
       {documents.length === 0 ? (
-        <div className="text-center py-12 bg-white rounded-lg shadow border">
-          <div className="text-gray-500 text-lg">No documents found</div>
-          <div className="text-gray-400 text-sm mt-2">
+        <div className="text-center py-12 bg-card rounded-lg shadow border border-border">
+          <div className="text-muted-foreground text-lg">No documents found</div>
+          <div className="text-muted-foreground text-sm mt-2">
             {userRole === 'ADMIN' || userRole === 'ACCOUNTANT' 
               ? 'Upload your first document to get started'
               : 'No documents have been shared yet'
@@ -220,17 +220,17 @@ export default function DocumentViewer({ userRole, refreshTrigger }: DocumentVie
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {documents.map((document) => (
-            <div key={document.id} className="bg-white rounded-lg shadow border hover:shadow-md transition-shadow">
+            <div key={document.id} className="bg-card rounded-lg shadow border border-border hover:shadow-md transition-shadow">
               <div className="p-4">
                 {/* Header */}
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center space-x-2">
                     <span className="text-2xl">{getFileIcon(document.mimeType)}</span>
                     <div className="flex-1 min-w-0">
-                      <h4 className="text-sm font-medium text-gray-900 truncate">
+                      <h4 className="text-sm font-medium text-foreground truncate">
                         {document.title}
                       </h4>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-xs text-muted-foreground">
                         {formatFileSize(document.fileSize)}
                       </p>
                     </div>
@@ -240,7 +240,7 @@ export default function DocumentViewer({ userRole, refreshTrigger }: DocumentVie
                   {(userRole === 'ADMIN' || document.uploader.id === userRole) && (
                     <button
                       onClick={() => handleDelete(document.id)}
-                      className="text-red-600 hover:text-red-800 text-sm"
+                      className="text-destructive hover:text-destructive/80 text-sm"
                       title="Delete document"
                     >
                       🗑️
@@ -254,11 +254,11 @@ export default function DocumentViewer({ userRole, refreshTrigger }: DocumentVie
                     {CATEGORY_LABELS[document.category]}
                   </span>
                   {document.isPublic ? (
-                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
                       Public
                     </span>
                   ) : (
-                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-muted text-muted-foreground">
                       Private
                     </span>
                   )}
@@ -266,7 +266,7 @@ export default function DocumentViewer({ userRole, refreshTrigger }: DocumentVie
 
                 {/* Description */}
                 {document.description && (
-                  <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+                  <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
                     {document.description}
                   </p>
                 )}
@@ -275,12 +275,12 @@ export default function DocumentViewer({ userRole, refreshTrigger }: DocumentVie
                 {document.tags.length > 0 && (
                   <div className="flex flex-wrap gap-1 mb-3">
                     {document.tags.slice(0, 3).map((tag, index) => (
-                      <span key={index} className="inline-block bg-blue-50 text-blue-700 text-xs px-2 py-1 rounded">
+                      <span key={index} className="inline-block bg-primary/10 text-primary text-xs px-2 py-1 rounded">
                         {tag}
                       </span>
                     ))}
                     {document.tags.length > 3 && (
-                      <span className="inline-block text-blue-700 text-xs px-2 py-1">
+                      <span className="inline-block text-primary text-xs px-2 py-1">
                         +{document.tags.length - 3} more
                       </span>
                     )}
@@ -288,8 +288,8 @@ export default function DocumentViewer({ userRole, refreshTrigger }: DocumentVie
                 )}
 
                 {/* Footer */}
-                <div className="border-t pt-3 mt-3">
-                  <div className="flex items-center justify-between text-xs text-gray-500">
+                <div className="border-t border-border pt-3 mt-3">
+                  <div className="flex items-center justify-between text-xs text-muted-foreground">
                     <span>By: {document.uploader.email}</span>
                     <span>{formatIndianDate(new Date(document.createdAt))}</span>
                   </div>
@@ -298,7 +298,7 @@ export default function DocumentViewer({ userRole, refreshTrigger }: DocumentVie
                   <a
                     href={document.fileUrl}
                     download={document.fileName}
-                    className="mt-2 w-full inline-flex justify-center items-center px-3 py-2 border border-blue-300 shadow-sm text-sm font-medium rounded-md text-blue-700 bg-blue-50 hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                    className="mt-2 w-full inline-flex justify-center items-center px-3 py-2 border border-primary/30 shadow-sm text-sm font-medium rounded-md text-primary bg-primary/10 hover:bg-primary/20 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
                   >
                     📥 Download
                   </a>

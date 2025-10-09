@@ -37,9 +37,16 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const updateThemeClass = (newTheme: 'light' | 'dark') => {
     if (typeof window !== 'undefined') {
       const root = window.document.documentElement
+      
+      // Force removal and addition to ensure proper update
       root.classList.remove('light', 'dark')
+      
+      // Add the class immediately
       root.classList.add(newTheme)
       
+      // Force a style recalculation
+      void root.offsetHeight
+        
       // Update meta theme color
       const themeColorMeta = document.querySelector('meta[name="theme-color"]')
       if (themeColorMeta) {

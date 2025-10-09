@@ -4,7 +4,7 @@ import ThemeToggle from '@/app/components/ui/ThemeToggle'
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800 transition-all duration-300">
+    <div className="min-h-screen bg-background transition-all duration-300">
       {/* Header with Theme Toggle */}
       <header className="absolute top-0 right-0 p-6">
         <ThemeToggle showLabel />
@@ -15,10 +15,10 @@ export default function Home() {
         <div className="w-full max-w-4xl mx-auto">
           {/* Hero Section */}
           <div className="text-center mb-12">
-            <h1 className="text-5xl sm:text-6xl font-bold text-slate-900 dark:text-slate-100 mb-4 bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
+            <h1 className="text-5xl sm:text-6xl font-bold text-foreground mb-4 bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
               ApexSolar
             </h1>
-            <p className="text-xl sm:text-2xl text-slate-600 dark:text-slate-300 mb-8 max-w-2xl mx-auto">
+            <p className="text-xl sm:text-2xl text-muted-foreground mb-8 max-w-2xl mx-auto">
               Employee Management System
             </p>
             <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-cyan-500 mx-auto rounded-full"></div>
@@ -27,7 +27,7 @@ export default function Home() {
           {/* Portal Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {/* Admin Portal Card */}
-            <div className="group bg-white dark:bg-slate-800 rounded-2xl shadow-lg dark:shadow-slate-700/30 p-8 border border-slate-200 dark:border-slate-700 hover:shadow-xl dark:hover:shadow-slate-700/50 transition-all duration-300 transform hover:-translate-y-1">
+            <div className="group bg-card rounded-2xl shadow-card border border-border hover:shadow-card-hover transition-all duration-300 transform hover:-translate-y-1 p-8">
               <div className="text-center">
                 <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
                   <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -35,10 +35,10 @@ export default function Home() {
                   </svg>
                 </div>
                 
-                <h3 className="text-2xl font-bold mb-4 text-slate-900 dark:text-slate-100">
+                <h3 className="text-2xl font-bold mb-4 text-card-foreground">
                   Admin Portal
                 </h3>
-                <p className="text-slate-600 dark:text-slate-300 mb-8 leading-relaxed">
+                <p className="text-muted-foreground mb-8 leading-relaxed">
                   Comprehensive employee management, document storage, payment tracking, attendance monitoring, and invoice management.
                 </p>
                 
@@ -62,7 +62,7 @@ export default function Home() {
             </div>
             
             {/* Accountant Portal Card */}
-            <div className="group bg-white dark:bg-slate-800 rounded-2xl shadow-lg dark:shadow-slate-700/30 p-8 border border-slate-200 dark:border-slate-700 hover:shadow-xl dark:hover:shadow-slate-700/50 transition-all duration-300 transform hover:-translate-y-1">
+            <div className="group bg-card rounded-2xl shadow-card border border-border hover:shadow-card-hover transition-all duration-300 transform hover:-translate-y-1 p-8">
               <div className="text-center">
                 <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
                   <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -70,10 +70,10 @@ export default function Home() {
                   </svg>
                 </div>
                 
-                <h3 className="text-2xl font-bold mb-4 text-slate-900 dark:text-slate-100">
+                <h3 className="text-2xl font-bold mb-4 text-card-foreground">
                   Accountant Portal
                 </h3>
-                <p className="text-slate-600 dark:text-slate-300 mb-8 leading-relaxed">
+                <p className="text-muted-foreground mb-8 leading-relaxed">
                   Financial management including challan uploads, attendance tracking, PF/ESI management, invoicing, and document access.
                 </p>
                 
@@ -99,7 +99,7 @@ export default function Home() {
 
           {/* Footer */}
           <div className="text-center mt-16">
-            <p className="text-slate-500 dark:text-slate-400 text-sm">
+            <p className="text-muted-foreground text-sm">
               Secure employee management system for ApexSolar
             </p>
           </div>

@@ -374,70 +374,70 @@ export default function InvoiceGenerationForm() {
   const totals = calculateTotals();
 
   return (
-    <div className="max-w-6xl mx-auto p-6 bg-white">
+    <div className="max-w-6xl mx-auto p-6 bg-card">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Generate Invoice</h1>
-        <p className="text-gray-600">Create professional invoices for your solar projects</p>
+        <h1 className="text-3xl font-bold text-foreground mb-2">Generate Invoice</h1>
+        <p className="text-muted-foreground">Create professional invoices for your solar projects</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Main Form */}
         <div className="lg:col-span-2 space-y-6">
           {/* Invoice Header */}
-          <div className="bg-gray-50 p-6 rounded-lg">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Invoice Details</h2>
+          <div className="bg-muted p-6 rounded-lg">
+            <h2 className="text-xl font-semibold text-foreground mb-4">Invoice Details</h2>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-foreground mb-1">
                   Invoice Number
                 </label>
                 <input
                   type="text"
                   value={invoiceNumber}
                   onChange={(e) => setInvoiceNumber(e.target.value)}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-border rounded-md px-3 py-2 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-foreground mb-1">
                   Financial Year
                 </label>
                 <input
                   type="text"
                   value={financialYear}
                   disabled
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-100"
+                  className="w-full border border-border rounded-md px-3 py-2 bg-muted text-muted-foreground"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-foreground mb-1">
                   Invoice Date
                 </label>
                 <IndianDateInput
                   value={invoiceDate}
                   onChange={setInvoiceDate}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-border rounded-md px-3 py-2 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-foreground mb-1">
                   Work Order Date (Optional)
                 </label>
                 <IndianDateInput
                   value={workOrderDate}
                   onChange={setWorkOrderDate}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-border rounded-md px-3 py-2 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
               <div className="col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-foreground mb-1">
                   Work Order Reference
                 </label>
                 <input
                   type="text"
                   value={workOrderReference}
                   onChange={(e) => setWorkOrderReference(e.target.value)}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-border rounded-md px-3 py-2 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                   placeholder="Enter work order reference"
                 />
               </div>
@@ -445,17 +445,17 @@ export default function InvoiceGenerationForm() {
           </div>
 
           {/* Customer Selection */}
-          <div className="bg-gray-50 p-6 rounded-lg">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Customer Details</h2>
+          <div className="bg-muted p-6 rounded-lg">
+            <h2 className="text-xl font-semibold text-foreground mb-4">Customer Details</h2>
             
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-foreground mb-1">
                 Select Existing Customer (Optional)
               </label>
               <select
                 value={selectedClientId}
                 onChange={(e) => handleClientSelect(e.target.value)}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-border rounded-md px-3 py-2 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
               >
                 <option value="">Select a customer or enter new details below</option>
                 {clients && clients.length > 0 ? clients.map((client) => (
@@ -470,113 +470,113 @@ export default function InvoiceGenerationForm() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-foreground mb-1">
                   Company Name *
                 </label>
                 <input
                   type="text"
                   value={companyName}
                   onChange={(e) => setCompanyName(e.target.value)}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-border rounded-md px-3 py-2 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                   required
                 />
               </div>
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-foreground mb-1">
                   Address Line 1 *
                 </label>
                 <input
                   type="text"
                   value={addressLine1}
                   onChange={(e) => setAddressLine1(e.target.value)}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-border rounded-md px-3 py-2 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-foreground mb-1">
                   Address Line 2
                 </label>
                 <input
                   type="text"
                   value={addressLine2}
                   onChange={(e) => setAddressLine2(e.target.value)}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-border rounded-md px-3 py-2 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-foreground mb-1">
                   Address Line 3
                 </label>
                 <input
                   type="text"
                   value={addressLine3}
                   onChange={(e) => setAddressLine3(e.target.value)}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-border rounded-md px-3 py-2 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-foreground mb-1">
                   City
                 </label>
                 <input
                   type="text"
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-border rounded-md px-3 py-2 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-foreground mb-1">
                   State
                 </label>
                 <input
                   type="text"
                   value={state}
                   onChange={(e) => setState(e.target.value)}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-border rounded-md px-3 py-2 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-foreground mb-1">
                   PIN Code
                 </label>
                 <input
                   type="text"
                   value={pinCode}
                   onChange={(e) => setPinCode(e.target.value)}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-border rounded-md px-3 py-2 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-foreground mb-1">
                   GST Number
                 </label>
                 <input
                   type="text"
                   value={gstNumber}
                   onChange={(e) => setGstNumber(e.target.value)}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-border rounded-md px-3 py-2 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-foreground mb-1">
                   PAN Number
                 </label>
                 <input
                   type="text"
                   value={panNumber}
                   onChange={(e) => setPanNumber(e.target.value)}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-border rounded-md px-3 py-2 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
             </div>
           </div>
 
           {/* Line Items */}
-          <div className="bg-gray-50 p-6 rounded-lg">
+          <div className="bg-muted p-6 rounded-lg">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold text-gray-900">Services/Products</h2>
+              <h2 className="text-xl font-semibold text-foreground">Services/Products</h2>
               <button
                 onClick={addLineItem}
                 className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-medium flex items-center space-x-2"
@@ -588,9 +588,9 @@ export default function InvoiceGenerationForm() {
 
             <div className="space-y-4">
               {lineItems.map((item, index) => (
-                <div key={index} className="bg-white p-4 rounded border">
+                <div key={index} className="bg-card p-4 rounded border border-border">
                   <div className="flex justify-between items-start mb-3">
-                    <span className="text-sm font-medium text-gray-700">Item {index + 1}</span>
+                    <span className="text-sm font-medium text-foreground">Item {index + 1}</span>
                     {lineItems.length > 1 && (
                       <button
                         onClick={() => removeLineItem(index)}
@@ -603,43 +603,43 @@ export default function InvoiceGenerationForm() {
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-3 overflow-hidden">
                     <div className="lg:col-span-2">
-                      <label className="block text-xs font-medium text-gray-700 mb-1">
+                      <label className="block text-xs font-medium text-foreground mb-1">
                         Description *
                       </label>
                       <input
                         type="text"
                         value={item.description}
                         onChange={(e) => handleLineItemChange(index, 'description', e.target.value)}
-                        className="w-full border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        className="w-full border border-border rounded px-2 py-1 text-sm bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
                         placeholder="Service description"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-medium text-gray-700 mb-1">
+                      <label className="block text-xs font-medium text-foreground mb-1">
                         HSN/SAC Code
                       </label>
                       <input
                         type="text"
                         value={item.hsnSacCode}
                         onChange={(e) => handleLineItemChange(index, 'hsnSacCode', e.target.value)}
-                        className="w-full border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        className="w-full border border-border rounded px-2 py-1 text-sm bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-medium text-gray-700 mb-1">
+                      <label className="block text-xs font-medium text-foreground mb-1">
                         Rate (₹) *
                       </label>
                       <input
                         type="number"
                         value={item.rate || ''}
                         onChange={(e) => handleLineItemChange(index, 'rate', parseFloat(e.target.value) || 0)}
-                        className="w-full border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        className="w-full border border-border rounded px-2 py-1 text-sm bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
                         min="0"
                         step="0.01"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-medium text-gray-700 mb-1">
+                      <label className="block text-xs font-medium text-foreground mb-1">
                         Quantity *
                       </label>
                       <div className="flex w-full">
@@ -647,14 +647,14 @@ export default function InvoiceGenerationForm() {
                           type="number"
                           value={item.quantity || ''}
                           onChange={(e) => handleLineItemChange(index, 'quantity', parseFloat(e.target.value) || 0)}
-                          className="flex-1 border border-gray-300 rounded-l px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 min-w-0"
+                          className="flex-1 border border-border rounded-l px-2 py-1 text-sm bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-primary min-w-0"
                           min="0"
                           step="0.01"
                         />
                         <select
                           value={item.unit}
                           onChange={(e) => handleLineItemChange(index, 'unit', e.target.value)}
-                          className="border-l-0 border border-gray-300 rounded-r px-1 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 w-16 flex-shrink-0"
+                          className="border-l-0 border border-border rounded-r px-1 py-1 text-sm bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-primary w-16 flex-shrink-0"
                         >
                           <option value="kWp">kWp</option>
                           <option value="kW">kW</option>
@@ -666,14 +666,14 @@ export default function InvoiceGenerationForm() {
                       </div>
                     </div>
                     <div>
-                      <label className="block text-xs font-medium text-gray-700 mb-1">
+                      <label className="block text-xs font-medium text-foreground mb-1">
                         Amount (₹)
                       </label>
                       <input
                         type="text"
                         value={formatIndianCurrency(item.amount)}
                         disabled
-                        className="w-full border border-gray-300 rounded px-2 py-1 text-sm bg-gray-100"
+                        className="w-full border border-border rounded px-2 py-1 text-sm bg-muted text-muted-foreground"
                       />
                     </div>
                   </div>
@@ -683,32 +683,32 @@ export default function InvoiceGenerationForm() {
           </div>
 
           {/* Tax Settings */}
-          <div className="bg-gray-50 p-6 rounded-lg">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Tax Settings</h2>
+          <div className="bg-muted p-6 rounded-lg">
+            <h2 className="text-xl font-semibold text-foreground mb-4">Tax Settings</h2>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-foreground mb-1">
                   CGST (%)
                 </label>
                 <input
                   type="number"
                   value={cgstPercentage}
                   onChange={(e) => setCgstPercentage(parseFloat(e.target.value) || 0)}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-border rounded-md px-3 py-2 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                   min="0"
                   max="100"
                   step="0.01"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-foreground mb-1">
                   SGST (%)
                 </label>
                 <input
                   type="number"
                   value={sgstPercentage}
                   onChange={(e) => setSgstPercentage(parseFloat(e.target.value) || 0)}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-border rounded-md px-3 py-2 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                   min="0"
                   max="100"
                   step="0.01"
@@ -720,34 +720,34 @@ export default function InvoiceGenerationForm() {
 
         {/* Summary Sidebar */}
         <div className="lg:col-span-1">
-          <div className="bg-gray-50 p-6 rounded-lg sticky top-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Invoice Summary</h3>
+          <div className="bg-muted p-6 rounded-lg sticky top-6">
+            <h3 className="text-lg font-semibold text-foreground mb-4">Invoice Summary</h3>
             
             <div className="space-y-3 text-sm">
               <div className="flex justify-between">
-                <span className="text-gray-600">Basic Amount:</span>
-                <span className="font-medium">{formatIndianCurrency(totals.totalBasicAmount)}</span>
+                <span className="text-muted-foreground">Basic Amount:</span>
+                <span className="font-medium text-foreground">{formatIndianCurrency(totals.totalBasicAmount)}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600">CGST ({cgstPercentage}%):</span>
-                <span className="font-medium">{formatIndianCurrency(totals.cgstAmount)}</span>
+                <span className="text-muted-foreground">CGST ({cgstPercentage}%):</span>
+                <span className="font-medium text-foreground">{formatIndianCurrency(totals.cgstAmount)}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600">SGST ({sgstPercentage}%):</span>
-                <span className="font-medium">{formatIndianCurrency(totals.sgstAmount)}</span>
+                <span className="text-muted-foreground">SGST ({sgstPercentage}%):</span>
+                <span className="font-medium text-foreground">{formatIndianCurrency(totals.sgstAmount)}</span>
               </div>
-              <hr className="border-gray-300" />
+              <hr className="border-border" />
               <div className="flex justify-between text-lg font-semibold">
-                <span>Grand Total:</span>
+                <span className="text-foreground">Grand Total:</span>
                 <span className="text-green-600">{formatIndianCurrency(totals.grandTotal)}</span>
               </div>
             </div>
 
             <div className="mt-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 Amount in Words:
               </label>
-              <div className="text-xs text-gray-600 bg-white p-3 rounded border">
+              <div className="text-xs text-muted-foreground bg-card p-3 rounded border border-border">
                 {totals.amountInWords}
               </div>
             </div>

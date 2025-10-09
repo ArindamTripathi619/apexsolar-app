@@ -209,23 +209,23 @@ export default function AdminDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex items-center justify-center transition-colors duration-300">
+      <div className="min-h-screen bg-background flex items-center justify-center transition-colors duration-300">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 transition-colors duration-300">
+    <div className="min-h-screen bg-background transition-colors duration-300">
       {/* Header */}
-      <header className="bg-white dark:bg-slate-800 shadow-lg dark:shadow-slate-700/30 border-b border-slate-200 dark:border-slate-700">
+      <header className="bg-card shadow-card border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-4 sm:py-6 gap-4 sm:gap-0">
             <div className="flex-1">
-              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-slate-900 dark:text-slate-100">
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground">
                 ApexSolar Admin Dashboard
               </h1>
-              <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 mt-1">
+              <p className="text-sm sm:text-base text-muted-foreground mt-1">
                 Welcome back, {user?.email}
               </p>
             </div>
@@ -251,7 +251,7 @@ export default function AdminDashboard() {
       <main className="max-w-7xl mx-auto py-4 px-4 sm:py-6 sm:px-6 lg:px-8">
         {/* Stats Cards */}
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-6 sm:mb-8">
-          <div className="bg-white dark:bg-slate-800 overflow-hidden shadow-lg dark:shadow-slate-700/30 rounded-xl border border-slate-200 dark:border-slate-700 transition-colors duration-300">
+          <div className="bg-card overflow-hidden shadow-card rounded-xl border border-border transition-colors duration-300">
             <div className="p-6">
               <div className="flex items-center">
                 <div className="flex-shrink-0">
@@ -264,14 +264,14 @@ export default function AdminDashboard() {
                 <div className="ml-5 w-0 flex-1">
                   <dl>
                     <dt className="text-sm font-medium text-slate-500 dark:text-slate-400 truncate">Total Employees</dt>
-                    <dd className="text-2xl font-bold text-slate-900 dark:text-slate-100">{employees.length}</dd>
+                    <dd className="text-2xl font-bold text-foreground">{employees.length}</dd>
                   </dl>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="bg-white dark:bg-slate-800 overflow-hidden shadow-lg dark:shadow-slate-700/30 rounded-xl border border-slate-200 dark:border-slate-700 transition-colors duration-300">
+          <div className="bg-card overflow-hidden shadow-card rounded-xl border border-border transition-colors duration-300">
             <div className="p-6">
               <div className="flex items-center">
                 <div className="flex-shrink-0">
@@ -284,14 +284,14 @@ export default function AdminDashboard() {
                 <div className="ml-5 w-0 flex-1">
                   <dl>
                     <dt className="text-sm font-medium text-slate-500 dark:text-slate-400 truncate">Documents</dt>
-                    <dd className="text-2xl font-bold text-slate-900 dark:text-slate-100">{stats?.totalDocuments || 0}</dd>
+                    <dd className="text-2xl font-bold text-foreground">{stats?.totalDocuments || 0}</dd>
                   </dl>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="bg-white dark:bg-slate-800 overflow-hidden shadow-lg dark:shadow-slate-700/30 rounded-xl border border-slate-200 dark:border-slate-700 transition-colors duration-300">
+          <div className="bg-card overflow-hidden shadow-card rounded-xl border border-border transition-colors duration-300">
             <div className="p-6">
               <div className="flex items-center">
                 <div className="flex-shrink-0">
@@ -304,14 +304,14 @@ export default function AdminDashboard() {
                 <div className="ml-5 w-0 flex-1">
                   <dl>
                     <dt className="text-sm font-medium text-slate-500 dark:text-slate-400 truncate">Payments</dt>
-                    <dd className="text-2xl font-bold text-slate-900 dark:text-slate-100">{stats?.totalPayments || 0}</dd>
+                    <dd className="text-2xl font-bold text-foreground">{stats?.totalPayments || 0}</dd>
                   </dl>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="bg-white dark:bg-slate-800 overflow-hidden shadow-lg dark:shadow-slate-700/30 rounded-xl border border-slate-200 dark:border-slate-700 transition-colors duration-300">
+          <div className="bg-card overflow-hidden shadow-card rounded-xl border border-border transition-colors duration-300">
             <div className="p-6">
               <div className="flex items-center">
                 <div className="flex-shrink-0">
@@ -324,7 +324,7 @@ export default function AdminDashboard() {
                 <div className="ml-5 w-0 flex-1">
                   <dl>
                     <dt className="text-sm font-medium text-slate-500 dark:text-slate-400 truncate">Invoices</dt>
-                    <dd className="text-2xl font-bold text-slate-900 dark:text-slate-100">{stats?.totalInvoices || 0}</dd>
+                    <dd className="text-2xl font-bold text-foreground">{stats?.totalInvoices || 0}</dd>
                   </dl>
                 </div>
               </div>
@@ -333,11 +333,11 @@ export default function AdminDashboard() {
         </div>
 
         {/* Employees Section */}
-        <div className="bg-white dark:bg-slate-800 shadow-lg dark:shadow-slate-700/30 rounded-xl border border-slate-200 dark:border-slate-700 transition-colors duration-300">
+        <div className="bg-card shadow-card rounded-xl border border-border transition-colors duration-300">
           <div className="px-4 py-5 sm:p-6">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3 sm:gap-0">
               <div>
-                <h3 className="text-lg leading-6 font-medium text-slate-900 dark:text-slate-100">Employee Management</h3>
+                <h3 className="text-lg leading-6 font-medium text-foreground">Employee Management</h3>
                 {selectedEmployees.length > 0 && (
                   <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">{selectedEmployees.length} employees selected</p>
                 )}
@@ -405,7 +405,7 @@ export default function AdminDashboard() {
                         <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Actions</th>
                       </tr>
                     </thead>
-                    <tbody className="bg-white dark:bg-slate-800 divide-y divide-slate-200 dark:divide-slate-700">
+                    <tbody className="bg-card divide-y divide-slate-200 dark:divide-slate-700">
                     {employees.map((employee) => (
                       <tr key={employee.id} className={`transition-colors duration-200 hover:bg-slate-50 dark:hover:bg-slate-700/50 ${selectedEmployees.includes(employee.id) ? 'bg-blue-50 dark:bg-blue-900/20' : ''}`}>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -416,7 +416,7 @@ export default function AdminDashboard() {
                             className="rounded border-slate-300 dark:border-slate-600 text-blue-600 focus:ring-blue-500 dark:bg-slate-700"
                           />
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900 dark:text-slate-100">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">
                           {employee.name}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
@@ -485,9 +485,9 @@ export default function AdminDashboard() {
                   <div key={employee.id} className="bg-slate-50 dark:bg-slate-700/50 rounded-xl p-4 border border-slate-200 dark:border-slate-600 transition-colors duration-300">
                     <div className="flex justify-between items-start mb-3">
                       <div className="flex-1">
-                        <h4 className="text-lg font-medium text-slate-900 dark:text-slate-100 mb-1">{employee.name}</h4>
-                        <p className="text-sm text-slate-600 dark:text-slate-300">{employee.email || 'No email'}</p>
-                        <p className="text-sm text-slate-600 dark:text-slate-300">{employee.phone || 'No phone'}</p>
+                        <h4 className="text-lg font-medium text-foreground mb-1">{employee.name}</h4>
+                        <p className="text-sm text-muted-foreground">{employee.email || 'No email'}</p>
+                        <p className="text-sm text-muted-foreground">{employee.phone || 'No phone'}</p>
                         <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
                           Joined: {employee.dateOfJoining ? formatIndianDate(employee.dateOfJoining) : 'N/A'}
                         </p>
@@ -496,7 +496,7 @@ export default function AdminDashboard() {
                         href={`/employee/${employee.uniqueSlug}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 text-xs px-3 py-1 border border-blue-200 dark:border-blue-600 rounded-md bg-white dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors duration-200"
+                        className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 text-xs px-3 py-1 border border-blue-200 dark:border-blue-600 rounded-md bg-card hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors duration-200"
                       >
                         View Profile
                       </a>
@@ -559,7 +559,7 @@ export default function AdminDashboard() {
 
         {/* Quick Actions */}
         <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          <div className="bg-white dark:bg-slate-800 overflow-hidden shadow-lg dark:shadow-slate-700/30 rounded-xl border border-slate-200 dark:border-slate-700 transition-colors duration-300">
+          <div className="bg-card overflow-hidden shadow-card rounded-xl border border-border transition-colors duration-300">
             <div className="p-6">
               <div className="flex items-center mb-4">
                 <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center mr-3">
@@ -567,7 +567,7 @@ export default function AdminDashboard() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-medium text-slate-900 dark:text-slate-100">Client Management</h3>
+                <h3 className="text-lg font-medium text-foreground">Client Management</h3>
               </div>
               <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">Manage clients and track payments</p>
               <ButtonComponent 
@@ -581,7 +581,7 @@ export default function AdminDashboard() {
             </div>
           </div>
 
-          <div className="bg-white dark:bg-slate-800 overflow-hidden shadow-lg dark:shadow-slate-700/30 rounded-xl border border-slate-200 dark:border-slate-700 transition-colors duration-300">
+          <div className="bg-card overflow-hidden shadow-card rounded-xl border border-border transition-colors duration-300">
             <div className="p-6">
               <div className="flex items-center mb-4">
                 <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center mr-3">
@@ -589,7 +589,7 @@ export default function AdminDashboard() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-medium text-slate-900 dark:text-slate-100">Attendance Tracking</h3>
+                <h3 className="text-lg font-medium text-foreground">Attendance Tracking</h3>
               </div>
               <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">Manage employee attendance records</p>
               <ButtonComponent 
@@ -603,7 +603,7 @@ export default function AdminDashboard() {
             </div>
           </div>
 
-          <div className="bg-white dark:bg-slate-800 overflow-hidden shadow-lg dark:shadow-slate-700/30 rounded-xl border border-slate-200 dark:border-slate-700 transition-colors duration-300">
+          <div className="bg-card overflow-hidden shadow-card rounded-xl border border-border transition-colors duration-300">
             <div className="p-6">
               <div className="flex items-center mb-4">
                 <div className="w-10 h-10 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-lg flex items-center justify-center mr-3">
@@ -611,7 +611,7 @@ export default function AdminDashboard() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-medium text-slate-900 dark:text-slate-100">Payment Management</h3>
+                <h3 className="text-lg font-medium text-foreground">Payment Management</h3>
               </div>
               <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">Track dues and advances</p>
               <ButtonComponent 
@@ -625,7 +625,7 @@ export default function AdminDashboard() {
             </div>
           </div>
 
-          <div className="bg-white dark:bg-slate-800 overflow-hidden shadow-lg dark:shadow-slate-700/30 rounded-xl border border-slate-200 dark:border-slate-700 transition-colors duration-300">
+          <div className="bg-card overflow-hidden shadow-card rounded-xl border border-border transition-colors duration-300">
             <div className="p-6">
               <div className="flex items-center mb-4">
                 <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-lg flex items-center justify-center mr-3">
@@ -633,7 +633,7 @@ export default function AdminDashboard() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-medium text-slate-900 dark:text-slate-100">Invoice Management</h3>
+                <h3 className="text-lg font-medium text-foreground">Invoice Management</h3>
               </div>
               <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">Create, upload and manage invoices</p>
               <div className="flex flex-col gap-2">
@@ -665,7 +665,7 @@ export default function AdminDashboard() {
             </div>
           </div>
 
-          <div className="bg-white dark:bg-slate-800 overflow-hidden shadow-lg dark:shadow-slate-700/30 rounded-xl border border-slate-200 dark:border-slate-700 transition-colors duration-300">
+          <div className="bg-card overflow-hidden shadow-card rounded-xl border border-border transition-colors duration-300">
             <div className="p-6">
               <div className="flex items-center mb-4">
                 <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center mr-3">
@@ -673,7 +673,7 @@ export default function AdminDashboard() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-medium text-slate-900 dark:text-slate-100">PF/ESI Challans</h3>
+                <h3 className="text-lg font-medium text-foreground">PF/ESI Challans</h3>
               </div>
               <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">View challans uploaded by accountant</p>
               <ButtonComponent 
@@ -687,7 +687,7 @@ export default function AdminDashboard() {
             </div>
           </div>
 
-          <div className="bg-white dark:bg-slate-800 overflow-hidden shadow-lg dark:shadow-slate-700/30 rounded-xl border border-slate-200 dark:border-slate-700 transition-colors duration-300">
+          <div className="bg-card overflow-hidden shadow-card rounded-xl border border-border transition-colors duration-300">
             <div className="p-6">
               <div className="flex items-center mb-4">
                 <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-lg flex items-center justify-center mr-3">
@@ -695,7 +695,7 @@ export default function AdminDashboard() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-medium text-slate-900 dark:text-slate-100">Document Management</h3>
+                <h3 className="text-lg font-medium text-foreground">Document Management</h3>
               </div>
               <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">Upload and manage all documents</p>
               <ButtonComponent 
@@ -709,7 +709,7 @@ export default function AdminDashboard() {
             </div>
           </div>
 
-          <div className="bg-white dark:bg-slate-800 overflow-hidden shadow-lg dark:shadow-slate-700/30 rounded-xl border border-slate-200 dark:border-slate-700 transition-colors duration-300">
+          <div className="bg-card overflow-hidden shadow-card rounded-xl border border-border transition-colors duration-300">
             <div className="p-6">
               <div className="flex items-center mb-4">
                 <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center mr-3">
@@ -718,7 +718,7 @@ export default function AdminDashboard() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-medium text-slate-900 dark:text-slate-100">Company Settings</h3>
+                <h3 className="text-lg font-medium text-foreground">Company Settings</h3>
               </div>
               <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">Manage bank details and company information</p>
               <ButtonComponent 

@@ -3,6 +3,8 @@
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import InvoiceGenerationForm from '@/app/components/InvoiceGenerationForm'
+import ThemeToggle from '@/app/components/ui/ThemeToggle'
+import ButtonComponent from '@/app/components/ui/ButtonComponent'
 
 export default function GenerateInvoicePage() {
   const router = useRouter()
@@ -33,56 +35,62 @@ export default function GenerateInvoicePage() {
   }, [router])
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <div className="flex items-center space-x-4">
-              <button
-                onClick={() => router.push('/admin/dashboard')}
-                className="text-gray-600 hover:text-gray-900 text-sm font-medium"
-              >
-                ← Back to Dashboard
-              </button>
-              <div className="h-6 w-px bg-gray-300"></div>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">Generate Invoice</h1>
-                <p className="text-sm text-gray-600">Create professional invoices for solar projects</p>
-              </div>
+    <div className="min-h-screen bg-background">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header */}
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-8">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-gradient-to-br from-primary to-primary/80 rounded-xl flex items-center justify-center">
+              <span className="text-2xl">📄</span>
             </div>
-            <div className="flex items-center space-x-4">
-              <button
-                onClick={() => router.push('/admin/invoices')}
-                className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md text-sm font-medium"
-              >
-                View All Invoices
-              </button>
-              <button
-                onClick={async () => {
-                  try {
-                    await fetch('/api/auth/logout', {
-                      method: 'POST',
-                      credentials: 'include'
-                    })
-                    router.push('/admin/login')
-                  } catch (err) {
-                    console.error('Logout failed:', err)
-                  }
-                }}
-                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium"
-              >
-                Logout
-              </button>
+            <div>
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+                Generate Invoice
+              </h1>
+              <p className="text-foreground/60 mt-1">Create professional invoices for solar projects</p>
             </div>
           </div>
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+            <ThemeToggle />
+            <ButtonComponent 
+              variant="outline" 
+              size="md"
+              onClick={() => router.push('/admin/invoices')}
+            >
+              View All Invoices
+            </ButtonComponent>
+            <ButtonComponent 
+              variant="outline" 
+              size="md"
+              onClick={() => router.push('/admin/dashboard')}
+            >
+              Back to Dashboard
+            </ButtonComponent>
+            <ButtonComponent 
+              variant="danger" 
+              size="md"
+              onClick={async () => {
+                try {
+                  await fetch('/api/auth/logout', {
+                    method: 'POST',
+                    credentials: 'include'
+                  })
+                  router.push('/admin/login')
+                } catch (err) {
+                  console.error('Logout failed:', err)
+                }
+              }}
+            >
+              Logout
+            </ButtonComponent>
+          </div>
         </div>
-      </header>
 
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <InvoiceGenerationForm />
-      </main>
+        {/* Main Content */}
+        <div className="bg-card border border-border rounded-xl shadow-sm">
+          <InvoiceGenerationForm />
+        </div>
+      </div>
     </div>
   )
 }

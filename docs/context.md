@@ -97,6 +97,13 @@ ApexSolar App is a comprehensive Next.js 15 full-stack application designed for 
 
 ## Recent Enhancements
 
+### Theme System Fix (January 2025)
+- **Theme Switching Repair**: Fixed broken light/dark theme switching functionality
+- **CSS Custom Properties**: Converted all CSS variables from hex/rgb to HSL format for Tailwind compatibility
+- **Enhanced ThemeContext**: Improved DOM manipulation with reliable class updates and forced recalculation
+- **Debug Integration**: Added console logging for theme switching troubleshooting
+- **Professional UI**: Consistent theme behavior across home page and dashboard
+
 ### Critical Security Fixes (January 2025)
 - **Authentication Bypass Fix**: Resolved critical vulnerability where admin routes were accessible without login
 - **Next.js Middleware**: Implemented comprehensive route protection with role-based access control
@@ -132,7 +139,7 @@ ApexSolar App is a comprehensive Next.js 15 full-stack application designed for 
 - ✅ **Automated client and financial data synchronization**
 - ✅ **Company branding and settings management**
 - ✅ **Next.js middleware-based route protection**
-- ✅ **Enhanced UI with fixed dropdown overflow issues**
+- ✅ **Enhanced UI with fixed dropdown overflow issues and theme switching**
 - ✅ **Organized documentation structure in docs/ directory**
 
 ### Invoice Generator Integration (COMPLETED)

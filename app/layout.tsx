@@ -30,6 +30,23 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="shortcut icon" href="/favicon.ico" />
         <meta name="theme-color" content="#ffffff" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  const theme = localStorage.getItem('theme') || 'system';
+                  const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                  const isDark = theme === 'dark' || (theme === 'system' && systemDark);
+                  document.documentElement.classList.remove('light', 'dark');
+                  document.documentElement.classList.add(isDark ? 'dark' : 'light');
+                } catch (e) {
+                  document.documentElement.classList.add('light');
+                }
+              })();
+            `,
+          }}
+        />
       </head>
       <body className={`${inter.className} antialiased bg-background text-foreground`}>
         <ThemeProvider>

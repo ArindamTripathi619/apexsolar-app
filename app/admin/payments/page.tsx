@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import PaymentModal from '@/app/components/PaymentModal'
 import { formatIndianDate, formatIndianCurrency } from '@/app/lib/indianLocalization'
+import ThemeToggle from '@/app/components/ui/ThemeToggle'
+import ButtonComponent from '@/app/components/ui/ButtonComponent'
 
 interface User {
   id: string
@@ -191,123 +193,119 @@ export default function PaymentManagement() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-4 text-foreground/60">Loading payment data...</p>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-4 sm:py-6 gap-4 sm:gap-0">
-            <div className="flex-1">
-              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">Payment Management</h1>
-              <p className="text-sm sm:text-base text-gray-600 mt-1">Manage employee payments, dues, and advances</p>
+    <div className="min-h-screen bg-background">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header */}
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-8">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-gradient-to-br from-primary to-primary/80 rounded-xl flex items-center justify-center">
+              <span className="text-2xl">💰</span>
             </div>
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
-              <button
-                onClick={() => router.push('/admin/dashboard')}
-                className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md text-sm font-medium w-full sm:w-auto"
-              >
-                Back to Dashboard
-              </button>
-              <button
-                onClick={handleLogout}
-                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium w-full sm:w-auto"
-              >
-                Logout
-              </button>
+            <div>
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+                Payment Management
+              </h1>
+              <p className="text-foreground/60 mt-1">Manage employee payments, dues, and advances</p>
             </div>
+          </div>
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+            <ThemeToggle />
+            <ButtonComponent 
+              variant="outline" 
+              size="md"
+              onClick={() => router.push('/admin/dashboard')}
+            >
+              Back to Dashboard
+            </ButtonComponent>
+            <ButtonComponent 
+              variant="danger" 
+              size="md"
+              onClick={handleLogout}
+            >
+              Logout
+            </ButtonComponent>
           </div>
         </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         {/* Summary Cards */}
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-3 mb-8">
-          <div className="bg-white overflow-hidden shadow rounded-lg">
-            <div className="p-5">
-              <div className="flex items-center">
-                <div className="flex-shrink-0">
-                  <div className="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center">
-                    <span className="text-white font-bold">💰</span>
-                  </div>
-                </div>
-                <div className="ml-5 w-0 flex-1">
-                  <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">Net Dues</dt>
-                    <dd className="text-lg font-medium text-gray-900">{formatIndianCurrency(netDues)}</dd>
-                    <dd className="text-xs text-gray-500 mt-1">{formatIndianCurrency(totalDuesCleared)} cleared</dd>
-                  </dl>
-                </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="bg-card border border-border rounded-xl p-6 shadow-sm">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-foreground/60 mb-1">Net Dues</p>
+                <p className="text-3xl font-bold text-red-600">{formatIndianCurrency(netDues)}</p>
+                <p className="text-xs text-foreground/50 mt-1">{formatIndianCurrency(totalDuesCleared)} cleared</p>
+              </div>
+              <div className="w-12 h-12 bg-red-500/10 rounded-xl flex items-center justify-center">
+                <span className="text-2xl">�</span>
               </div>
             </div>
           </div>
 
-          <div className="bg-white overflow-hidden shadow rounded-lg">
-            <div className="p-5">
-              <div className="flex items-center">
-                <div className="flex-shrink-0">
-                  <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-                    <span className="text-white font-bold">💵</span>
-                  </div>
-                </div>
-                <div className="ml-5 w-0 flex-1">
-                  <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">Net Advances</dt>
-                    <dd className="text-lg font-medium text-gray-900">{formatIndianCurrency(netAdvances)}</dd>
-                    <dd className="text-xs text-gray-500 mt-1">{formatIndianCurrency(totalAdvancesRepaid)} repaid</dd>
-                  </dl>
-                </div>
+          <div className="bg-card border border-border rounded-xl p-6 shadow-sm">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-foreground/60 mb-1">Net Advances</p>
+                <p className="text-3xl font-bold text-green-600">{formatIndianCurrency(netAdvances)}</p>
+                <p className="text-xs text-foreground/50 mt-1">{formatIndianCurrency(totalAdvancesRepaid)} repaid</p>
+              </div>
+              <div className="w-12 h-12 bg-green-500/10 rounded-xl flex items-center justify-center">
+                <span className="text-2xl">�</span>
               </div>
             </div>
           </div>
 
-          <div className="bg-white overflow-hidden shadow rounded-lg">
-            <div className="p-5">
-              <div className="flex items-center">
-                <div className="flex-shrink-0">
-                  <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-                    <span className="text-white font-bold">📊</span>
-                  </div>
-                </div>
-                <div className="ml-5 w-0 flex-1">
-                  <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">Net Balance</dt>
-                    <dd className={`text-lg font-medium ${
-                      netBalance >= 0 ? 'text-green-600' : 'text-red-600'
-                    }`}>{formatIndianCurrency(Math.abs(netBalance))} {netBalance >= 0 ? '(Credit)' : '(Debit)'}</dd>
-                  </dl>
-                </div>
+          <div className="bg-card border border-border rounded-xl p-6 shadow-sm">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-foreground/60 mb-1">Net Balance</p>
+                <p className={`text-3xl font-bold ${
+                  netBalance >= 0 ? 'text-green-600' : 'text-red-600'
+                }`}>{formatIndianCurrency(Math.abs(netBalance))}</p>
+                <p className="text-xs text-foreground/50 mt-1">{netBalance >= 0 ? 'Credit' : 'Debit'}</p>
+              </div>
+              <div className="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center">
+                <span className="text-2xl">📊</span>
               </div>
             </div>
           </div>
         </div>
 
         {/* Add Payment by Employee */}
-        <div className="bg-white shadow rounded-lg mb-6">
-          <div className="px-4 py-5 sm:p-6">
-            <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">Add Payment</h3>
+        <div className="bg-card border border-border rounded-xl shadow-sm mb-8">
+          <div className="px-6 py-4 border-b border-border bg-muted/50">
+            <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
+              👥 Add Payment by Employee
+            </h3>
+          </div>
+          <div className="p-6">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {employees.map((employee) => (
-                <div key={employee.id} className="border rounded-lg p-4 hover:bg-gray-50">
-                  <h4 className="font-medium text-gray-900">{employee.name}</h4>
-                  <p className="text-sm text-gray-500 mb-3">
+                <div key={employee.id} className="bg-muted/30 border border-border rounded-lg p-4 hover:bg-muted/50 transition-colors">
+                  <h4 className="font-medium text-foreground">{employee.name}</h4>
+                  <p className="text-sm text-foreground/60 mb-3">
                     {employee.payments?.length || 0} payment(s)
                   </p>
-                  <button
+                  <ButtonComponent
+                    variant="primary"
+                    size="sm"
                     onClick={() => {
                       setSelectedEmployee(employee)
                       setShowPaymentModal(true)
                     }}
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-md text-sm font-medium"
+                    className="w-full"
                   >
                     Add Payment
-                  </button>
+                  </ButtonComponent>
                 </div>
               ))}
             </div>
@@ -315,57 +313,53 @@ export default function PaymentManagement() {
         </div>
 
         {/* Payment History */}
-        <div className="bg-white shadow rounded-lg">
-          <div className="px-4 py-5 sm:p-6">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg leading-6 font-medium text-gray-900">Payment History</h3>
-              <div className="flex space-x-2">
-                <button
+        <div className="bg-card border border-border rounded-xl shadow-sm">
+          <div className="px-6 py-4 border-b border-border bg-muted/50">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                📋 Payment History
+              </h3>
+              <div className="flex flex-wrap gap-2">
+                <ButtonComponent
+                  variant={filter === 'ALL' ? 'primary' : 'outline'}
+                  size="sm"
                   onClick={() => setFilter('ALL')}
-                  className={`px-3 py-1 rounded-md text-sm font-medium ${
-                    filter === 'ALL' 
-                      ? 'bg-blue-600 text-white' 
-                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                  }`}
                 >
                   All
-                </button>
-                <button
+                </ButtonComponent>
+                <ButtonComponent
+                  variant={filter === 'DUE' ? 'danger' : 'outline'}
+                  size="sm"
                   onClick={() => setFilter('DUE')}
-                  className={`px-3 py-1 rounded-md text-sm font-medium ${
-                    filter === 'DUE' 
-                      ? 'bg-red-600 text-white' 
-                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                  }`}
                 >
                   Dues
-                </button>
-                <button
+                </ButtonComponent>
+                <ButtonComponent
+                  variant={filter === 'ADVANCE' ? 'success' : 'outline'}
+                  size="sm"
                   onClick={() => setFilter('ADVANCE')}
-                  className={`px-3 py-1 rounded-md text-sm font-medium ${
-                    filter === 'ADVANCE' 
-                      ? 'bg-green-600 text-white' 
-                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                  }`}
                 >
                   Advances
-                </button>
-                <button
+                </ButtonComponent>
+                <ButtonComponent
+                  variant={filter === 'CLEARED' ? 'secondary' : 'outline'}
+                  size="sm"
                   onClick={() => setFilter('CLEARED')}
-                  className={`px-3 py-1 rounded-md text-sm font-medium ${
-                    filter === 'CLEARED' 
-                      ? 'bg-purple-600 text-white' 
-                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                  }`}
                 >
                   Cleared
-                </button>
+                </ButtonComponent>
               </div>
             </div>
+          </div>
+          <div className="p-6">
 
             {filteredPayments.length === 0 ? (
-              <div className="text-center py-8">
-                <p className="text-gray-500">No payments found.</p>
+              <div className="text-center py-12">
+                <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-3xl">💰</span>
+                </div>
+                <h3 className="text-xl font-semibold text-foreground mb-2">No payments found</h3>
+                <p className="text-foreground/60">No payment records match the current filter.</p>
               </div>
             ) : (
               <>
@@ -494,7 +488,7 @@ export default function PaymentManagement() {
             )}
           </div>
         </div>
-      </main>
+      </div>
 
       {/* Payment Modal */}
       {selectedEmployee && (

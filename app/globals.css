@@ -1,41 +1,41 @@
 @import "tailwindcss";
 
 :root {
-  /* Light Mode Colors */
-  --background: #ffffff;
-  --foreground: #0f172a;
-  --card: #ffffff;
-  --card-foreground: #0f172a;
-  --popover: #ffffff;
-  --popover-foreground: #0f172a;
-  --primary: #3b82f6;
-  --primary-foreground: #ffffff;
-  --secondary: #f1f5f9;
-  --secondary-foreground: #0f172a;
-  --muted: #f1f5f9;
-  --muted-foreground: #64748b;
-  --accent: #f1f5f9;
-  --accent-foreground: #0f172a;
-  --destructive: #dc2626;
-  --destructive-foreground: #ffffff;
-  --border: #e2e8f0;
-  --input: #e2e8f0;
-  --ring: #3b82f6;
-  --success: #059669;
-  --warning: #d97706;
-  --info: #0891b2;
+  /* Light Mode Colors - HSL values for Tailwind */
+  --background: 0 0% 100%;
+  --foreground: 222 84% 5%;
+  --card: 0 0% 100%;
+  --card-foreground: 222 84% 5%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222 84% 5%;
+  --primary: 221 83% 53%;
+  --primary-foreground: 210 40% 98%;
+  --secondary: 210 40% 96%;
+  --secondary-foreground: 222 84% 5%;
+  --muted: 210 40% 96%;
+  --muted-foreground: 215 16% 47%;
+  --accent: 210 40% 96%;
+  --accent-foreground: 222 84% 5%;
+  --destructive: 0 84% 37%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 214 32% 91%;
+  --input: 214 32% 91%;
+  --ring: 221 83% 53%;
+  --success: 142 76% 36%;
+  --warning: 32 95% 44%;
+  --info: 188 95% 37%;
 
   /* Surface Colors */
-  --surface-50: #f8fafc;
-  --surface-100: #f1f5f9;
-  --surface-200: #e2e8f0;
-  --surface-300: #cbd5e1;
-  --surface-400: #94a3b8;
-  --surface-500: #64748b;
-  --surface-600: #475569;
-  --surface-700: #334155;
-  --surface-800: #1e293b;
-  --surface-900: #0f172a;
+  --surface-50: 210 40% 98%;
+  --surface-100: 210 40% 96%;
+  --surface-200: 214 32% 91%;
+  --surface-300: 213 27% 84%;
+  --surface-400: 215 20% 65%;
+  --surface-500: 215 16% 47%;
+  --surface-600: 215 19% 35%;
+  --surface-700: 215 25% 27%;
+  --surface-800: 217 33% 17%;
+  --surface-900: 222 84% 5%;
 
   /* Shadows */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
@@ -52,41 +52,41 @@
 }
 
 .dark {
-  /* Dark Mode Colors */
-  --background: #0f172a;
-  --foreground: #f8fafc;
-  --card: #1e293b;
-  --card-foreground: #f8fafc;
-  --popover: #1e293b;
-  --popover-foreground: #f8fafc;
-  --primary: #60a5fa;
-  --primary-foreground: #0f172a;
-  --secondary: #1e293b;
-  --secondary-foreground: #f8fafc;
-  --muted: #1e293b;
-  --muted-foreground: #94a3b8;
-  --accent: #1e293b;
-  --accent-foreground: #f8fafc;
-  --destructive: #ef4444;
-  --destructive-foreground: #f8fafc;
-  --border: #334155;
-  --input: #334155;
-  --ring: #60a5fa;
-  --success: #10b981;
-  --warning: #f59e0b;
-  --info: #06b6d4;
+  /* Dark Mode Colors - HSL values for Tailwind */
+  --background: 222 84% 5%;
+  --foreground: 210 40% 98%;
+  --card: 217 33% 17%;
+  --card-foreground: 210 40% 98%;
+  --popover: 217 33% 17%;
+  --popover-foreground: 210 40% 98%;
+  --primary: 217 91% 60%;
+  --primary-foreground: 222 84% 5%;
+  --secondary: 217 33% 17%;
+  --secondary-foreground: 210 40% 98%;
+  --muted: 217 33% 17%;
+  --muted-foreground: 215 20% 65%;
+  --accent: 217 33% 17%;
+  --accent-foreground: 210 40% 98%;
+  --destructive: 0 63% 31%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 215 25% 27%;
+  --input: 215 25% 27%;
+  --ring: 217 91% 60%;
+  --success: 142 76% 36%;
+  --warning: 32 95% 44%;
+  --info: 188 95% 37%;
 
   /* Dark Surface Colors */
-  --surface-50: #0f172a;
-  --surface-100: #1e293b;
-  --surface-200: #334155;
-  --surface-300: #475569;
-  --surface-400: #64748b;
-  --surface-500: #94a3b8;
-  --surface-600: #cbd5e1;
-  --surface-700: #e2e8f0;
-  --surface-800: #f1f5f9;
-  --surface-900: #f8fafc;
+  --surface-50: 222 84% 5%;
+  --surface-100: 217 33% 17%;
+  --surface-200: 215 25% 27%;
+  --surface-300: 215 19% 35%;
+  --surface-400: 215 16% 47%;
+  --surface-500: 215 20% 65%;
+  --surface-600: 213 27% 84%;
+  --surface-700: 214 32% 91%;
+  --surface-800: 210 40% 96%;
+  --surface-900: 210 40% 98%;
 
   /* Dark Shadows */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
@@ -101,8 +101,8 @@
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
   font-family: Arial, Helvetica, sans-serif;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
@@ -125,41 +125,30 @@ input[type="search"],
 input[type="url"],
 select,
 textarea {
-  color: var(--foreground) !important;
-  background: var(--background) !important;
-  border-color: var(--border) !important;
+  color: hsl(var(--foreground)) !important;
+  background: hsl(var(--background)) !important;
+  border-color: hsl(var(--border)) !important;
   transition: all 0.2s ease;
 }
 
 input::placeholder,
 textarea::placeholder {
-  color: var(--muted-foreground) !important;
+  color: hsl(var(--muted-foreground)) !important;
 }
 
 input:focus,
 select:focus,
 textarea:focus {
   outline: none !important;
-  border-color: var(--ring) !important;
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
-}
-
-.dark input:focus,
-.dark select:focus,
-.dark textarea:focus {
-  box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.2) !important;
-}
-
-/* Enhanced button base styles */
-button {
-  transition: all 0.2s ease;
+  border-color: hsl(var(--ring)) !important;
+  box-shadow: 0 0 0 2px hsl(var(--ring) / 0.2) !important;
 }
 
 /* Card component enhancement */
 .card {
-  background: var(--card);
-  color: var(--card-foreground);
-  border: 1px solid var(--border);
+  background: hsl(var(--card));
+  color: hsl(var(--card-foreground));
+  border: 1px solid hsl(var(--border));
   box-shadow: var(--shadow);
   transition: all 0.2s ease;
 }
@@ -186,16 +175,16 @@ button {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--muted);
+  background: hsl(var(--muted));
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--muted-foreground);
+  background: hsl(var(--muted-foreground));
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--foreground);
+  background: hsl(var(--foreground));
 }
 
 /* Custom breakpoint for extra small screens */
@@ -252,7 +241,7 @@ button {
 
 /* Enhanced focus styles for accessibility */
 *:focus-visible {
-  outline: 2px solid var(--ring);
+  outline: 2px solid hsl(var(--ring));
   outline-offset: 2px;
 }
 

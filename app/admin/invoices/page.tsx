@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation'
 import InvoiceModal from '@/app/components/InvoiceModal'
 import DeleteConfirmationModal from '@/app/components/DeleteConfirmationModal'
 import { formatIndianCurrency, formatIndianDate } from '@/app/lib/indianLocalization'
+import ThemeToggle from '@/app/components/ui/ThemeToggle'
+import ButtonComponent from '@/app/components/ui/ButtonComponent'
 
 interface User {
   id: string
@@ -244,51 +246,59 @@ export default function InvoiceManagement() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-4 text-foreground/60">Loading invoice data...</p>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-4 sm:py-6 gap-4 sm:gap-0">
-            <div className="flex-1">
-              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">Invoice Management</h1>
-              <p className="text-sm sm:text-base text-gray-600 mt-1">View and manage uploaded invoices</p>
+    <div className="min-h-screen bg-background">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header */}
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-8">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-gradient-to-br from-primary to-primary/80 rounded-xl flex items-center justify-center">
+              <span className="text-2xl">📄</span>
             </div>
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
-              <button
-                onClick={() => setShowInvoiceModal(true)}
-                className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-medium w-full sm:w-auto"
-              >
-                Upload Invoice
-              </button>
-              <button
-                onClick={() => router.push('/admin/dashboard')}
-                className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md text-sm font-medium w-full sm:w-auto"
-              >
-                Back to Dashboard
-              </button>
-              <button
-                onClick={handleLogout}
-                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium w-full sm:w-auto"
-              >
-                Logout
-              </button>
+            <div>
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+                Invoice Management
+              </h1>
+              <p className="text-foreground/60 mt-1">View and manage uploaded invoices</p>
             </div>
           </div>
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+            <ThemeToggle />
+            <ButtonComponent 
+              variant="success" 
+              size="md"
+              onClick={() => setShowInvoiceModal(true)}
+            >
+              Upload Invoice
+            </ButtonComponent>
+            <ButtonComponent 
+              variant="outline" 
+              size="md"
+              onClick={() => router.push('/admin/dashboard')}
+            >
+              Back to Dashboard
+            </ButtonComponent>
+            <ButtonComponent 
+              variant="danger" 
+              size="md"
+              onClick={handleLogout}
+            >
+              Logout
+            </ButtonComponent>
+          </div>
         </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         {/* Summary Card */}
         <div className="mb-8">
-          <div className="bg-white overflow-hidden shadow rounded-lg">
+          <div className="bg-card overflow-hidden shadow-sm rounded-lg border border-border">
             <div className="p-5">
               <div className="flex items-center">
                 <div className="flex-shrink-0">
@@ -298,14 +308,14 @@ export default function InvoiceManagement() {
                 </div>
                 <div className="ml-5 w-0 flex-1">
                   <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">Total Due Amount</dt>
-                    <dd className="text-lg font-medium text-gray-900">{formatIndianCurrency(stats.totalDueAmount)}</dd>
+                    <dt className="text-sm font-medium text-muted-foreground truncate">Total Due Amount</dt>
+                    <dd className="text-lg font-medium text-foreground">{formatIndianCurrency(stats.totalDueAmount)}</dd>
                   </dl>
                 </div>
                 <div className="ml-5">
                   <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">Total Invoices</dt>
-                    <dd className="text-lg font-medium text-gray-900">{invoices.length}</dd>
+                    <dt className="text-sm font-medium text-muted-foreground truncate">Total Invoices</dt>
+                    <dd className="text-lg font-medium text-foreground">{invoices.length}</dd>
                   </dl>
                 </div>
               </div>
@@ -314,47 +324,47 @@ export default function InvoiceManagement() {
         </div>
 
         {/* Filters */}
-        <div className="bg-white shadow rounded-lg mb-6">
+        <div className="bg-card shadow-sm rounded-lg mb-6 border border-border">
           <div className="px-4 py-5 sm:p-6">
-            <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">Filter Invoices</h3>
+            <h3 className="text-lg leading-6 font-medium text-foreground mb-4">Filter Invoices</h3>
             <form onSubmit={handleFilterSubmit}>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
                 <div>
-                  <label htmlFor="clientName" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="clientName" className="block text-sm font-medium text-foreground">
                     Client Name
                   </label>
                   <input
                     type="text"
                     name="clientName"
                     id="clientName"
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    className="mt-1 block w-full border border-border rounded-md shadow-sm py-2 px-3 bg-background text-foreground focus:outline-none focus:ring-primary focus:border-primary"
                     placeholder="Search by client name"
                     value={filters.clientName}
                     onChange={handleFilterChange}
                   />
                 </div>
                 <div>
-                  <label htmlFor="startDate" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="startDate" className="block text-sm font-medium text-foreground">
                     Start Date
                   </label>
                   <input
                     type="date"
                     name="startDate"
                     id="startDate"
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    className="mt-1 block w-full border border-border rounded-md shadow-sm py-2 px-3 bg-background text-foreground focus:outline-none focus:ring-primary focus:border-primary"
                     value={filters.startDate}
                     onChange={handleFilterChange}
                   />
                 </div>
                 <div>
-                  <label htmlFor="endDate" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="endDate" className="block text-sm font-medium text-foreground">
                     End Date
                   </label>
                   <input
                     type="date"
                     name="endDate"
                     id="endDate"
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    className="mt-1 block w-full border border-border rounded-md shadow-sm py-2 px-3 bg-background text-foreground focus:outline-none focus:ring-primary focus:border-primary"
                     value={filters.endDate}
                     onChange={handleFilterChange}
                   />
@@ -362,7 +372,7 @@ export default function InvoiceManagement() {
                 <div className="flex items-end">
                   <button
                     type="submit"
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+                    className="w-full bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-md text-sm font-medium"
                   >
                     Apply Filters
                   </button>
@@ -376,7 +386,7 @@ export default function InvoiceManagement() {
                     setFilters({ clientName: '', startDate: '', endDate: '' })
                     fetchInvoices()
                   }}
-                  className="text-sm text-blue-600 hover:text-blue-800"
+                  className="text-sm text-primary hover:text-primary/80"
                 >
                   Clear all filters
                 </button>
@@ -386,13 +396,13 @@ export default function InvoiceManagement() {
         </div>
 
         {/* Invoice List */}
-        <div className="bg-white shadow rounded-lg">
+        <div className="bg-card shadow-sm rounded-lg border border-border">
           <div className="px-4 py-5 sm:p-6">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg leading-6 font-medium text-gray-900">Invoices</h3>
+              <h3 className="text-lg leading-6 font-medium text-foreground">Invoices</h3>
               {selectedInvoices.length > 0 && (
                 <div className="flex items-center space-x-2">
-                  <span className="text-sm text-gray-600">{selectedInvoices.length} selected</span>
+                  <span className="text-sm text-muted-foreground">{selectedInvoices.length} selected</span>
                   <button
                     onClick={handleBulkDeleteInvoices}
                     disabled={bulkDeleting}
@@ -412,93 +422,93 @@ export default function InvoiceManagement() {
 
             {invoices.length === 0 ? (
               <div className="text-center py-8">
-                <p className="text-gray-500">No invoices found.</p>
+                <p className="text-muted-foreground">No invoices found.</p>
               </div>
             ) : (
               <>
                 {/* Desktop Table View */}
                 <div className="hidden md:block overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
+                  <table className="min-w-full divide-y divide-border">
+                    <thead className="bg-muted">
                       <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                           <input
                             type="checkbox"
                             checked={selectedInvoices.length === invoices.length && invoices.length > 0}
                             onChange={handleSelectAllInvoices}
-                            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                            className="h-4 w-4 text-primary focus:ring-primary border-border rounded"
                           />
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                           Client Name
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                           Amount
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                           Invoice Date
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                           File Name
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                           Uploaded
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                           Actions
                         </th>
                       </tr>
                     </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
+                    <tbody className="bg-card divide-y divide-border">
                       {invoices.map((invoice) => (
                         <tr 
                           key={invoice.id}
-                          className={selectedInvoices.includes(invoice.id) ? 'bg-blue-50' : ''}
+                          className={selectedInvoices.includes(invoice.id) ? 'bg-primary/5' : ''}
                         >
                           <td className="px-6 py-4 whitespace-nowrap">
                             <input
                               type="checkbox"
                               checked={selectedInvoices.includes(invoice.id)}
                               onChange={() => handleSelectInvoice(invoice.id)}
-                              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                              className="h-4 w-4 text-primary focus:ring-primary border-border rounded"
                             />
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">
                             {invoice.clientName}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
                             {formatIndianCurrency(invoice.amount)}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                             {formatIndianDate(new Date(invoice.date))}
                           </td>
-                          <td className="px-6 py-4 text-sm text-gray-500">
+                          <td className="px-6 py-4 text-sm text-muted-foreground">
                             <span className="truncate max-w-xs block" title={invoice.fileName}>
                               {invoice.fileName}
                             </span>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                             {formatIndianDate(new Date(invoice.createdAt))}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             <div className="flex items-center space-x-2">
                               <button
                                 onClick={() => handleViewInvoice(invoice.fileUrl)}
-                                className="text-blue-600 hover:text-blue-900 text-xs px-2 py-1 border border-blue-200 rounded"
+                                className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 text-xs px-2 py-1 border border-blue-200 dark:border-blue-800 rounded"
                               >
                                 View PDF
                               </button>
                               <a
                                 href={invoice.fileUrl}
                                 download={invoice.fileName}
-                                className="text-green-600 hover:text-green-900 text-xs px-2 py-1 border border-green-200 rounded"
+                                className="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300 text-xs px-2 py-1 border border-green-200 dark:border-green-800 rounded"
                               >
                                 Download
                               </a>
                               <button
                                 onClick={() => handleDeleteInvoice(invoice.id, invoice.clientName, invoice.amount)}
                                 disabled={deleting === invoice.id}
-                                className="text-red-600 hover:text-red-900 text-xs px-2 py-1 border border-red-200 rounded disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 text-xs px-2 py-1 border border-red-200 dark:border-red-800 rounded disabled:opacity-50 disabled:cursor-not-allowed"
                               >
                                 {deleting === invoice.id ? 'Deleting...' : 'Delete'}
                               </button>
@@ -515,7 +525,7 @@ export default function InvoiceManagement() {
                   {invoices.map((invoice) => (
                     <div 
                       key={invoice.id} 
-                      className={`rounded-lg p-4 border ${selectedInvoices.includes(invoice.id) ? 'bg-blue-50 border-blue-200' : 'bg-gray-50'}`}
+                      className={`rounded-lg p-4 border ${selectedInvoices.includes(invoice.id) ? 'bg-primary/5 border-primary/20' : 'bg-muted border-border'}`}
                     >
                       <div className="flex justify-between items-start mb-3">
                         <div className="flex items-start space-x-3">
@@ -523,20 +533,20 @@ export default function InvoiceManagement() {
                             type="checkbox"
                             checked={selectedInvoices.includes(invoice.id)}
                             onChange={() => handleSelectInvoice(invoice.id)}
-                            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded mt-1"
+                            className="h-4 w-4 text-primary focus:ring-primary border-border rounded mt-1"
                           />
                           <div className="flex-1">
-                            <h4 className="text-lg font-medium text-gray-900 mb-1">{invoice.clientName}</h4>
-                            <p className="text-sm text-gray-600 mb-1">
+                            <h4 className="text-lg font-medium text-foreground mb-1">{invoice.clientName}</h4>
+                            <p className="text-sm text-muted-foreground mb-1">
                               <span className="font-medium">Amount:</span> {formatIndianCurrency(invoice.amount)}
                             </p>
-                            <p className="text-sm text-gray-600 mb-1">
+                            <p className="text-sm text-muted-foreground mb-1">
                               <span className="font-medium">Invoice Date:</span> {formatIndianDate(new Date(invoice.date))}
                             </p>
-                            <p className="text-sm text-gray-600 mb-1">
+                            <p className="text-sm text-muted-foreground mb-1">
                               <span className="font-medium">File:</span> {invoice.fileName.length > 25 ? invoice.fileName.substring(0, 25) + '...' : invoice.fileName}
                             </p>
-                            <p className="text-xs text-gray-500">
+                            <p className="text-xs text-muted-foreground">
                               Uploaded: {formatIndianDate(new Date(invoice.createdAt))}
                             </p>
                           </div>
@@ -572,7 +582,7 @@ export default function InvoiceManagement() {
             )}
           </div>
         </div>
-      </main>
+      </div>
 
       {/* Invoice Modal */}
       <InvoiceModal
