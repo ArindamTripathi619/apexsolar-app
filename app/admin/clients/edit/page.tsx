@@ -105,30 +105,30 @@ function EditClientForm() {
 
   if (isLoadingClient) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading client data...</p>
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-4 text-muted-foreground">Loading client data...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-background py-8">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white shadow-lg rounded-lg">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h1 className="text-2xl font-bold text-gray-900">Edit Client</h1>
-            <p className="mt-1 text-sm text-gray-600">Update client information</p>
+        <div className="bg-card shadow-card rounded-lg border border-border">
+          <div className="px-6 py-4 border-b border-border">
+            <h1 className="text-2xl font-bold text-foreground">Edit Client</h1>
+            <p className="mt-1 text-sm text-muted-foreground">Update client information</p>
           </div>
 
           <form onSubmit={handleSubmit} className="p-6 space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Required Fields */}
               <div>
-                <label htmlFor="companyName" className="block text-sm font-medium text-gray-700 mb-1">
-                  Company Name <span className="text-red-500">*</span>
+                <label htmlFor="companyName" className="block text-sm font-medium text-foreground mb-1">
+                  Company Name <span className="text-destructive">*</span>
                 </label>
                 <input
                   type="text"
@@ -137,13 +137,13 @@ function EditClientForm() {
                   value={formData.companyName}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-colors duration-200"
                 />
               </div>
 
               <div>
-                <label htmlFor="addressLine1" className="block text-sm font-medium text-gray-700 mb-1">
-                  Address Line 1 <span className="text-red-500">*</span>
+                <label htmlFor="addressLine1" className="block text-sm font-medium text-foreground mb-1">
+                  Address Line 1 <span className="text-destructive">*</span>
                 </label>
                 <input
                   type="text"
@@ -152,13 +152,13 @@ function EditClientForm() {
                   value={formData.addressLine1}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-colors duration-200"
                 />
               </div>
 
               {/* Optional Fields */}
               <div>
-                <label htmlFor="addressLine2" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="addressLine2" className="block text-sm font-medium text-foreground mb-1">
                   Address Line 2
                 </label>
                 <input
@@ -167,12 +167,12 @@ function EditClientForm() {
                   name="addressLine2"
                   value={formData.addressLine2}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-colors duration-200"
                 />
               </div>
 
               <div>
-                <label htmlFor="addressLine3" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="addressLine3" className="block text-sm font-medium text-foreground mb-1">
                   Address Line 3
                 </label>
                 <input
@@ -181,12 +181,12 @@ function EditClientForm() {
                   name="addressLine3"
                   value={formData.addressLine3}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-colors duration-200"
                 />
               </div>
 
               <div>
-                <label htmlFor="city" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="city" className="block text-sm font-medium text-foreground mb-1">
                   City
                 </label>
                 <input
@@ -195,12 +195,12 @@ function EditClientForm() {
                   name="city"
                   value={formData.city}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-colors duration-200"
                 />
               </div>
 
               <div>
-                <label htmlFor="state" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="state" className="block text-sm font-medium text-foreground mb-1">
                   State
                 </label>
                 <input
@@ -209,12 +209,12 @@ function EditClientForm() {
                   name="state"
                   value={formData.state}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-colors duration-200"
                 />
               </div>
 
               <div>
-                <label htmlFor="pinCode" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="pinCode" className="block text-sm font-medium text-foreground mb-1">
                   Pin Code
                 </label>
                 <input
@@ -223,12 +223,12 @@ function EditClientForm() {
                   name="pinCode"
                   value={formData.pinCode}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-colors duration-200"
                 />
               </div>
 
               <div>
-                <label htmlFor="gstNumber" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="gstNumber" className="block text-sm font-medium text-foreground mb-1">
                   GST Number
                 </label>
                 <input
@@ -237,12 +237,12 @@ function EditClientForm() {
                   name="gstNumber"
                   value={formData.gstNumber}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-colors duration-200"
                 />
               </div>
 
               <div>
-                <label htmlFor="panNumber" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="panNumber" className="block text-sm font-medium text-foreground mb-1">
                   PAN Number
                 </label>
                 <input
@@ -251,12 +251,12 @@ function EditClientForm() {
                   name="panNumber"
                   value={formData.panNumber}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-colors duration-200"
                 />
               </div>
 
               <div>
-                <label htmlFor="contactPerson" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="contactPerson" className="block text-sm font-medium text-foreground mb-1">
                   Contact Person
                 </label>
                 <input
@@ -265,12 +265,12 @@ function EditClientForm() {
                   name="contactPerson"
                   value={formData.contactPerson}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-colors duration-200"
                 />
               </div>
 
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="email" className="block text-sm font-medium text-foreground mb-1">
                   Email
                 </label>
                 <input
@@ -279,12 +279,12 @@ function EditClientForm() {
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-colors duration-200"
                 />
               </div>
 
               <div>
-                <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="phone" className="block text-sm font-medium text-foreground mb-1">
                   Phone
                 </label>
                 <input
@@ -293,23 +293,23 @@ function EditClientForm() {
                   name="phone"
                   value={formData.phone}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-colors duration-200"
                 />
               </div>
             </div>
 
-            <div className="flex justify-end space-x-4 pt-6 border-t border-gray-200">
+            <div className="flex justify-end space-x-4 pt-6 border-t border-border">
               <button
                 type="button"
                 onClick={() => router.push('/admin/clients')}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                className="px-4 py-2 text-sm font-medium text-muted-foreground bg-secondary border border-input rounded-md hover:bg-secondary/80 focus:outline-none focus:ring-2 focus:ring-ring transition-colors duration-200"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={isLoading}
-                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+                className="px-4 py-2 text-sm font-medium text-primary-foreground bg-primary border border-transparent rounded-md hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50 transition-colors duration-200"
               >
                 {isLoading ? 'Updating...' : 'Update Client'}
               </button>
@@ -324,10 +324,10 @@ function EditClientForm() {
 export default function EditClientPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading...</p>
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-4 text-muted-foreground">Loading...</p>
         </div>
       </div>
     }>
